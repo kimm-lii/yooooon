@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -153,7 +154,7 @@
     <div class="upload-page" id="uploadPage">
         <div class="upload-container">
             <h3>📤 上传视频管理</h3>
-            <input type="text" id="videoUrl" placeholder="🔗 粘贴MP4直链（推荐Streamable/Google Drive）">
+            <input type="text" id="videoUrl" placeholder="🔗 支持Streamable链接/MP4直链">
             <div class="file-input">
                 <label>📁 选择文件：</label>
                 <input type="file" id="videoFile" accept="video/*">
@@ -162,7 +163,7 @@
             <input type="text" id="videoPwd" placeholder="🔒 观看密码（可选）">
             <button onclick="addVideo()">添加到作品列表</button>
             <button class="close-btn" onclick="closeUploadPage()">关闭页面</button>
-            <div class="upload-tip">✅ 已移除YouTube，改用MP4直链，100%稳定不报错</div>
+            <div class="upload-tip">✅ 自动转Streamable链接，直接贴 https://streamable.com/xxxx 就行</div>
         </div>
     </div>
 
@@ -229,7 +230,7 @@
                         <div id="workGroups"></div>
                     </div>
                     <div class="portfolio-content"><div id="videoDisplayArea"></div></div>
-                    <div class="empty-tip" id="emptyTip"><span class="lang-zh active-lang">暂无作品，粘贴MP4链接或选择文件即可添加</span><span class="lang-en">No works yet, add MP4 link or file</span><span class="lang-ko">작품이 없습니다, MP4 링크 또는 파일을 추가하세요</span></div>
+                    <div class="empty-tip" id="emptyTip"><span class="lang-zh active-lang">暂无作品，粘贴链接或选择文件即可添加</span><span class="lang-en">No works yet, add link or file</span><span class="lang-ko">작품이 없습니다, 링크 또는 파일을 추가하세요</span></div>
                 </div>
             </div>
         </section>
@@ -303,9 +304,13 @@
             const title=document.getElementById('videoTitle').value.trim();
             const pwd=document.getElementById('videoPwd').value.trim();
             if(!title){alert('请输入标题！');return;}
-            if(!url&&!file){alert('请粘贴MP4链接或选择文件！');return;}
+            if(!url&&!file){alert('请粘贴链接或选择文件！');return;}
             let src=url;
-            // ✅ 彻底移除YouTube，只支持MP4直链，100%稳定
+            // ✅ 自动转换Streamable链接 → 直接可用CDN地址
+            if(src.includes('streamable.com/')){
+                const id=src.split('streamable.com/')[1].split('?')[0];
+                src='https://cdn.streamable.com/video/mp4/'+id+'.mp4';
+            }
             if(file) src=URL.createObjectURL(file);
             videos.push({name:src,title_zh:title,title_en:title,title_ko:title,password:pwd});
             localStorage.setItem('myVideos',JSON.stringify(videos));
@@ -313,7 +318,7 @@
             renderWorkGroups();closeUploadPage();renderMyWorks();
         }
 
-        // ✅ 纯MP4播放器，韩国网络完美适配，无任何拦截
+        // ✅ 纯MP4播放器，修复黑屏，韩国网络完美适配
         function playVideo(v) {
             const area=document.getElementById('videoDisplayArea');
             const lang=getCurrentLang();
@@ -329,9 +334,8 @@
                     style="width:100%;height:100%;background:#000;"
                 >
                     <source src="${v.name}" type="video/mp4">
-                    <source src="${v.name}" type="video/webm">
                     <div style="color:#fff;padding:2rem;text-align:center;font-size:0.9rem;">
-                        ✅ 视频加载成功<br>若无法播放请更换MP4链接
+                        ⏳ 视频加载中...<br>若长时间黑屏请刷新页面
                     </div>
                 </video>
             </div>`;
