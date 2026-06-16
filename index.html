@@ -196,8 +196,8 @@
                 <input type="file" id="videoFile" accept="video/*">
             </div>
             <input type="text" id="videoTitle" placeholder="📝 输入视频标题" required>
-            <!-- ✅ 已修改：原来的“观看密码（设置后付款后自动填入）”改为“选题” -->
-            <input type="text" id="videoTopic" placeholder="📌 选题（选填）">
+            <!-- ✅ 已修改：改为“输入密码（选填）” -->
+            <input type="text" id="videoPwd" placeholder="🔒 输入密码（选填）">
             <button onclick="addVideo()">添加到作品列表</button>
             <button class="close-btn" onclick="closeUploadPage()">关闭页面</button>
         </div>
@@ -316,9 +316,9 @@
                 <span class="lang-en">🔒 Premium Content</span>
                 <span class="lang-ko">🔒 유료 콘텐츠</span>
             </div>
-            <!-- ✅ 观看本集需支付 $0.99 USD —— 已删除“付款后获得密码” -->
+            <!-- ✅ 仅保留“观看本集视频需支付 $0.99 USD”，删除“付款后获得密码” -->
             <div class="pay-desc">
-                <span class="lang-zh active-lang">观看本视频需支付 $0.99 USD</span>
+                <span class="lang-zh active-lang">观看本集视频需支付 $0.99 USD</span>
                 <span class="lang-en">Pay $0.99 USD to watch this video</span>
                 <span class="lang-ko">본 영상 시청에는 $0.99 USD 결제가 필요합니다</span>
             </div>
@@ -403,7 +403,7 @@
             const cover=document.getElementById('coverUrl').value.trim() || DEFAULT_COVER;
             const file=document.getElementById('videoFile').files[0];
             const title=document.getElementById('videoTitle').value.trim();
-            const topic=document.getElementById('videoTopic').value.trim(); // ✅ 新增选题字段
+            const pwd=document.getElementById('videoPwd').value.trim();
             if(!title){alert('请输入标题！');return;}
             if(!url&&!file){alert('请粘贴链接或选择文件！');return;}
             let src=url;
@@ -423,10 +423,9 @@
             }
             
             if(file) src=URL.createObjectURL(file);
-            // ✅ 保存选题字段
-            videos.push({name:src,title_zh:title,title_en:title,title_ko:title,topic:topic,cover:cover});
+            videos.push({name:src,title_zh:title,title_en:title,title_ko:title,password:pwd,cover:cover});
             localStorage.setItem('myVideos',JSON.stringify(videos));
-            document.getElementById('videoUrl').value='';document.getElementById('coverUrl').value='';document.getElementById('videoFile').value='';document.getElementById('videoTitle').value='';document.getElementById('videoTopic').value='';
+            document.getElementById('videoUrl').value='';document.getElementById('coverUrl').value='';document.getElementById('videoFile').value='';document.getElementById('videoTitle').value='';document.getElementById('videoPwd').value='';
             renderWorkGroups();closeUploadPage();renderMyWorks();
         }
 
@@ -463,21 +462,6 @@
             area.innerHTML=player;
         }
 
-        function loadYoutubePlayer(container, src) {
-            container.innerHTML = `
-                <iframe
-                    width="100%"
-                    height="500"
-                    src="${src}&autoplay=1"
-                    title="YouTube video player"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerpolicy="strict-origin-when-cross-origin"
-                    allowfullscreen>
-                </iframe>
-            `;
-        }
-
         function checkPwd() {
             const inputPwd = document.getElementById('modalPwd').value.trim();
             const currentVideo = videos[currentVideoIndex];
@@ -512,9 +496,7 @@
                 const d=document.createElement('div');d.className='video-item';
                 const icon='<span class="lock-icon">🔒</span>';
                 const t=lang==='zh'?v.title_zh:lang==='en'?v.title_en:v.title_ko;
-                // ✅ 显示选题（如果有）
-                const topicText = v.topic ? ` <span style="color:#888;font-size:0.8em;">[${v.topic}]</span>` : '';
-                d.innerHTML=`<div class="video-name">${t}${topicText} ${icon}</div><span class="delete-btn" onclick="event.stopPropagation(); openDeleteModal(${i})">删除</span>`;
+                d.innerHTML=`<div class="video-name">${t} ${icon}</div><span class="delete-btn" onclick="event.stopPropagation(); openDeleteModal(${i})">删除</span>`;
                 
                 d.onclick=()=>{
                     currentVideoIndex = i;
