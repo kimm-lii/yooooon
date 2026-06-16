@@ -72,7 +72,7 @@
         .pay-box {background:#fff;padding:2rem;border-radius:12px;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.15);}
         /* ✅ 付费解锁内容 */
         .pay-title {font-size:1.1rem;font-weight:600;margin-bottom:1rem;color:#dc3545;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
-        /* ✅ 观看本集需支付 $0.99 USD */
+        /* ✅ 观看本集需支付 $0.99 USD —— 已删除“付款后获得密码” */
         .pay-desc {font-size:0.95rem;color:#6c757d;margin-bottom:1rem;line-height:1.5;}
         /* ✅ 支持 PayPal / 银行卡支付 - 加粗突出 */
         .pay-method {color:#28a745;font-size:1rem;font-weight:600;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:0.3rem;}
@@ -196,8 +196,8 @@
                 <input type="file" id="videoFile" accept="video/*">
             </div>
             <input type="text" id="videoTitle" placeholder="📝 输入视频标题" required>
-            <!-- ✅ 修改：删除“设置后付款后自动填入”，改为选填 -->
-            <input type="text" id="videoPwd" placeholder="🔒 观看密码（选填）">
+            <!-- ✅ 已修改：原来的“观看密码（设置后付款后自动填入）”改为“选题” -->
+            <input type="text" id="videoTopic" placeholder="📌 选题（选填）">
             <button onclick="addVideo()">添加到作品列表</button>
             <button class="close-btn" onclick="closeUploadPage()">关闭页面</button>
         </div>
@@ -316,11 +316,11 @@
                 <span class="lang-en">🔒 Premium Content</span>
                 <span class="lang-ko">🔒 유료 콘텐츠</span>
             </div>
-            <!-- ✅ 观看本集需支付 $0.99 USD -->
+            <!-- ✅ 观看本集需支付 $0.99 USD —— 已删除“付款后获得密码” -->
             <div class="pay-desc">
-                <span class="lang-zh active-lang">观看本视频需支付 $0.99 USD，付款后获得密码</span>
-                <span class="lang-en">Pay $0.99 USD to watch, get password after payment</span>
-                <span class="lang-ko">본 영상 시청에는 $0.99 USD 결제가 필요하며, 결제 후 비밀번호를 받으실 수 있습니다</span>
+                <span class="lang-zh active-lang">观看本视频需支付 $0.99 USD</span>
+                <span class="lang-en">Pay $0.99 USD to watch this video</span>
+                <span class="lang-ko">본 영상 시청에는 $0.99 USD 결제가 필요합니다</span>
             </div>
             <!-- ✅ 支持 PayPal / 银行卡支付 - 加粗显示 -->
             <div class="pay-method">
@@ -403,7 +403,7 @@
             const cover=document.getElementById('coverUrl').value.trim() || DEFAULT_COVER;
             const file=document.getElementById('videoFile').files[0];
             const title=document.getElementById('videoTitle').value.trim();
-            const pwd=document.getElementById('videoPwd').value.trim(); // ✅ 密码可以为空
+            const topic=document.getElementById('videoTopic').value.trim(); // ✅ 新增选题字段
             if(!title){alert('请输入标题！');return;}
             if(!url&&!file){alert('请粘贴链接或选择文件！');return;}
             let src=url;
@@ -423,9 +423,10 @@
             }
             
             if(file) src=URL.createObjectURL(file);
-            videos.push({name:src,title_zh:title,title_en:title,title_ko:title,password:pwd,cover:cover});
+            // ✅ 保存选题字段
+            videos.push({name:src,title_zh:title,title_en:title,title_ko:title,topic:topic,cover:cover});
             localStorage.setItem('myVideos',JSON.stringify(videos));
-            document.getElementById('videoUrl').value='';document.getElementById('coverUrl').value='';document.getElementById('videoFile').value='';document.getElementById('videoTitle').value='';document.getElementById('videoPwd').value='';
+            document.getElementById('videoUrl').value='';document.getElementById('coverUrl').value='';document.getElementById('videoFile').value='';document.getElementById('videoTitle').value='';document.getElementById('videoTopic').value='';
             renderWorkGroups();closeUploadPage();renderMyWorks();
         }
 
@@ -511,7 +512,9 @@
                 const d=document.createElement('div');d.className='video-item';
                 const icon='<span class="lock-icon">🔒</span>';
                 const t=lang==='zh'?v.title_zh:lang==='en'?v.title_en:v.title_ko;
-                d.innerHTML=`<div class="video-name">${t} ${icon}</div><span class="delete-btn" onclick="event.stopPropagation(); openDeleteModal(${i})">删除</span>`;
+                // ✅ 显示选题（如果有）
+                const topicText = v.topic ? ` <span style="color:#888;font-size:0.8em;">[${v.topic}]</span>` : '';
+                d.innerHTML=`<div class="video-name">${t}${topicText} ${icon}</div><span class="delete-btn" onclick="event.stopPropagation(); openDeleteModal(${i})">删除</span>`;
                 
                 d.onclick=()=>{
                     currentVideoIndex = i;
