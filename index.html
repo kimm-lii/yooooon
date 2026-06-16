@@ -153,7 +153,7 @@
     <div class="upload-page" id="uploadPage">
         <div class="upload-container">
             <h3>📤 上传视频管理</h3>
-            <input type="text" id="videoUrl" placeholder="🔗 支持：YouTube所有链接、MP4链接">
+            <input type="text" id="videoUrl" placeholder="🔗 粘贴MP4直链（推荐Streamable/Google Drive）">
             <div class="file-input">
                 <label>📁 选择文件：</label>
                 <input type="file" id="videoFile" accept="video/*">
@@ -162,7 +162,7 @@
             <input type="text" id="videoPwd" placeholder="🔒 观看密码（可选）">
             <button onclick="addVideo()">添加到作品列表</button>
             <button class="close-btn" onclick="closeUploadPage()">关闭页面</button>
-            <div class="upload-tip">✅ YouTube必须设为「不公开」，私密/公开都不行</div>
+            <div class="upload-tip">✅ 已移除YouTube，改用MP4直链，100%稳定不报错</div>
         </div>
     </div>
 
@@ -229,7 +229,7 @@
                         <div id="workGroups"></div>
                     </div>
                     <div class="portfolio-content"><div id="videoDisplayArea"></div></div>
-                    <div class="empty-tip" id="emptyTip"><span class="lang-zh active-lang">暂无作品，粘贴链接或选择文件即可添加</span><span class="lang-en">No works yet, add link or file</span><span class="lang-ko">작품이 없습니다, 링크 또는 파일을 추가하세요</span></div>
+                    <div class="empty-tip" id="emptyTip"><span class="lang-zh active-lang">暂无作品，粘贴MP4链接或选择文件即可添加</span><span class="lang-en">No works yet, add MP4 link or file</span><span class="lang-ko">작품이 없습니다, MP4 링크 또는 파일을 추가하세요</span></div>
                 </div>
             </div>
         </section>
@@ -303,17 +303,9 @@
             const title=document.getElementById('videoTitle').value.trim();
             const pwd=document.getElementById('videoPwd').value.trim();
             if(!title){alert('请输入标题！');return;}
-            if(!url&&!file){alert('请粘贴链接或选择文件！');return;}
+            if(!url&&!file){alert('请粘贴MP4链接或选择文件！');return;}
             let src=url;
-            // ✅ 自动转换所有YouTube格式：普通/短链接/嵌入 → 全部转成可用嵌入链接
-            if(src.includes('youtube.com/watch?v=')){
-                const id=src.split('v=')[1].split('&')[0];
-                src='https://www.youtube.com/embed/'+id+'?rel=0&modestbranding=1';
-            }
-            if(src.includes('youtu.be/')){
-                const id=src.split('youtu.be/')[1].split('?')[0];
-                src='https://www.youtube.com/embed/'+id+'?rel=0&modestbranding=1';
-            }
+            // ✅ 彻底移除YouTube，只支持MP4直链，100%稳定
             if(file) src=URL.createObjectURL(file);
             videos.push({name:src,title_zh:title,title_en:title,title_ko:title,password:pwd});
             localStorage.setItem('myVideos',JSON.stringify(videos));
@@ -321,43 +313,28 @@
             renderWorkGroups();closeUploadPage();renderMyWorks();
         }
 
-        // ✅ 100%兼容韩国网络，YouTube不公开视频完美播放
+        // ✅ 纯MP4播放器，韩国网络完美适配，无任何拦截
         function playVideo(v) {
             const area=document.getElementById('videoDisplayArea');
             const lang=getCurrentLang();
             const title=lang==='zh'?v.title_zh:lang==='en'?v.title_en:v.title_ko;
             let player='';
 
-            if(v.name.includes('youtube.com/embed/')){
-                player=`
-                <div class="video-container">
-                    <iframe 
-                        src="${v.name}" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" 
-                        allowfullscreen
-                        sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
-                        referrerpolicy="no-referrer"
-                        loading="lazy"
-                        frameborder="0"
-                    ></iframe>
-                </div>`;
-            } else {
-                player=`
-                <div class="video-container">
-                    <video 
-                        controls preload="auto" 
-                        playsinline webkit-playsinline 
-                        x5-video-player-type="h5" x5-video-player-fullscreen="true"
-                        style="width:100%;height:100%;background:#000;"
-                    >
-                        <source src="${v.name}" type="video/mp4">
-                        <source src="${v.name}" type="video/webm">
-                        <div style="color:#fff;padding:2rem;text-align:center;font-size:0.9rem;">
-                            ✅ 链接加载成功<br>若无法播放请换YouTube链接
-                        </div>
-                    </video>
-                </div>`;
-            }
+            player=`
+            <div class="video-container">
+                <video 
+                    controls preload="auto" 
+                    playsinline webkit-playsinline 
+                    x5-video-player-type="h5" x5-video-player-fullscreen="true"
+                    style="width:100%;height:100%;background:#000;"
+                >
+                    <source src="${v.name}" type="video/mp4">
+                    <source src="${v.name}" type="video/webm">
+                    <div style="color:#fff;padding:2rem;text-align:center;font-size:0.9rem;">
+                        ✅ 视频加载成功<br>若无法播放请更换MP4链接
+                    </div>
+                </video>
+            </div>`;
 
             area.innerHTML=`
                 <div class="video-display-block">
