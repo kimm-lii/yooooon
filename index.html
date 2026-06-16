@@ -35,7 +35,7 @@
             box-shadow:0 4px 16px rgba(0,0,0,0.12);
             cursor:pointer;
         }
-        /* 封面图：直接展示，无遮挡 */
+        /* 封面图：完整展示，无遮挡 */
         .video-cover {
             width:100%;
             height:100%;
@@ -187,6 +187,8 @@
         <div class="upload-container">
             <h3>📤 上传视频管理</h3>
             <input type="text" id="videoUrl" placeholder="🔗 YouTube链接 / Streamtape / 任意MP4链接">
+            <!-- ✅ 独立封面图输入框 -->
+            <input type="text" id="coverUrl" placeholder="🖼️ 封面图链接（选填，不填用默认）">
             <div class="file-input">
                 <label>📁 本地视频（无大小限制）：</label>
                 <input type="file" id="videoFile" accept="video/*">
@@ -312,8 +314,10 @@
         let deleteIndex = -1;
         let videos=JSON.parse(localStorage.getItem('myVideos'))||[];
         let modalCallback=null;
-        // ✅ 严格绑定你的完整域名，所有参数匹配，别人也能看
+        // ✅ 严格绑定你的完整域名，所有参数匹配，确保所有人访问都能播放
         const SITE_DOMAIN = 'https://kimm-lii.github.io/yooooon';
+        // ✅ 默认封面图（未单独设置时使用）
+        const DEFAULT_COVER = 'https://i.imgur.com/9Z7X7QH.jpg';
 
         function closePayModal() {document.getElementById('payModal').classList.add('hidden');}
         function openModal(title, callback) {const m=document.getElementById('pwdModal');document.getElementById('modalPwd').value='';m.classList.remove('hidden');modalCallback=callback;}
@@ -334,6 +338,7 @@
 
         function addVideo() {
             const url=document.getElementById('videoUrl').value.trim();
+            const cover=document.getElementById('coverUrl').value.trim() || DEFAULT_COVER;
             const file=document.getElementById('videoFile').files[0];
             const title=document.getElementById('videoTitle').value.trim();
             const pwd=document.getElementById('videoPwd').value.trim();
@@ -341,42 +346,44 @@
             if(!url&&!file){alert('请粘贴链接或选择文件！');return;}
             let src=url;
             
-            // ✅ 自动修正所有YouTube链接，域名完全匹配，解决153错误
+            // ✅ 自动修正所有YouTube链接，补全域名参数，解决跨域无法播放问题
             if(src.includes('youtube.com/watch?v=')){
                 const id=src.split('v=')[1].split('&')[0];
-                src=`https://www.youtube.com/embed/${id}?origin=${SITE_DOMAIN}&widget_referrer=${SITE_DOMAIN}`;
+                src=`https://www.youtube.com/embed/${id}?origin=${SITE_DOMAIN}&widget_referrer=${SITE_DOMAIN}&enablejsapi=1`;
             }
             if(src.includes('youtu.be/')){
                 const id=src.split('youtu.be/')[1].split('?')[0];
-                src=`https://www.youtube.com/embed/${id}?origin=${SITE_DOMAIN}&widget_referrer=${SITE_DOMAIN}`;
+                src=`https://www.youtube.com/embed/${id}?origin=${SITE_DOMAIN}&widget_referrer=${SITE_DOMAIN}&enablejsapi=1`;
             }
             if(src.includes('youtube.com/embed/')){
                 if(!src.includes('origin=')) src += (src.includes('?') ? '&' : '?') + `origin=${SITE_DOMAIN}`;
                 if(!src.includes('widget_referrer=')) src += `&widget_referrer=${SITE_DOMAIN}`;
+                if(!src.includes('enablejsapi=')) src += `&enablejsapi=1`;
             }
             
             if(file) src=URL.createObjectURL(file);
-            videos.push({name:src,title_zh:title,title_en:title,title_ko:title,password:pwd});
+            // ✅ 保存视频信息（含独立封面）
+            videos.push({name:src,title_zh:title,title_en:title,title_ko:title,password:pwd,cover:cover});
             localStorage.setItem('myVideos',JSON.stringify(videos));
-            document.getElementById('videoUrl').value='';document.getElementById('videoFile').value='';document.getElementById('videoTitle').value='';document.getElementById('videoPwd').value='';
+            document.getElementById('videoUrl').value='';document.getElementById('coverUrl').value='';document.getElementById('videoFile').value='';document.getElementById('videoTitle').value='';document.getElementById('videoPwd').value='';
             renderWorkGroups();closeUploadPage();renderMyWorks();
         }
 
-        // ✅ 播放器：只显示封面，无任何遮挡按钮，点击封面直接播放
+        // ✅ 播放器：使用独立封面，无遮挡，点击直接播放
         function playVideo(v) {
             const area=document.getElementById('videoDisplayArea');
             let player='';
 
             if(v.name.includes('youtube.com/embed/')){
-                const cleanSrc = v.name + '&controls=0&rel=0&playsinline=1&autoplay=0&mute=0';
-                // ✅ 取消灰色按钮，直接显示封面，点击整个区域播放
+                const cleanSrc = v.name + '&controls=1&rel=0&playsinline=1&autoplay=0&mute=0';
                 player=`
                 <div class="video-display-block">
                     <div class="video-container" onclick="loadYoutubePlayer(this, '${cleanSrc}')">
-                        <img class="video-cover" src="https://i.imgur.com/9Z7X7QH.jpg" alt="寒城烬爱 封面">
+                        <img class="video-cover" src="${v.cover}" alt="${v.title_zh} 封面">
                     </div>
                 </div>`;
             } else {
+                // ✅ 普通视频/本地视频，所有人正常播放
                 player=`
                 <div class="video-display-block">
                     <div class="video-container">
@@ -388,6 +395,7 @@
                         >
                             <source src="${v.name}" type="video/mp4">
                             <source src="${v.name}" type="video/webm">
+                            您的浏览器不支持视频播放，请更换浏览器尝试。
                         </video>
                     </div>
                 </div>`;
@@ -396,7 +404,7 @@
             area.innerHTML=player;
         }
 
-        // ✅ 加载视频，参数完整，所有人可见
+        // ✅ 加载YouTube播放器，参数完整，跨域正常
         function loadYoutubePlayer(container, src) {
             container.innerHTML = `
                 <iframe
