@@ -331,7 +331,7 @@
                             <button class="add-dir-btn" title="目录操作" onclick="togglePlusMenu()">+</button>
                             <!-- ✅ +号下拉菜单：添加、修改、选择删除 -->
                             <div id="plusMenu" class="plus-menu hidden">
-                                <div class="plus-menu-item" onclick="openAddDirPwd()">➕ <span class="lang-zh active-lang">添加目录</span><span class="lang-en">Add</span><span class="lang-ko">추가</span></div>
+                                <div class="plus-menu-item" onclick="openDirNameModalFromPlus()">➕ <span class="lang-zh active-lang">添加目录</span><span class="lang-en">Add</span><span class="lang-ko">추가</span></div>
                                 <div class="plus-menu-item" onclick="openSelectEditModal()">✏️ <span class="lang-zh active-lang">修改目录</span><span class="lang-en">Edit</span><span class="lang-ko">수정</span></div>
                                 <div class="plus-menu-item danger" onclick="openSelectDeleteModal()">🗑️ <span class="lang-zh active-lang">选择删除目录</span><span class="lang-en">Delete</span><span class="lang-ko">삭제</span></div>
                             </div>
@@ -378,8 +378,8 @@
         </section>
     </main>
 
-    <!-- ✅ 添加目录密码弹窗（密码固定0803） -->
-    <div id="addDirPwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="addDirPwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeAddDirPwd()">取消</button><button class="btn-confirm" onclick="verifyAddDirPwd()">确定</button></div></div></div>
+    <!-- ✅ +号管理密码弹窗（密码固定0803） -->
+    <div id="addDirPwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入管理密码 0803" id="addDirPwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeAddDirPwd()">取消</button><button class="btn-confirm" onclick="verifyAddDirPwd()">确定</button></div></div></div>
     <!-- ✅ 目录名称输入弹窗 -->
     <div id="dirNameModal" class="modal hidden"><div class="modal-content"><input type="text" placeholder="输入目录名称" id="dirNameInput"><div class="btn-group"><button class="btn-cancel" onclick="closeDirNameModal()">取消</button><button class="btn-confirm" onclick="saveNewDir()">确定</button></div></div></div>
     <!-- ✅ 选择要修改的目录 -->
@@ -442,32 +442,43 @@
         const DEFAULT_COVER = 'https://i.imgur.com/9Z7X7QH.jpg';
         const ADD_DIR_PWD = '0803';
 
-        // ✅ +号菜单：显示/隐藏
+        // ✅ +号菜单：点击 + 时先输入密码 0803，验证后才显示添加/修改/删除
         function togglePlusMenu() {
             const menu = document.getElementById('plusMenu');
-            menu.classList.toggle('hidden');
-            // 点击空白关闭
-            if(!menu.classList.contains('hidden')) {
-                setTimeout(()=>{
-                    const close = (e)=>{
-                        if(!e.target.closest('.add-dir-btn') && !e.target.closest('.plus-menu')) {
-                            menu.classList.add('hidden');
-                            document.removeEventListener('click', close);
-                        }
-                    };
-                    document.addEventListener('click', close);
-                },10);
+            if (!menu.classList.contains('hidden')) {
+                closePlusMenu();
+                return;
             }
+            openAddDirPwd();
         }
 
-        // ✅ 目录相关逻辑
-        function openAddDirPwd() {togglePlusMenu();document.getElementById('addDirPwdModal').classList.remove('hidden');document.getElementById('addDirPwdInput').value='';}
+        function closePlusMenu() {
+            document.getElementById('plusMenu').classList.add('hidden');
+        }
+
+        function showPlusMenuAfterPwd() {
+            const menu = document.getElementById('plusMenu');
+            menu.classList.remove('hidden');
+            setTimeout(()=>{
+                const close = (e)=>{
+                    if(!e.target.closest('.add-dir-btn') && !e.target.closest('.plus-menu')) {
+                        closePlusMenu();
+                        document.removeEventListener('click', close);
+                    }
+                };
+                document.addEventListener('click', close);
+            },10);
+        }
+
+        // ✅ +号管理密码逻辑
+        function openAddDirPwd() {document.getElementById('addDirPwdModal').classList.remove('hidden');document.getElementById('addDirPwdInput').value='';}
         function closeAddDirPwd() {document.getElementById('addDirPwdModal').classList.add('hidden');}
         function verifyAddDirPwd() {
             const p=document.getElementById('addDirPwdInput').value.trim();
-            if(p === ADD_DIR_PWD) {closeAddDirPwd();document.getElementById('dirNameModal').classList.remove('hidden');document.getElementById('dirNameInput').value='';}
+            if(p === ADD_DIR_PWD) {closeAddDirPwd();showPlusMenuAfterPwd();}
             else alert('❌ 密码错误！');
         }
+        function openDirNameModalFromPlus() {closePlusMenu();document.getElementById('dirNameModal').classList.remove('hidden');document.getElementById('dirNameInput').value='';}
         function closeDirNameModal() {document.getElementById('dirNameModal').classList.add('hidden');}
         function saveNewDir() {
             const name=document.getElementById('dirNameInput').value.trim();
@@ -481,7 +492,7 @@
 
         // ✅ 修改目录：先选择目录
         function openSelectEditModal() {
-            togglePlusMenu();
+            closePlusMenu();
             const sel = document.getElementById('editDirSelect');
             sel.innerHTML='';
             dirs.forEach(d=>{const opt=document.createElement('option');opt.value=d.id;opt.textContent=d.name;sel.appendChild(opt);});
@@ -509,7 +520,7 @@
 
         // ✅ 删除目录：先选择目录
         function openSelectDeleteModal() {
-            togglePlusMenu();
+            closePlusMenu();
             const sel = document.getElementById('deleteDirSelect');
             sel.innerHTML='';
             dirs.forEach(d=>{const opt=document.createElement('option');opt.value=d.id;opt.textContent=d.name;sel.appendChild(opt);});
@@ -534,27 +545,6 @@
             renderWorkGroups();
             renderMyWorks();
             updateDirOptions();
-        }
-
-        // ✅ 目录操作菜单（点击目录名）
-        function showDirMenu(e, id) {
-            e.stopPropagation();
-            // 移除已有菜单
-            document.querySelectorAll('.dir-menu').forEach(m=>m.remove());
-            const menu = document.createElement('div');
-            menu.className = 'dir-menu';
-            menu.style.left = e.pageX + 'px';
-            menu.style.top = e.pageY + 'px';
-            menu.innerHTML = `
-                <div class="dir-menu-item" onclick="openEditDirModal(${id})">✏️ <span class="lang-zh active-lang">修改目录</span><span class="lang-en">Edit</span><span class="lang-ko">수정</span></div>
-                <div class="dir-menu-item danger" onclick="openDeleteDirModal(${id})">🗑️ <span class="lang-zh active-lang">删除目录</span><span class="lang-en">Delete</span><span class="lang-ko">삭제</span></div>
-            `;
-            document.body.appendChild(menu);
-            // 点击空白关闭
-            setTimeout(()=>{
-                const closeMenu = ()=>{menu.remove();document.removeEventListener('click',closeMenu);};
-                document.addEventListener('click',closeMenu);
-            },10);
         }
 
         // ✅ 更新上传页的目录下拉选项 → 对应“选择保存标题”
@@ -607,7 +597,7 @@
            1) YouTube URL 统一转成 /embed/VIDEO_ID
            2) origin 使用纯域名，不带 /yooooon 路径，避免播放器配置错误
            3) iframe 增加 referrerpolicy，解决 Error 153 / ERR_BLOCKED_BY_RESPONSE 常见问题
-           4) 补全原文件末尾被截断的 JS、script/body/html 结束标签
+           4) 补全原文件末尾被截断的 JS 和 HTML 结束结构
         ========================== */
 
         const SITE_ORIGIN = window.location.origin || 'https://kimm-lii.github.io';
@@ -679,13 +669,13 @@
 
             const params = new URLSearchParams({
                 autoplay: autoplay ? '1' : '0',
-                controls: '0',
+                controls: '1',
                 rel: '0',
                 playsinline: '1',
                 mute: '0',
                 iv_load_policy: '3',
-                fs: '0',
-                disablekb: '1',
+                fs: '1',
+                disablekb: '0',
                 enablejsapi: '1',
                 origin: SITE_ORIGIN,
                 widget_referrer: SITE_BASE_URL
@@ -905,7 +895,7 @@
             return `
                 <div class="dir-group ${openClass}">
                     <div class="dir-header" onclick="this.parentElement.classList.toggle('open')">
-                        <span class="dir-name" onclick="showDirMenu(event, ${dir.id})">${dirName}</span>
+                        <span class="dir-name">${dirName}</span>
                         <span class="dir-toggle">▼</span>
                     </div>
                     <div class="dir-videos">${videoHtml}</div>
