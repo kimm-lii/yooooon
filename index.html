@@ -96,13 +96,13 @@
         /* ✅ 标题栏 - +号：缩小、灰色，圆形 */
         .work-title-bar {display:flex;align-items:center;justify-content:flex-end;margin-bottom:1rem;position:relative;}
         .add-dir-btn {
-            width:24px;
-            height:24px;
+            width:22px;
+            height:22px;
             border-radius:50%;
             border:none;
             background:#94a3b8; /* ✅ 灰色 */
             color:#fff;
-            font-size:15px;
+            font-size:14px;
             cursor:pointer;
             opacity:0.7;
             transition:all 0.2s;
@@ -118,7 +118,7 @@
         /* ✅ +号下拉菜单 */
         .plus-menu {
             position:absolute;
-            top:32px;
+            top:30px;
             right:0;
             background:#fff;
             border:1px solid #e2e8f0;
@@ -126,7 +126,7 @@
             box-shadow:0 4px 12px rgba(0,0,0,0.1);
             padding:0.4rem 0;
             z-index:1000;
-            min-width:120px;
+            min-width:130px;
         }
         .plus-menu-item {
             padding:0.5rem 1rem;
@@ -181,7 +181,7 @@
 
         .modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;z-index:9999;padding:1rem;}
         .modal-content {background:#fff;padding:1.8rem;border-radius:12px;width:100%;max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,0.15);}
-        .modal-content h4 {display:none;}
+        .modal-content h4 {display:block;font-size:0.95rem;margin-bottom:1rem;text-align:center;color:#333;}
         .modal-content input {width:100%;padding:0.75rem;margin-bottom:1.2rem;border:1px solid #e2e8f0;border-radius:8px;font-size:1rem;}
         .modal-content input::placeholder {color:#94a3b8 !important;opacity:1 !important;}
         .modal-content input:focus {outline:none;border-color:#165DFF;box-shadow:0 0 0 3px rgba(22,93,255,0.1);}
@@ -327,11 +327,11 @@
                     <div class="portfolio-sidebar">
                         <div class="work-title-bar">
                             <button class="add-dir-btn" title="目录操作" onclick="togglePlusMenu()">+</button>
-                            <!-- ✅ +号下拉菜单：添加、修改、删除 -->
+                            <!-- ✅ +号下拉菜单：添加、修改、选择删除 -->
                             <div id="plusMenu" class="plus-menu hidden">
                                 <div class="plus-menu-item" onclick="openAddDirPwd()">➕ <span class="lang-zh active-lang">添加目录</span><span class="lang-en">Add</span><span class="lang-ko">추가</span></div>
                                 <div class="plus-menu-item" onclick="openSelectEditModal()">✏️ <span class="lang-zh active-lang">修改目录</span><span class="lang-en">Edit</span><span class="lang-ko">수정</span></div>
-                                <div class="plus-menu-item danger" onclick="openSelectDeleteModal()">🗑️ <span class="lang-zh active-lang">删除目录</span><span class="lang-en">Delete</span><span class="lang-ko">삭제</span></div>
+                                <div class="plus-menu-item danger" onclick="openSelectDeleteModal()">🗑️ <span class="lang-zh active-lang">选择删除目录</span><span class="lang-en">Delete</span><span class="lang-ko">삭제</span></div>
                             </div>
                         </div>
                         <div id="workGroups"></div>
@@ -381,11 +381,11 @@
     <!-- ✅ 目录名称输入弹窗 -->
     <div id="dirNameModal" class="modal hidden"><div class="modal-content"><input type="text" placeholder="输入目录名称" id="dirNameInput"><div class="btn-group"><button class="btn-cancel" onclick="closeDirNameModal()">取消</button><button class="btn-confirm" onclick="saveNewDir()">确定</button></div></div></div>
     <!-- ✅ 选择要修改的目录 -->
-    <div id="selectEditModal" class="modal hidden"><div class="modal-content"><h4 class="text-center mb-4"><span class="lang-zh active-lang">选择要修改的目录</span></h4><select id="editDirSelect"></select><div class="btn-group"><button class="btn-cancel" onclick="closeSelectEditModal()">取消</button><button class="btn-confirm" onclick="openEditDirModalFromSelect()">下一步</button></div></div></div>
+    <div id="selectEditModal" class="modal hidden"><div class="modal-content"><h4><span class="lang-zh active-lang">选择要修改的目录</span></h4><select id="editDirSelect"></select><div class="btn-group"><button class="btn-cancel" onclick="closeSelectEditModal()">取消</button><button class="btn-confirm" onclick="openEditDirModalFromSelect()">下一步</button></div></div></div>
     <!-- ✅ 修改目录弹窗 -->
     <div id="editDirModal" class="modal hidden"><div class="modal-content"><input type="text" placeholder="输入新目录名称" id="editDirNameInput"><div class="btn-group"><button class="btn-cancel" onclick="closeEditDirModal()">取消</button><button class="btn-confirm" onclick="saveEditDir()">确定</button></div></div></div>
     <!-- ✅ 选择要删除的目录 -->
-    <div id="selectDeleteModal" class="modal hidden"><div class="modal-content"><h4 class="text-center mb-4"><span class="lang-zh active-lang">选择要删除的目录</span></h4><select id="deleteDirSelect"></select><div class="btn-group"><button class="btn-cancel" onclick="closeSelectDeleteModal()">取消</button><button class="btn-confirm danger" onclick="openDeleteDirModalFromSelect()">删除</button></div></div></div>
+    <div id="selectDeleteModal" class="modal hidden"><div class="modal-content"><h4><span class="lang-zh active-lang">选择要删除的目录</span></h4><select id="deleteDirSelect"></select><div class="btn-group"><button class="btn-cancel" onclick="closeSelectDeleteModal()">取消</button><button class="btn-confirm danger" onclick="openDeleteDirModalFromSelect()">删除</button></div></div></div>
     <!-- ✅ 删除目录确认弹窗 -->
     <div id="deleteDirModal" class="modal hidden"><div class="modal-content"><p class="text-center mb-4"><span class="lang-zh active-lang">确定要删除此目录吗？目录内视频也会被移除</span><span class="lang-en">Confirm delete? Videos inside will be removed</span><span class="lang-ko">이 디렉토리를 삭제하시겠습니까? 내부 영상도 함께 삭제됩니다</span></p><div class="btn-group"><button class="btn-cancel" onclick="closeDeleteDirModal()">取消</button><button class="btn-confirm danger" onclick="confirmDeleteDir()">删除</button></div></div></div>
 
@@ -673,6 +673,3 @@
                             x5-video-player-type="h5" x5-video-player-fullscreen="true"
                             style="width:100%;height:100%;background:#000;"
                         >
-                            <source src="${v.name}" type="video/mp4">
-                            <source src="${v.name}" type="video/webm">
-                            您的浏览器不支持视频播放，请
