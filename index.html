@@ -125,7 +125,7 @@
         .modal-content input:focus {outline:none;border-color:#165DFF;box-shadow:0 0 0 3px rgba(22,93,255,0.1);}
         .modal-content .btn-group {display:flex;gap:0.8rem;}
         .modal-content button {flex:1;padding:0.75rem;border:none;border-radius:8px;cursor:pointer;font-size:1rem;transition:background 0.2s;}
-        .btn-cancel {background:#e2e8f0;color:#334155;}
+        .btn-cancel {background:#e2e8f0;color:#374151;}
         .btn-cancel:hover {background:#cbd5e1;}
         .btn-confirm {background:#165DFF;color:white;}
         .btn-confirm:hover {background:#0F48C9;}
@@ -191,7 +191,7 @@
                 <input type="file" id="videoFile" accept="video/*">
             </div>
             <input type="text" id="videoTitle" placeholder="📝 输入视频标题" required>
-            <input type="text" id="videoPwd" placeholder="🔒 观看密码（可选）">
+            <input type="text" id="videoPwd" placeholder="🔒 观看密码（可选，留空则付款自动生成）">
             <button onclick="addVideo()">添加到作品列表</button>
             <button class="close-btn" onclick="closeUploadPage()">关闭页面</button>
         </div>
@@ -310,9 +310,13 @@
                 <span class="lang-en">🔒 Premium Content</span>
                 <span class="lang-ko">🔒 유료 콘텐츠</span>
             </div>
-            <!-- ✅ 保留价格，删除“付款后联系我” -->
-            <div class="pay-desc">观看本视频需支付 $0.99 USD</div>
-            <!-- ✅ 支付提示多语言跟随切换 -->
+            <!-- ✅ 保留价格 -->
+            <div class="pay-desc">
+                <span class="lang-zh active-lang">观看本视频需支付 $0.99 USD，付款后自动显示密码</span>
+                <span class="lang-en">Pay $0.99 USD to watch, password will be shown after payment</span>
+                <span class="lang-ko">본 영상 시청에는 $0.99 USD 결제가 필요하며, 결제 후 비밀번호가 자동 표시됩니다</span>
+            </div>
+            <!-- ✅ 支付提示 - 多语言已修复 -->
             <div class="pay-method">
                 <span class="lang-zh active-lang">✅ 支持 PayPal / 银行卡支付</span>
                 <span class="lang-en">✅ Supports PayPal / Card Payment</span>
@@ -326,9 +330,9 @@
                 <div class="password-text" id="generatedPwd"></div>
             </div>
             <button class="pay-btn" onclick="generatePassword()">
-                <span class="lang-zh active-lang">✅ 已付款，显示密码</span>
-                <span class="lang-en">✅ Paid, show password</span>
-                <span class="lang-ko">✅ 결제 완료, 비밀번호 보기</span>
+                <span class="lang-zh active-lang">✅ 已付款，获取密码</span>
+                <span class="lang-en">✅ Paid, get password</span>
+                <span class="lang-ko">✅ 결제 완료, 비밀번호 받기</span>
             </button>
             <button class="cancel-btn" onclick="closePayModal()">
                 <span class="lang-zh active-lang">取消</span>
@@ -345,7 +349,7 @@
         let videos=JSON.parse(localStorage.getItem('myVideos'))||[];
         let modalCallback=null;
         let currentVideoIndex = -1; // ✅ 记录当前要解锁的视频
-        let paidPassword = ""; // ✅ 保存支付后生成的密码
+        let paidPasswords = {}; // ✅ 保存每个视频的支付密码 {视频索引: 密码}
         // ✅ 固定域名，确保所有人可播放
         const SITE_DOMAIN = 'https://kimm-lii.github.io/yooooon';
         // ✅ 默认封面图
@@ -361,10 +365,13 @@
             return pwd;
         }
 
-        // ✅ 点击“已付款”才生成并显示密码
+        // ✅ 点击“已付款”生成并显示该集独立密码
         function generatePassword() {
-            paidPassword = generateRandomPwd(); // 保存本次支付密码
-            document.getElementById('generatedPwd').textContent = paidPassword;
+            // 如果已经生成过，直接显示；否则生成新的
+            if(!paidPasswords[currentVideoIndex]) {
+                paidPasswords[currentVideoIndex] = generateRandomPwd();
+            }
+            document.getElementById('generatedPwd').textContent = paidPasswords[currentVideoIndex];
             document.getElementById('generatedPwdArea').style.display = 'block';
         }
 
@@ -373,7 +380,6 @@
             document.getElementById('payModal').classList.add('hidden');
             document.getElementById('generatedPwdArea').style.display = 'none';
             document.getElementById('generatedPwd').textContent = '';
-            // 不重置paidPassword，保持本次有效
         }
 
         // ✅ 打开密码输入框
@@ -481,13 +487,13 @@
             `;
         }
 
-        // ✅ 核心逻辑：密码验证——原密码 OR 支付密码 都可以解锁
+        // ✅ 核心逻辑：密码验证——原密码 OR 该视频的支付密码 都可以解锁
         function checkPwd() {
             const inputPwd = document.getElementById('modalPwd').value.trim();
             const currentVideo = videos[currentVideoIndex];
+            const currentPaidPwd = paidPasswords[currentVideoIndex] || '';
             
-            // ✅ 关键：不管原来设置的密码是什么，支付成功生成的密码也能解锁
-            if(inputPwd === currentVideo.password || inputPwd === paidPassword) {
+            if(inputPwd === currentVideo.password || inputPwd === currentPaidPwd) {
                 closeModal();
                 playVideo(currentVideo);
             } else {
