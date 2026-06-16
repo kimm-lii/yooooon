@@ -70,9 +70,15 @@
 
         .pay-modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;z-index:10000;padding:1rem;}
         .pay-box {background:#fff;padding:2rem;border-radius:12px;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.15);}
-        .pay-desc {color:#475569;font-size:0.95rem;line-height:1.7;margin-bottom:1.8rem;}
+        .pay-title {font-size:1.1rem;font-weight:600;margin-bottom:1rem;color:#dc3545;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
+        .pay-desc {color:#475569;font-size:0.95rem;line-height:1.7;margin-bottom:1rem;}
+        .pay-method {color:#28a745;font-size:0.9rem;margin-bottom:1.2rem;display:flex;align-items:center;justify-content:center;gap:0.3rem;}
+        .password-area {background:#f8f9fa;padding:0.8rem;border-radius:6px;margin:1rem 0;border:1px dashed #28a745;display:none;}
+        .password-text {font-size:1.1rem;font-weight:bold;color:#dc3545;letter-spacing:1px;}
         .cancel-btn {width:100%;padding:0.9rem;background:#e5e7eb;color:#374151;border:none;border-radius:8px;cursor:pointer;font-size:1rem;transition:background 0.2s;}
         .cancel-btn:hover {background:#d1d5db;}
+        .pay-btn {width:100%;padding:0.9rem;background:#28a745;color:white;border:none;border-radius:8px;cursor:pointer;font-size:1rem;transition:background 0.2s;margin-bottom:0.7rem;}
+        .pay-btn:hover {background:#218838;}
         .hidden {display:none !important;}
 
         /* ✅ 作品展示布局 */
@@ -296,7 +302,37 @@
     <div id="adminPwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="adminPwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeAdminPwd()">取消</button><button class="btn-confirm" onclick="verifyAdminPwd()">确定</button></div></div></div>
     <div id="pwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="modalPwd"><div class="btn-group"><button class="btn-cancel" onclick="closeModal()">取消</button><button class="btn-confirm" onclick="checkPwd()">确定</button></div></div></div>
     <div id="deletePwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="deletePwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeDeleteModal()">取消</button><button class="btn-confirm" onclick="confirmDelete()">确定</button></div></div></div>
-    <div id="payModal" class="pay-modal hidden"><div class="pay-box"><div class="pay-desc"><p>观看本视频需支付 $0.99 USD<br>付款后联系我获取密码</p></div><button class="cancel-btn" onclick="closePayModal()">取消</button></div></div>
+    <div id="payModal" class="pay-modal hidden">
+        <div class="pay-box">
+            <div class="pay-title">
+                <span class="lang-zh active-lang">🔒 付费解锁内容</span>
+                <span class="lang-en">🔒 Premium Content</span>
+                <span class="lang-ko">🔒 유료 콘텐츠</span>
+            </div>
+            <div class="pay-desc">
+                <span class="lang-zh active-lang">观看本视频需支付 $0.99 USD，付款后自动获取观看密码</span>
+                <span class="lang-en">Access requires $0.99 USD, password will be shown after payment</span>
+                <span class="lang-ko">시청하려면 $0.99 USD 결제가 필요하며, 결제 후 비밀번호가 표시됩니다</span>
+            </div>
+            <div class="pay-method">✅ 支持 PayPal / 银行卡支付</div>
+            <div class="password-area" id="generatedPwdArea">
+                <div class="lang-zh active-lang">您的观看密码：</div>
+                <div class="lang-en">Your password:</div>
+                <div class="lang-ko">시청 비밀번호:</div>
+                <div class="password-text" id="generatedPwd"></div>
+            </div>
+            <button class="pay-btn" onclick="generatePassword()">
+                <span class="lang-zh active-lang">✅ 已付款，显示密码</span>
+                <span class="lang-en">✅ Paid, show password</span>
+                <span class="lang-ko">✅ 결제 완료, 비밀번호 보기</span>
+            </button>
+            <button class="cancel-btn" onclick="closePayModal()">
+                <span class="lang-zh active-lang">取消</span>
+                <span class="lang-en">Cancel</span>
+                <span class="lang-ko">취소</span>
+            </button>
+        </div>
+    </div>
 
     <footer class="bg-white border-t text-center py-6"><p>© 2026 Yoon Short-Form Video Creation Studio</p></footer>
 
@@ -309,7 +345,28 @@
         // ✅ 默认封面图
         const DEFAULT_COVER = 'https://i.imgur.com/9Z7X7QH.jpg';
 
-        function closePayModal() {document.getElementById('payModal').classList.add('hidden');}
+        // 生成随机6位密码
+        function generateRandomPwd() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let pwd = '';
+            for(let i=0; i<6; i++) {
+                pwd += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return pwd;
+        }
+
+        function generatePassword() {
+            const pwd = generateRandomPwd();
+            document.getElementById('generatedPwd').textContent = pwd;
+            document.getElementById('generatedPwdArea').style.display = 'block';
+        }
+
+        function closePayModal() {
+            document.getElementById('payModal').classList.add('hidden');
+            document.getElementById('generatedPwdArea').style.display = 'none'; // 关闭时重置
+            document.getElementById('generatedPwd').textContent = '';
+        }
+
         function openModal(title, callback) {const m=document.getElementById('pwdModal');document.getElementById('modalPwd').value='';m.classList.remove('hidden');modalCallback=callback;}
         function closeModal() {document.getElementById('pwdModal').classList.add('hidden');modalCallback=null;}
         
@@ -431,10 +488,6 @@
                 d.onclick=()=>{
                     if(!v.password){playVideo(v);return;}
                     document.getElementById('payModal').classList.remove('hidden');
-                    setTimeout(()=>{
-                        const txt=lang==='zh'?'输入密码':lang==='en'?'Enter Password':'비밀번호 입력';
-                        openModal(txt,inp=>{if(inp===v.password)playVideo(v);else alert(lang==='zh'?'密码错误！':'Wrong password!');});
-                    },300);
                 };
                 c.appendChild(d);
             });
