@@ -70,13 +70,11 @@
 
         .pay-modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;z-index:10000;padding:1rem;}
         .pay-box {background:#fff;padding:2rem;border-radius:12px;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.15);}
-        .pay-title {font-size:1.1rem;font-weight:600;margin-bottom:1rem;color:#dc3545;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
-        .pay-desc {display: none;} /* ✅ 隐藏：观看本视频需支付... */
-        .pay-method {color:#28a745;font-size:0.9rem;margin-bottom:1.2rem;display:flex;align-items:center;justify-content:center;gap:0.3rem;}
-        .pay-note {display: none;} /* ✅ 隐藏：点击下方按钮跳转... */
+        .pay-title {font-size:1.1rem;font-weight:600;margin-bottom:1.5rem;color:#dc3545;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
+        /* ✅ 彻底隐藏所有不需要的文字 */
+        .pay-desc, .pay-method, .pay-note, .auto-fill-btn {display: none !important;}
         .pay-btn {width:100%;padding:0.9rem;background:#28a745;color:white;border:none;border-radius:8px;cursor:pointer;font-size:1rem;transition:background 0.2s;margin-bottom:0.7rem;}
         .pay-btn:hover {background:#218838;}
-        .auto-fill-btn {display: none;} /* ✅ 隐藏：已付款，自动填入密码 按钮 */
         .cancel-btn {width:100%;padding:0.9rem;background:#e5e7eb;color:#374151;border:none;border-radius:8px;cursor:pointer;font-size:1rem;transition:background 0.2s;}
         .cancel-btn:hover {background:#d1d5db;}
         .hidden {display:none !important;}
@@ -304,12 +302,13 @@
     <div id="deletePwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="deletePwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeDeleteModal()">取消</button><button class="btn-confirm" onclick="confirmDelete()">确定</button></div></div></div>
     <div id="payModal" class="pay-modal hidden">
         <div class="pay-box">
+            <!-- ✅ 只保留标题 -->
             <div class="pay-title">
                 <span class="lang-zh active-lang">🔒 付费解锁内容</span>
                 <span class="lang-en">🔒 Premium Content</span>
                 <span class="lang-ko">🔒 유료 콘텐츠</span>
             </div>
-            <!-- ✅ 已隐藏：观看本视频需支付... -->
+            <!-- ✅ 以下内容全部隐藏 -->
             <div class="pay-desc">
                 <span class="lang-zh active-lang">观看本视频需支付 $0.99 USD，付款后获得密码</span>
                 <span class="lang-en">Pay $0.99 USD to watch, get password after payment</span>
@@ -320,7 +319,6 @@
                 <span class="lang-en">✅ Supports PayPal / Card Payment</span>
                 <span class="lang-ko">✅ PayPal / 카드 결제 지원</span>
             </div>
-            <!-- ✅ 已隐藏：点击下方按钮跳转... -->
             <div class="pay-note">
                 <span class="lang-zh active-lang">点击下方按钮跳转至支付页面，完成后返回输入密码即可观看</span>
                 <span class="lang-en">Click below to go to payment page, enter password after returning</span>
@@ -334,7 +332,7 @@
                     <span class="lang-ko">💳 결제하러 가기</span>
                 </button>
             </a>
-            <!-- ✅ 已隐藏：已付款，自动填入密码 按钮，改为付款后自动触发 -->
+            <!-- ✅ 已付款按钮隐藏，付款后自动触发 -->
             <button class="cancel-btn auto-fill-btn" onclick="afterPay()">
                 <span class="lang-zh active-lang">✅ 已付款，自动填入密码</span>
                 <span class="lang-en">✅ Paid, auto-fill password</span>
