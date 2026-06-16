@@ -104,7 +104,7 @@
         .dir-group {margin-bottom:1rem;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;}
         .dir-header {padding:0.6rem 0.8rem;background:#f8fafc;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:space-between;}
         .dir-header:hover {background:#f1f5f9;}
-        .dir-toggle {font-size:0.55rem !important;color:##999 !important;opacity:0.6;}
+        .dir-toggle {font-size:0.55rem !important;color:#999 !important;opacity:0.6;}
         .dir-videos {padding:0.4rem 0.6rem;background:#fff;display:none;}
         .dir-group.open .dir-videos {display:block;}
 
@@ -205,8 +205,7 @@
         <div class="upload-container">
             <h3>📤 上传视频管理</h3>
             <input type="text" id="videoUrl" placeholder="🔗 YouTube链接 / Streamtape / 任意MP4链接">
-            <!-- ✅ 封面图输入框 -->
-            <input type="text" id="coverUrl" placeholder="🖼️ 封面图链接（选填）">
+            <!-- ✅ 已删除封面图链接输入项 -->
             <div class="file-input">
                 <input type="file" id="videoFile" accept="video/*">
             </div>
@@ -450,7 +449,6 @@
 
         function addVideo() {
             const url=document.getElementById('videoUrl').value.trim();
-            const cover=document.getElementById('coverUrl').value.trim() || DEFAULT_COVER;
             const file=document.getElementById('videoFile').files[0];
             const title=document.getElementById('videoTitle').value.trim();
             const episode=document.getElementById('videoEpisode').value.trim(); // ✅ 集数
@@ -483,10 +481,10 @@
                 episode:episode,
                 dirId:dirId,
                 password:pwd,
-                cover:cover
+                cover:DEFAULT_COVER // ✅ 封面使用默认图
             });
             localStorage.setItem('myVideos',JSON.stringify(videos));
-            document.getElementById('videoUrl').value='';document.getElementById('coverUrl').value='';document.getElementById('videoFile').value='';document.getElementById('videoTitle').value='';document.getElementById('videoEpisode').value='';document.getElementById('videoPwd').value='';
+            document.getElementById('videoUrl').value='';document.getElementById('videoFile').value='';document.getElementById('videoTitle').value='';document.getElementById('videoEpisode').value='';document.getElementById('videoPwd').value='';
             renderWorkGroups();closeUploadPage();renderMyWorks();
         }
 
