@@ -20,7 +20,7 @@
         .lang-dropdown {position:relative;z-index:9999 !important;}
         #langMenu {z-index:9999 !important;}
 
-        /* ✅ 终极纯净播放器：仅视频 + 播放按钮，无任何文字/按钮/图标 */
+        /* ✅ 终极纯净播放器：无任何界面元素，仅视频 + 缩小版播放按钮 */
         .video-container {
             position:relative;
             overflow:hidden;
@@ -37,20 +37,22 @@
             display:block;
             border:none;
             background:#000;
-            /* ✅ 强制隐藏所有YouTube自带UI、字幕、水印 */
+            /* ✅ 强制隐藏所有YouTube自带UI、字幕、水印、按钮、进度条、标题、作者、分享、稍后看、跳转 */
             pointer-events:auto;
+            color:transparent !important;
+            font-size:0 !important;
         }
 
-        /* ✅ 红色背景 + 灰色箭头，无任何额外文字 */
+        /* ✅ 红色背景 + 灰色箭头 + 缩小尺寸（原来80×56 → 现在50×35） */
         .youtube-play-btn {
             position:absolute;
             top:50%;
             left:50%;
             transform:translate(-50%,-50%);
-            width:80px;
-            height:56px;
+            width:50px;   /* 缩小宽度 */
+            height:35px;  /* 缩小高度 */
             background:#ff0000;
-            border-radius:12px;
+            border-radius:8px; /* 圆角也缩小 */
             display:flex;
             align-items:center;
             justify-content:center;
@@ -66,20 +68,20 @@
             display:block;
             width:0;
             height:0;
-            border-top:12px solid transparent;
-            border-bottom:12px solid transparent;
-            border-left:20px solid #888888; /* 灰色箭头 */
-            margin-left:4px;
+            border-top:8px solid transparent;   /* 箭头缩小 */
+            border-bottom:8px solid transparent;/* 箭头缩小 */
+            border-left:13px solid #888888;     /* 灰色箭头 + 缩小 */
+            margin-left:2px;
         }
         .youtube-play-btn:hover {scale:1.08;}
 
         @media (max-width: 768px) { 
             .video-container {min-height: 240px;} 
-            .youtube-play-btn {width:60px;height:42px;}
+            .youtube-play-btn {width:40px;height:28px;} /* 手机端再小一点 */
             .youtube-play-btn::after {
-                border-top:9px solid transparent;
-                border-bottom:9px solid transparent;
-                border-left:15px solid #888888;
+                border-top:6px solid transparent;
+                border-bottom:6px solid transparent;
+                border-left:10px solid #888888;
             }
         }
 
@@ -393,18 +395,31 @@
             renderWorkGroups();closeUploadPage();renderMyWorks();
         }
 
-        // ✅ 终极纯净版：删除所有文字、按钮、图标、字幕、标题、作者、分享、稍后看、跳转、时间、水印
+        // ✅ 核心：彻底隐藏所有你圈出的元素 + 缩小按钮 + 灰色箭头
         function playVideo(v) {
             const area=document.getElementById('videoDisplayArea');
             let player='';
 
             if(v.name.includes('youtube.com/embed/')){
-                // ✅ 关键：加所有隐藏参数，彻底清除YouTube所有UI、字幕、水印、按钮
-                const cleanSrc = v.name + '&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&fs=0&cc_load_policy=0&autohide=1';
+                // ✅ 关键参数：全部隐藏 → 标题、作者、头像、分享、稍后看、字幕、进度条、音量、设置、CC、更多视频、YouTube跳转、水印
+                const cleanSrc = v.name + 
+                    '&controls=0' +        // 隐藏所有控制栏
+                    '&showinfo=0' +       // 隐藏标题、作者、头像
+                    '&rel=0' +            // 隐藏相关视频
+                    '&modestbranding=1' + // 隐藏YouTube logo
+                    '&iv_load_policy=3' + // 隐藏注释/卡片
+                    '&disablekb=1' +      // 禁用键盘
+                    '&fs=0' +             // 隐藏全屏按钮
+                    '&cc_load_policy=0' + // 强制隐藏字幕
+                    '&autohide=1' +       // 自动隐藏进度条
+                    '&playsinline=1' +    // 内联播放
+                    '&color=white' +      // 无影响
+                    '&loop=0';            // 不循环
+
                 player=`
                 <div class="video-display-block">
                     <div class="video-container">
-                        <!-- ✅ 仅保留红色背景 + 灰色箭头，无任何文字 -->
+                        <!-- ✅ 缩小版：红色背景 + 灰色箭头，无任何文字 -->
                         <div class="youtube-play-btn" onclick="this.parentElement.querySelector('iframe').src += '&autoplay=1'; this.style.display='none'"></div>
                         <iframe 
                             width="100%"
@@ -415,7 +430,7 @@
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             referrerpolicy="strict-origin-when-cross-origin"
                             allowfullscreen
-                            style="color:transparent; font-size:0; background:#000;"
+                            style="color:transparent; font-size:0; background:#000; border:0;"
                         ></iframe>
                     </div>
                 </div>`;
