@@ -22,6 +22,10 @@
 
         .video-container {position:relative;overflow:hidden;border-radius:8px;background:#000;margin-bottom:1rem;}
         video, iframe {width:100%;display:block;min-height:300px;border:none;}
+        /* ✅ 电视端兼容：确保播放器适配大屏 */
+        @media (min-width: 1920px) {
+            video, iframe {min-height: 600px;}
+        }
         .subtitle-box {position:absolute;bottom:0;left:0;right:0;padding:12px 16px;background:rgba(0,0,0,0.75);color:white;font-size:1rem;line-height:1.4;text-align:center;min-height:48px;display:flex;align-items:center;justify-content:center;}
 
         .website-link {color: #165DFF !important; text-decoration: none; font-size: 0.85rem;}
@@ -57,8 +61,7 @@
         .upload-page {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.98);z-index:9999;display:none;overflow-y:auto;padding:2rem;}
         .upload-container {max-width:400px;margin:0 auto;background:#fff;padding:2rem;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1);}
         .upload-container h3 {text-align:center;margin-bottom:1.5rem;color:#1a1a1a;}
-        /* ✅ 新增链接输入框样式，和其他输入框一致 */
-        .upload-container input {width:100%;padding:0.6rem;margin-bottom:0.8rem;border:1px solid #ddd;border-radius:6px;font-size:0.9rem;}
+        .upload-container input, .upload-container .file-input {width:100%;padding:0.6rem;margin-bottom:0.8rem;border:1px solid #ddd;border-radius:6px;font-size:0.9rem;}
         .upload-container button {width:100%;padding:0.7rem;background:#165DFF;color:white;border:none;border-radius:6px;cursor:pointer;font-size:0.9rem;margin-bottom:0.6rem;}
         .upload-container .close-btn {background:#6c757d;}
         .upload-tip {font-size:0.75rem;color:#888;text-align:center;margin-top:1rem;}
@@ -85,6 +88,9 @@
         .video-name {font-weight:500;display:flex;align-items:center;gap:0.5rem;}
         .lock-icon {color:#dc3545;}
         .unlock-icon {color:#28a745;}
+        /* ✅ 删除按钮样式 */
+        .delete-btn {color: #dc3545; font-size: 0.8rem; cursor: pointer; padding: 0.2rem 0.5rem; border: 1px solid #dc3545; border-radius: 4px; transition: all 0.2s;}
+        .delete-btn:hover {background: #dc3545; color: white;}
 
         .empty-tip {
             position: absolute;
@@ -175,13 +181,17 @@
     <div class="upload-page" id="uploadPage">
         <div class="upload-container">
             <h3>📤 上传视频管理</h3>
-            <!-- ✅ 去掉了选择文件，新增链接输入框，放在最上面 -->
-            <input type="text" id="videoUrl" placeholder="🔗 粘贴视频链接：https://www.youtube.com/embed/xxx" required>
-            <input type="text" id="videoTitle" placeholder="📝 输入视频标题">
+            <!-- ✅ 顺序：链接 → 文件 → 标题 → 密码 -->
+            <input type="text" id="videoUrl" placeholder="🔗 粘贴视频链接：https://www.youtube.com/embed/xxx">
+            <div class="file-input">
+                <label>📁 选择文件：</label>
+                <input type="file" id="videoFile" accept="video/*">
+            </div>
+            <input type="text" id="videoTitle" placeholder="📝 输入视频标题" required>
             <input type="text" id="videoPwd" placeholder="🔒 观看密码（可选）">
             <button onclick="addVideo()">添加到作品列表</button>
             <button class="close-btn" onclick="closeUploadPage()">关闭页面</button>
-            <div class="upload-tip">✅ 推荐YouTube：永久保存、韩国秒播、无限制</div>
+            <div class="upload-tip">✅ 链接/文件二选一，推荐YouTube：永久保存、韩国/电视都能播</div>
         </div>
     </div>
 
@@ -259,9 +269,9 @@
                         <div id="videoDisplayArea"></div>
                     </div>
                     <div class="empty-tip" id="emptyTip">
-                        <span class="lang-zh active-lang">暂无作品，粘贴YouTube链接即可显示</span>
-                        <span class="lang-en">No works yet, paste YouTube link</span>
-                        <span class="lang-ko">작품이 없습니다, YouTube 링크를 붙여넣으세요</span>
+                        <span class="lang-zh active-lang">暂无作品，粘贴链接或选择文件即可添加</span>
+                        <span class="lang-en">No works yet, add link or file</span>
+                        <span class="lang-ko">작품이 없습니다, 링크 또는 파일을 추가하세요</span>
                     </div>
                 </div>
             </div>
@@ -351,6 +361,18 @@
         </div>
     </div>
 
+    <!-- ✅ 删除密码弹窗 -->
+    <div id="deletePwdModal" class="modal hidden">
+        <div class="modal-content">
+            <h4>🔐 删除验证（密码：0803）</h4>
+            <input type="password" id="deletePwdInput" placeholder="输入删除密码">
+            <div class="btn-group">
+                <button class="btn-cancel" onclick="closeDeleteModal()">取消</button>
+                <button class="btn-confirm" onclick="confirmDelete()">确定</button>
+            </div>
+        </div>
+    </div>
+
     <div id="payModal" class="pay-modal hidden">
         <div class="pay-box">
             <div class="pay-title lang-zh active-lang">付费解锁内容</div>
@@ -365,7 +387,7 @@
 
             <a href="https://www.paypal.com/paypalme/YOUR_LINK/0.99USD" target="_blank" class="pay-btn lang-zh active-lang">立即支付 $0.99</a>
             <a href="https://www.paypal.com/paypalme/YOUR_LINK/0.99USD" target="_blank" class="pay-btn lang-en">Pay $0.99 Now</a>
-            <a href="https://www.paypal.com/paypalme/YOUR_LINK/0.99USD" target="_blank" class="pay-btn lang-ko">$0.99 결제하기</a>
+            <a href="https://www.paypal.com/paypalme/YOUR_LINK/0.99USD" target="_="_blank" class="pay-btn lang-ko">$0.99 결제하기</a>
 
             <div class="pay-note">
                 <span class="lang-zh active-lang">付款后自动显示密码 / 或联系我获取</span>
@@ -386,6 +408,7 @@
     </footer>
 
     <script>
+        let deleteIndex = -1; // 记录要删除的视频索引
         function closePayModal() {
             const payModal = document.getElementById('payModal');
             if (payModal) payModal.classList.add('hidden');
@@ -406,6 +429,32 @@
             const pwdModal = document.getElementById('pwdModal');
             if (pwdModal) pwdModal.classList.add('hidden');
             modalCallback = null;
+        }
+
+        // ✅ 删除弹窗控制
+        function openDeleteModal(index) {
+            deleteIndex = index;
+            document.getElementById('deletePwdModal').classList.remove('hidden');
+            document.getElementById('deletePwdInput').value = '';
+        }
+        function closeDeleteModal() {
+            deleteIndex = -1;
+            document.getElementById('deletePwdModal').classList.add('hidden');
+        }
+        function confirmDelete() {
+            const pwd = document.getElementById('deletePwdInput').value.trim();
+            if (pwd === '0803') { // ✅ 删除密码固定0803
+                if (deleteIndex >= 0) {
+                    videos.splice(deleteIndex, 1);
+                    localStorage.setItem('myVideos', JSON.stringify(videos));
+                    renderWorkGroups();
+                    renderMyWorks();
+                }
+                closeDeleteModal();
+                alert('✅ 删除成功！');
+            } else {
+                alert('❌ 密码错误，无法删除！');
+            }
         }
 
         let videos = JSON.parse(localStorage.getItem('myVideos')) || [];
@@ -438,30 +487,40 @@
             if (uploadPage) uploadPage.style.display = 'none';
         }
 
-        // ✅ 核心：读取链接输入框，保存永久链接
+        // ✅ 支持链接+文件，顺序正确
         function addVideo() {
             const videoUrl = document.getElementById('videoUrl').value.trim();
+            const videoFile = document.getElementById('videoFile').files[0];
             const title = document.getElementById('videoTitle').value.trim();
             const pwd = document.getElementById('videoPwd').value.trim();
 
-            if (!videoUrl || !title) {
-                alert('请粘贴视频链接并填写标题！');
+            if (!title) {
+                alert('请输入视频标题！');
+                return;
+            }
+            if (!videoUrl && !videoFile) {
+                alert('请粘贴链接或选择视频文件！');
                 return;
             }
 
+            let src = videoUrl;
+            if (videoFile) {
+                src = URL.createObjectURL(videoFile);
+            }
+
             videos.push({
-                name: videoUrl,
+                name: src,
                 title_zh: title,
                 title_en: title,
                 title_ko: title,
                 password: pwd
             });
 
-            // ✅ 永久保存到浏览器，刷新不丢
             localStorage.setItem('myVideos', JSON.stringify(videos));
 
-            // 清空输入框
+            // 清空输入
             document.getElementById('videoUrl').value = '';
+            document.getElementById('videoFile').value = '';
             document.getElementById('videoTitle').value = '';
             document.getElementById('videoPwd').value = '';
 
@@ -470,7 +529,7 @@
             renderMyWorks();
         }
 
-        // ✅ 自动识别YouTube链接，用iframe播放，无广告、全屏正常
+        // ✅ 修复电视端播放：加更多兼容属性
         function playVideo(src) {
             const videoPlayer = document.getElementById('videoPlayer');
             if (!videoPlayer) return;
@@ -479,15 +538,29 @@
             if (src.includes('youtube.com/embed/')) {
                 playerHtml = `
                     <div class="video-container">
-                        <iframe src="${src}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe 
+                            src="${src}" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" 
+                            allowfullscreen
+                            sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
+                        ></iframe>
                     </div>
                 `;
             } else {
                 playerHtml = `
                     <div class="video-container">
-                        <video controls autoplay preload="metadata" playsinline style="width:100%;">
+                        <video 
+                            controls 
+                            autoplay 
+                            preload="auto" 
+                            playsinline 
+                            webkit-playsinline
+                            x5-video-player-type="h5"
+                            x5-video-player-fullscreen="true"
+                            style="width:100%;"
+                        >
                             <source src="${src}" type="video/mp4">
-                            浏览器不支持视频播放
+                            您的设备不支持视频播放，请更新浏览器或使用电视端专用浏览器
                         </video>
                     </div>
                 `;
@@ -528,17 +601,21 @@
             if (!container) return;
             container.innerHTML = `<div id="videoPlayer" class="mb-4"></div>`;
 
-            videos.forEach(video => {
+            videos.forEach((video, index) => {
                 const item = document.createElement('div');
                 item.className = 'video-item';
-                const icon = video.password ? '<span class="lock-icon"></span>' : '<span class="unlock-icon"></span>';
+                const icon = video.password ? '<span class="lock-icon">🔒</span>' : '<span class="unlock-icon">🔓</span>';
                 
                 let displayTitle;
                 if (lang === 'zh') displayTitle = video.title_zh;
                 else if (lang === 'en') displayTitle = video.title_en;
                 else displayTitle = video.title_ko;
 
-                item.innerHTML = `<div class="video-name">${displayTitle} ${icon}</div>`;
+                // ✅ 增加删除按钮，点击验证密码
+                item.innerHTML = `
+                    <div class="video-name">${displayTitle} ${icon}</div>
+                    <span class="delete-btn" onclick="event.stopPropagation(); openDeleteModal(${index})">🗑️ 删除</span>
+                `;
                 
                 item.onclick = () => {
                     if (!video.password) {
