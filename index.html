@@ -371,20 +371,19 @@
             if(!url&&!file){alert('请粘贴链接或选择文件！');return;}
             let src=url;
             
-            // ✅ 【修复核心】origin参数严格匹配你的域名，彻底解决153错误
+            // ✅ 【终极修复】origin+widget_referrer严格匹配你的域名，彻底解决153/配置错误
             if(src.includes('youtube.com/watch?v=')){
                 const id=src.split('v=')[1].split('&')[0];
-                src='https://www.youtube.com/embed/'+id+'?origin=https://kimm-lii.github.io';
+                src='https://www.youtube.com/embed/'+id+'?origin=https://kimm-lii.github.io&widget_referrer=https://kimm-lii.github.io';
             }
             if(src.includes('youtu.be/')){
                 const id=src.split('youtu.be/')[1].split('?')[0];
-                src='https://www.youtube.com/embed/'+id+'?origin=https://kimm-lii.github.io';
+                src='https://www.youtube.com/embed/'+id+'?origin=https://kimm-lii.github.io&widget_referrer=https://kimm-lii.github.io';
             }
-            // 补全已经是embed但缺origin的链接
+            // 补全已经是embed但缺参数的链接
             if(src.includes('youtube.com/embed/')){
                 if(!src.includes('origin=')) src += (src.includes('?') ? '&' : '?') + 'origin=https://kimm-lii.github.io';
-                // ✅ 强制添加所有必要参数，防止配置错误
-                src += '&widget_referrer=https://kimm-lii.github.io';
+                if(!src.includes('widget_referrer=')) src += '&widget_referrer=https://kimm-lii.github.io';
             }
             
             if(file) src=URL.createObjectURL(file);
