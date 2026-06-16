@@ -312,8 +312,12 @@
             </div>
             <!-- ✅ 保留价格，删除“付款后联系我” -->
             <div class="pay-desc">观看本视频需支付 $0.99 USD</div>
-            <!-- ✅ 单个✅ -->
-            <div class="pay-method">✅ 支持 PayPal / 银行卡支付</div>
+            <!-- ✅ 支付提示多语言跟随切换 -->
+            <div class="pay-method">
+                <span class="lang-zh active-lang">✅ 支持 PayPal / 银行卡支付</span>
+                <span class="lang-en">✅ Supports PayPal / Card Payment</span>
+                <span class="lang-ko">✅ PayPal / 카드 결제 지원</span>
+            </div>
             <!-- ✅ 自动生成密码区域 -->
             <div class="password-area" id="generatedPwdArea">
                 <span class="lang-zh active-lang">观看密码：</span>
@@ -340,6 +344,8 @@
         let deleteIndex = -1;
         let videos=JSON.parse(localStorage.getItem('myVideos'))||[];
         let modalCallback=null;
+        let currentVideoIndex = -1; // ✅ 记录当前要解锁的视频
+        let paidPassword = ""; // ✅ 保存支付后生成的密码
         // ✅ 固定域名，确保所有人可播放
         const SITE_DOMAIN = 'https://kimm-lii.github.io/yooooon';
         // ✅ 默认封面图
@@ -355,10 +361,10 @@
             return pwd;
         }
 
-        // ✅ 点击后显示密码
+        // ✅ 点击“已付款”才生成并显示密码
         function generatePassword() {
-            const pwd = generateRandomPwd();
-            document.getElementById('generatedPwd').textContent = pwd;
+            paidPassword = generateRandomPwd(); // 保存本次支付密码
+            document.getElementById('generatedPwd').textContent = paidPassword;
             document.getElementById('generatedPwdArea').style.display = 'block';
         }
 
@@ -367,9 +373,16 @@
             document.getElementById('payModal').classList.add('hidden');
             document.getElementById('generatedPwdArea').style.display = 'none';
             document.getElementById('generatedPwd').textContent = '';
+            // 不重置paidPassword，保持本次有效
         }
 
-        function openModal(title, callback) {const m=document.getElementById('pwdModal');document.getElementById('modalPwd').value='';m.classList.remove('hidden');modalCallback=callback;}
+        // ✅ 打开密码输入框
+        function openModal(title, callback) {
+            const m=document.getElementById('pwdModal');
+            document.getElementById('modalPwd').value='';
+            m.classList.remove('hidden');
+            modalCallback=callback;
+        }
         function closeModal() {document.getElementById('pwdModal').classList.add('hidden');modalCallback=null;}
         
         function openDeleteModal(i) {deleteIndex=i;document.getElementById('deletePwdModal').classList.remove('hidden');document.getElementById('deletePwdInput').value='';}
@@ -468,7 +481,20 @@
             `;
         }
 
-        function checkPwd() {const i=document.getElementById('modalPwd').value.trim();if(modalCallback)modalCallback(i);closeModal();}
+        // ✅ 核心逻辑：密码验证——原密码 OR 支付密码 都可以解锁
+        function checkPwd() {
+            const inputPwd = document.getElementById('modalPwd').value.trim();
+            const currentVideo = videos[currentVideoIndex];
+            
+            // ✅ 关键：不管原来设置的密码是什么，支付成功生成的密码也能解锁
+            if(inputPwd === currentVideo.password || inputPwd === paidPassword) {
+                closeModal();
+                playVideo(currentVideo);
+            } else {
+                alert('❌ 密码错误！请确认已付款并输入正确密码');
+            }
+        }
+
         function getCurrentLang() {return document.querySelector('.lang-zh.active-lang')?'zh':document.querySelector('.lang-en.active-lang')?'en':'ko';}
 
         function renderWorkGroups() {
@@ -488,7 +514,12 @@
                 d.innerHTML=`<div class="video-name">${t} ${icon}</div><span class="delete-btn" onclick="event.stopPropagation(); openDeleteModal(${i})">删除</span>`;
                 
                 d.onclick=()=>{
-                    if(!v.password){playVideo(v);return;}
+                    currentVideoIndex = i; // 记录当前点击的视频
+                    if(!v.password){
+                        playVideo(v);
+                        return;
+                    }
+                    // ✅ 有密码：先弹出付费提示
                     document.getElementById('payModal').classList.remove('hidden');
                 };
                 c.appendChild(d);
