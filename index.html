@@ -92,13 +92,15 @@
         .portfolio-sidebar {width:100%;flex-shrink:0;background:#fff;padding:1.2rem;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid #f1f5f9;}
         .portfolio-content {flex:1;width:100%;background:#fff;padding:1.2rem;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid #f1f5f9;}
         @media (min-width: 768px) {.portfolio-layout {flex-wrap:nowrap;}.portfolio-sidebar {width:280px;}}
-        /* ✅ 作品标题栏 - 新增+号容器 */
+        
+        /* ✅ 作品标题栏 - 新增隐藏式+号 */
         .work-title-bar {display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
         .work-title {font-weight:600;font-size:1.1rem;color:#1a1a1a;padding-bottom:0.5rem;border-bottom:1px solid #f1f5f9;}
-        /* ✅ 隐藏式+号：默认透明，hover显示 */
+        /* ✅ 隐藏式+号：默认透明，hover显示；密码0803 */
         .add-dir-btn {width:22px;height:22px;border-radius:50%;border:none;background:#165DFF;color:#fff;font-size:16px;cursor:pointer;opacity:0;transition:all 0.2s;display:flex;align-items:center;justify-content:center;line-height:1;}
         .work-title-bar:hover .add-dir-btn {opacity:0.8;}
         .add-dir-btn:hover {opacity:1 !important;transform:scale(1.1);}
+        
         /* ✅ 目录分组样式 */
         .dir-group {margin-bottom:1rem;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;}
         .dir-header {padding:0.6rem 0.8rem;background:#f8fafc;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:space-between;}
@@ -323,8 +325,8 @@
         </section>
     </main>
 
-    <!-- ✅ 新增：添加目录密码弹窗 -->
-    <div id="addDirPwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入管理员密码" id="addDirPwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeAddDirPwd()">取消</button><button class="btn-confirm" onclick="verifyAddDirPwd()">确定</button></div></div></div>
+    <!-- ✅ 新增：添加目录密码弹窗（密码固定0803） -->
+    <div id="addDirPwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="addDirPwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeAddDirPwd()">取消</button><button class="btn-confirm" onclick="verifyAddDirPwd()">确定</button></div></div></div>
     <!-- ✅ 新增：目录名称输入弹窗 -->
     <div id="dirNameModal" class="modal hidden"><div class="modal-content"><input type="text" placeholder="输入目录名称" id="dirNameInput"><div class="btn-group"><button class="btn-cancel" onclick="closeDirNameModal()">取消</button><button class="btn-confirm" onclick="saveNewDir()">确定</button></div></div></div>
 
@@ -381,14 +383,14 @@
         let currentVideoIndex = -1;
         const SITE_DOMAIN = 'https://kimm-lii.github.io/yooooon';
         const DEFAULT_COVER = 'https://i.imgur.com/9Z7X7QH.jpg';
-        const ADMIN_PWD = '0803'; // 统一管理员密码
+        const ADD_DIR_PWD = '0803'; // ✅ 固定添加目录密码
 
-        // ✅ 目录相关弹窗
+        // ✅ 目录相关逻辑
         function openAddDirPwd() {document.getElementById('addDirPwdModal').classList.remove('hidden');document.getElementById('addDirPwdInput').value='';}
         function closeAddDirPwd() {document.getElementById('addDirPwdModal').classList.add('hidden');}
         function verifyAddDirPwd() {
             const p=document.getElementById('addDirPwdInput').value.trim();
-            if(p === ADMIN_PWD) {closeAddDirPwd();document.getElementById('dirNameModal').classList.remove('hidden');document.getElementById('dirNameInput').value='';}
+            if(p === ADD_DIR_PWD) {closeAddDirPwd();document.getElementById('dirNameModal').classList.remove('hidden');document.getElementById('dirNameInput').value='';}
             else alert('❌ 密码错误！');
         }
         function closeDirNameModal() {document.getElementById('dirNameModal').classList.add('hidden');}
@@ -423,13 +425,13 @@
         function closeDeleteModal() {deleteIndex=-1;document.getElementById('deletePwdModal').classList.add('hidden');}
         function confirmDelete() {
             const p=document.getElementById('deletePwdInput').value.trim();
-            if(p === ADMIN_PWD){videos.splice(deleteIndex,1);localStorage.setItem('myVideos',JSON.stringify(videos));renderWorkGroups();renderMyWorks();closeDeleteModal();alert('✅ 删除成功！');}
+            if(p === '0803'){videos.splice(deleteIndex,1);localStorage.setItem('myVideos',JSON.stringify(videos));renderWorkGroups();renderMyWorks();closeDeleteModal();alert('✅ 删除成功！');}
             else alert('❌ 密码错误！');
         }
 
         function askAdminPwd() {document.getElementById('adminPwdModal').classList.remove('hidden');}
         function closeAdminPwd() {document.getElementById('adminPwdModal').classList.add('hidden');document.getElementById('adminPwdInput').value='';}
-        function verifyAdminPwd() {const p=document.getElementById('adminPwdInput').value.trim();if(p === ADMIN_PWD){closeAdminPwd();document.getElementById('uploadPage').style.display='block';}else alert('密码错误！');}
+        function verifyAdminPwd() {const p=document.getElementById('adminPwdInput').value.trim();if(p === '0803'){closeAdminPwd();document.getElementById('uploadPage').style.display='block';}else alert('密码错误！');}
         function closeUploadPage() {document.getElementById('uploadPage').style.display='none';}
 
         function addVideo() {
