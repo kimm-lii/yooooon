@@ -2,1089 +2,431 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="referrer" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title>Yoon Short-Form Video Creation Studio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yoon 短视频创作工作室</title>
     <style>
-        * {margin:0;padding:0;box-sizing:border-box;}
-        ::-webkit-scrollbar {width:6px;}
-        ::-webkit-scrollbar-thumb {background:#888;border-radius:3px;}
-        body {font-family: 'Noto Sans SC', 'Noto Sans KR', 'Noto Sans', sans-serif;transition:all 0.3s;line-height:1.6;background-color: #f3f4f6;}
-        
-        .lang-zh, .lang-en, .lang-ko {display:none;}
-        .active-lang {display:block !important;}
-        
-        .page-section {display:none;}
-        .active-section {display:block;animation:fadeIn 0.5s;}
-        @keyframes fadeIn {from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-        
-        .lang-dropdown {position:relative;z-index:9999 !important;}
-        #langMenu {z-index:9999 !important;}
+        * {margin: 0; padding: 0; box-sizing: border-box;}
+        body {font-family: "Noto Sans SC", sans-serif; background: #f3f4f6; line-height: 1.6;}
+        .hidden {display: none !important;}
+        .active-lang {display: block !important;}
+        .page-section {display: none;}
+        .active-section {display: block; animation: fadeIn 0.5s;}
+        @keyframes fadeIn {from {opacity: 0; transform: translateY(10px);} to {opacity: 1; transform: translateY(0);}}
 
-        /* ✅ 视频容器：封面直接显示，无任何遮挡按钮 */
-        .video-container {
-            position:relative;
-            overflow:hidden;
-            border-radius:12px;
-            background:#000;
-            margin-bottom:1.2rem;
-            width:100%;
-            aspect-ratio:16/9;
-            box-shadow:0 4px 16px rgba(0,0,0,0.12);
-            cursor:pointer;
-        }
-        /* 封面图：完整展示，无遮挡 */
-        .video-cover {
-            width:100%;
-            height:100%;
-            object-fit:cover;
-            display:block;
-        }
-        iframe {
-            width:100%;
-            height:100%;
-            display:block;
-            border:none !important;
-            background:#000;
-        }
+        /* 导航 */
+        header {background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 50;}
+        .header-container {max-width: 1200px; margin: 0 auto; padding: 1rem; display: flex; align-items: center; justify-content: space-between;}
+        .header-title {font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;}
+        nav {display: flex; gap: 0.5rem;}
+        .nav-btn {padding: 0.5rem 0.75rem; border-radius: 6px; text-decoration: none; color: #0F48C9;}
+        .nav-btn.active {background: #165DFF; color: #fff; font-weight: 600;}
+        .lang-dropdown {position: relative;}
+        #langBtn {padding: 0.5rem; border: none; background: none; cursor: pointer;}
+        #langMenu {position: absolute; right: 0; top: 30px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 100px;}
+        .lang-option {padding: 0.5rem 1rem; cursor: pointer;}
+        .lang-option:hover {background: #f1f5f9;}
 
-        .website-link {color: #165DFF !important; text-decoration: none; font-size: 0.85rem;}
-        .website-link:hover {text-decoration: underline;}
+        /* 主容器 */
+        main {max-width: 1200px; margin: 0 auto; padding: 2rem 1rem;}
+        .banner-img {width: 100%; border-radius: 8px; margin-bottom: 20px;}
+        .card {background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #f1f5f9;}
+        h2 {text-align: center; margin-bottom: 1.5rem; font-size: 1.5rem;}
 
-        .admin-entry {position: absolute;bottom: 1rem;right: 1rem;width: 24px;height: 24px;line-height: 24px;text-align: center;font-size: 12px;color: #999;cursor: pointer;z-index: 999;user-select: none;display: none !important;visibility: hidden !important;opacity: 0 !important;pointer-events: none !important;transition: color 0.2s;border-radius:50%;background:#f1f5f9;}
-        #profile.active-section .admin-entry {display: block !important;visibility: visible !important;opacity: 1 !important;pointer-events: auto !important;}
-        .admin-entry:hover {color:#fff;background:#165DFF;}
+        /* 作品展示布局 */
+        .portfolio-layout {display: flex; gap: 2rem; flex-wrap: wrap;}
+        .portfolio-sidebar {width: 100%;}
+        .portfolio-content {flex: 1; min-height: 400px; position: relative;}
+        @media (min-width: 768px) {.portfolio-layout {flex-wrap: nowrap;} .portfolio-sidebar {width: 280px;}}
 
-        .upload-page {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.98);z-index:9999;display:none;overflow-y:auto;padding:2rem 1rem;}
-        .upload-container {max-width:420px;margin:0 auto;background:#fff;padding:2rem;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.12);}
-        .upload-container h3 {text-align:center;margin-bottom:1.5rem;color:#1a1a1a;font-size:1.2rem;}
-        .upload-container input, .upload-container select, .upload-container .file-input {width:100%;padding:0.75rem;margin-bottom:0.8rem;border:1px solid #e2e8f0;border-radius:8px;font-size:0.95rem;transition:border-color 0.2s;}
-        .upload-container input:focus, .upload-container select:focus, .upload-container .file-input:focus {outline:none;border-color:#165DFF;box-shadow:0 0 0 3px rgba(22,93,255,0.1);}
-        .upload-container button {width:100%;padding:0.85rem;background:#165DFF;color:white;border:none;border-radius:8px;cursor:pointer;font-size:0.95rem;margin-bottom:0.7rem;transition:background 0.2s;}
-        .upload-container button:hover {background:#0F48C9;}
-        .upload-container .close-btn {background:#64748b;}
-        .upload-container .close-btn:hover {background:#475569;}
-        .file-input {padding:0.5rem 0.75rem;}
+        /* 目录模块 */
+        .work-title-bar {display: flex; justify-content: flex-end; margin-bottom: 1rem;}
+        .add-dir-btn {width: 22px; height: 22px; border-radius: 50%; border: none; background: #94a3b8; color: #fff; font-size: 14px; cursor: pointer;}
+        .plus-menu {position: absolute; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 0.4rem 0; min-width: 130px; z-index: 100;}
+        .plus-menu-item {padding: 0.5rem 1rem; cursor: pointer;}
+        .plus-menu-item:hover {background: #f1f5f9;}
+        .dir-group {border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 1rem; overflow: hidden;}
+        .dir-header {padding: 0.6rem 0.8rem; background: #f8fafc; cursor: pointer; display: flex; justify-content: space-between; align-items: center;}
+        .dir-videos {padding: 0.4rem 0.6rem; display: none;}
+        .dir-group.open .dir-videos {display: block;}
+        .video-item {padding: 0.8rem; background: #f8fafc; border-radius: 8px; margin-bottom: 0.5rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border: 1px solid #e2e8f0;}
+        .video-item:hover {background: #f1f5f9;}
+        .lock-icon {color: #dc3545;}
+        .unlock-icon {color: #28a745;}
+        .delete-btn {font-size: 0.6rem; color: #dc3545; opacity: 0.3; cursor: pointer; padding: 0.1rem 0.3rem; border: 1px solid #dc354520; border-radius: 4px;}
+        .delete-btn:hover {opacity: 1;}
+        .empty-tip {position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: #94a3b8;}
 
-        .pay-modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;z-index:10000;padding:1rem;}
-        /* ✅ 弹窗整体再缩小，更紧凑 */
-        .pay-box {background:#fff;padding:1rem 1.2rem;border-radius:8px;width:100%;max-width:260px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,0.12);}
-        /* ✅ 付费解锁内容 - 图标+文字，更贴合参考图 */
-        .pay-title {font-size:0.95rem;font-weight:600;margin-bottom:0.5rem;color:#dc3545;display:flex;align-items:center;justify-content:center;gap:0.3rem;}
-        /* ✅ 观看本集视频需支付 $0.99 USD */
-        .pay-desc {font-size:0.8rem;color:#6c757d;margin-bottom:0.5rem;line-height:1.3;}
-        /* ✅ 支持 PayPal / 银行卡支付 - 图标+文字，加粗 */
-        .pay-method {color:#28a745;font-size:0.8rem;font-weight:600;margin-bottom:0.8rem;display:flex;align-items:center;justify-content:center;gap:0.25rem;}
-        /* ✅ 隐藏无关文字 */
-        .pay-note, .auto-fill-btn {display: none !important;}
-        /* ✅ 前往付款按钮 - 大幅缩小，更贴合参考图 */
-        .pay-btn {width:100%;padding:0.5rem 0.6rem;background:#28a745;color:white;border:none;border-radius:6px;cursor:pointer;font-size:0.8rem;transition:background 0.2s;margin-bottom:0.4rem;display:flex;align-items:center;justify-content:center;gap:0.3rem;}
-        .pay-btn:hover {background:#218838;}
-        /* ✅ 取消按钮 - 同步缩小，样式匹配 */
-        .cancel-btn {width:100%;padding:0.5rem 0.6rem;background:#e5e7eb;color:#374151;border:none;border-radius:6px;cursor:pointer;font-size:0.8rem;transition:background 0.2s;position:relative;z-index:10001 !important;pointer-events: auto !important;}
-        .cancel-btn:hover {background:#d1d5db;}
-        .hidden {display:none !important;}
+        /* 视频播放 */
+        .video-container {width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; margin-bottom: 1.2rem;}
+        .video-cover {width: 100%; height: 100%; object-fit: cover; cursor: pointer;}
+        iframe, video {width: 100%; height: 100%; border: none;}
 
-        /* ✅ 作品展示布局 */
-        .portfolio-layout {display:flex;gap:2rem;position:relative;min-height:500px;flex-wrap:wrap;align-items:flex-start;}
-        .portfolio-sidebar {width:100%;flex-shrink:0;background:#fff;padding:1.2rem;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid #f1f5f9;}
-        .portfolio-content {flex:1;width:100%;background:#fff;padding:1.2rem;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid #f1f5f9;}
-        @media (min-width: 768px) {.portfolio-layout {flex-wrap:nowrap;}.portfolio-sidebar {width:280px;}}
-        
-        /* ✅ 标题栏 - +号：缩小、灰色，圆形 */
-        .work-title-bar {display:flex;align-items:center;justify-content:flex-end;margin-bottom:1rem;position:relative;}
-        .add-dir-btn {
-            width:22px;
-            height:22px;
-            border-radius:50%;
-            border:none;
-            background:#94a3b8; /* ✅ 灰色 */
-            color:#fff;
-            font-size:14px;
-            cursor:pointer;
-            opacity:0.7;
-            transition:all 0.2s;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            line-height:1;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            z-index:10;
-        }
-        .portfolio-sidebar:hover .add-dir-btn {opacity:1;}
-        .add-dir-btn:hover {transform:scale(1.1);}
-        
-        /* ✅ +号下拉菜单 */
-        .plus-menu {
-            position:absolute;
-            top:30px;
-            right:0;
-            background:#fff;
-            border:1px solid #e2e8f0;
-            border-radius:8px;
-            box-shadow:0 4px 12px rgba(0,0,0,0.1);
-            padding:0.4rem 0;
-            z-index:1000;
-            min-width:130px;
-        }
-        .plus-menu-item {
-            padding:0.5rem 1rem;
-            cursor:pointer;
-            font-size:0.85rem;
-            transition:background 0.2s;
-            display:flex;
-            align-items:center;
-            gap:0.4rem;
-        }
-        .plus-menu-item:hover {background:#f1f5f9;}
-        .plus-menu-item.danger {color:#dc3545;}
-        
-        /* ✅ 目录分组样式 - ▼缩小：0.45rem，灰色 */
-        .dir-group {margin-bottom:1rem;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;}
-        .dir-header {padding:0.6rem 0.8rem;background:#f8fafc;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:space-between;}
-        .dir-header:hover {background:#f1f5f9;}
-        .dir-name {flex:1;cursor:pointer;} /* ✅ 目录名可点击操作 */
-        .dir-toggle {font-size:0.45rem !important;color:#999 !important;opacity:0.6;}
-        .dir-videos {padding:0.4rem 0.6rem;background:#fff;display:none;}
-        .dir-group.open .dir-videos {display:block;}
+        /* 上传弹窗 */
+        .upload-page {position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); z-index: 999; display: none; overflow-y: auto; padding: 2rem 1rem;}
+        .upload-container {max-width: 420px; margin: 0 auto; background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);}
+        .upload-container h3 {text-align: center; margin-bottom: 1.5rem;}
+        .upload-container input, .upload-container select {width: 100%; padding: 0.75rem; margin-bottom: 0.8rem; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem;}
+        .btn {width: 100%; padding: 0.85rem; border: none; border-radius: 8px; cursor: pointer; font-size: 0.95rem; margin-bottom: 0.7rem;}
+        .btn-primary {background: #165DFF; color: #fff;}
+        .btn-primary:hover {background: #0F48C9;}
+        .btn-secondary {background: #64748b; color: #fff;}
+        .btn-secondary:hover {background: #475569;}
 
-        .video-item {background:#f8fafc;border-radius:8px;padding:0.9rem;margin-bottom:0.7rem;box-shadow:0 1px 3px rgba(0,0,0,0.04);display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:all 0.2s;border:1px solid #e2e8f0;}
-        .video-item:hover {background:#f1f5f9;transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,0.06);}
-        .video-name {font-weight:500;display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;color:#334155;}
-        .lock-icon {color:#dc3545;}
-        .unlock-icon {color:#28a745;}
-        .delete-btn {
-            color: #dc354540 !important;
-            font-size: 0.6rem !important;
-            cursor: pointer;
-            padding: 0.1rem 0.3rem !important;
-            border: 1px solid #dc354520 !important;
-            border-radius: 4px;
-            transition: all 0.2s;
-            font-weight: 400 !important;
-            opacity: 0.3 !important;
-            transform: scale(0.8);
-            background: transparent !important;
-        }
-        .delete-btn:hover {
-            color: #dc3545 !important;
-            border-color: #dc3545 !important;
-            opacity: 1 !important;
-            transform: scale(1);
-            background: #dc354508 !important;
-        }
+        /* 通用弹窗 */
+        .modal {position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); display: flex; align-items: center; justify-content: center; z-index: 999; padding: 1rem;}
+        .modal-content {background: #fff; padding: 1.8rem; border-radius: 12px; width: 100%; max-width: 320px;}
+        .modal-content h4 {text-align: center; margin-bottom: 1rem;}
+        .modal-content input {width: 100%; padding: 0.75rem; margin-bottom: 1.2rem; border: 1px solid #e2e8f0; border-radius: 8px;}
+        .btn-group {display: flex; gap: 0.8rem;}
+        .btn-group button {flex: 1; padding: 0.75rem; border: none; border-radius: 8px; cursor: pointer;}
+        .btn-cancel {background: #e2e8f0;}
+        .btn-confirm {background: #165DFF; color: #fff;}
 
-        .video-display-block {margin-bottom:0;position:relative;}
+        /* 付费弹窗 */
+        .pay-modal {position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 1rem;}
+        .pay-box {background: #fff; padding: 1rem 1.2rem; border-radius: 8px; width: 100%; max-width: 260px; text-align: center;}
+        .pay-title {color: #dc3545; font-weight: 600; margin-bottom: 0.5rem;}
+        .pay-desc {font-size: 0.8rem; color: #6c757d; margin-bottom: 0.5rem;}
+        .pay-btn {width: 100%; padding: 0.5rem; background: #28a745; color: #fff; border: none; border-radius: 6px; cursor: pointer; margin-bottom: 0.4rem;}
+        .cancel-btn {width: 100%; padding: 0.5rem; background: #e5e7eb; border: none; border-radius: 6px; cursor: pointer;}
 
-        .empty-tip {position: absolute;left: 50%;top:50%;transform: translate(-50%,-50%);text-align:center;color: #94a3b8;font-size: 1rem;font-style: normal;width: 100%;}
+        /* 技能页 */
+        .skills-grid {display: grid; grid-template-columns: 1fr; gap: 1.5rem;}
+        @media (min-width: 768px) {.skills-grid {grid-template-columns: repeat(3, 1fr);}}
+        .skill-item {padding: 1.5rem; border: 1px solid #e2e8f0; border-radius: 8px;}
+        .skill-item h3 {margin-bottom: 0.5rem;}
 
-        .modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;z-index:9999;padding:1rem;}
-        .modal-content {background:#fff;padding:1.8rem;border-radius:12px;width:100%;max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,0.15);}
-        .modal-content h4 {display:block;font-size:0.95rem;margin-bottom:1rem;text-align:center;color:#333;}
-        .modal-content input {width:100%;padding:0.75rem;margin-bottom:1.2rem;border:1px solid #e2e8f0;border-radius:8px;font-size:1rem;}
-        .modal-content input::placeholder {color:#94a3b8 !important;opacity:1 !important;}
-        .modal-content input:focus {outline:none;border-color:#165DFF;box-shadow:0 0 0 3px rgba(22,93,255,0.1);}
-        .modal-content select {width:100%;padding:0.75rem;margin-bottom:1.2rem;border:1px solid #e2e8f0;border-radius:8px;font-size:1rem;}
-        .modal-content .btn-group {display:flex;gap:0.8rem;}
-        .modal-content button {flex:1;padding:0.75rem;border:none;border-radius:8px;cursor:pointer;font-size:1rem;transition:background 0.2s;}
-        .btn-cancel {background:#e2e8f0;color:#374151;}
-        .btn-cancel:hover {background:#cbd5e1;}
-        .btn-confirm {background:#165DFF;color:white;}
-        .btn-confirm:hover {background:#0F48C9;}
-
-        .icon-video::before {content:"🎥";margin-right:0.5rem;}
-        .icon-globe::before {content:"🌐";margin-right:0.25rem;}
-
-        .sticky {position:sticky;top:0;z-index:50;}
-        .bg-white {background-color:#ffffff;}
-        .shadow-sm {box-shadow:0 1px 3px 0 rgba(0,0,0,0.08);}
-        .container {width:100%;margin-left:auto;margin-right:auto;max-width:1200px;}
-        .px-4 {padding-left:1rem;padding-right:1rem;}
-        .py-4 {padding-top:1rem;padding-bottom:1rem;}
-        .py-8 {padding-top:2rem;padding-bottom:2rem;}
-        .mb-4 {margin-bottom:1rem;}
-        .mb-6 {margin-bottom:1.5rem;}
-        .mb-8 {margin-bottom:2rem;}
-        .mt-2 {margin-top:0.5rem;}
-        .mx-auto {margin-left:auto;margin-right:auto;}
-        .flex {display:flex;}
-        .grid {display:grid;}
-        .items-center {align-items:center;}
-        .justify-between {justify-content:space-between;}
-        .gap-2 {gap:0.5rem;}
-        .gap-6 {gap:1.5rem;}
-        .w-full {width:100%;}
-        .rounded-xl {border-radius:0.75rem;}
-        .border-t {border-width:1px;border-style:solid;}
-        .border-gray-200 {border-color:#e5e7eb;}
-        .text-xl {font-size:1.25rem;}
-        .text-2xl {font-size:1.5rem;}
-        .text-lg {font-size:1.125rem;}
-        .text-sm {font-size:0.875rem;}
-        .font-bold {font-weight:700;}
-        .font-semibold {font-weight:600;}
-        .text-center {text-align:center;}
-        .text-gray-500 {color:#6b7280;}
-        .p-6 {padding:1.5rem;}
-        .p-8 {padding:2rem;}
-        .relative {position:relative;}
-        .absolute {position:absolute;}
-        .right-0 {right:0;}
-        .md\:flex-col {flex-direction:column;}
-        @media (min-width:768px) {.md\:flex-row {flex-direction:row;}.md\:grid-cols-3 {grid-template-columns:repeat(3,minmax(0,1fr));}}
-
-        .nav-btn {color: #0F48C9 !important;text-decoration:none;transition: color 0.2s;padding:0.5rem 0.75rem;border-radius:6px;}
-        .nav-btn.active {color: #fff !important;background:#165DFF !important;font-weight:600;}
-        .header-title {margin-right:1.5rem;}
-
-        .banner-img {width:100%;height:auto;border-radius:8px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.1);object-fit:cover;}
-        .home-title-spacing {padding-top: 1rem;padding-bottom: 1rem;}
-
-        /* ✅ 目录操作菜单 */
-        .dir-menu {position:absolute;background:#fff;border:1px solid #e2e8f0;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.1);padding:0.3rem 0;z-index:1000;min-width:100px;}
-        .dir-menu-item {padding:0.4rem 0.8rem;cursor:pointer;font-size:0.85rem;transition:background 0.2s;}
-        .dir-menu-item:hover {background:#f1f5f9;}
-        .dir-menu-item.danger {color:#dc3545;}
-
-        .video-play-overlay {position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:58px;height:58px;border-radius:50%;background:rgba(0,0,0,0.55);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;pointer-events:none;box-shadow:0 2px 10px rgba(0,0,0,0.25);}
-        .video-notice {padding:1rem;border-radius:10px;background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;font-size:0.9rem;line-height:1.6;margin-bottom:1rem;}
-        .video-help-link {color:#165DFF;text-decoration:none;font-size:0.85rem;}
-        .video-help-link:hover {text-decoration:underline;}
+        /* 关于页 */
+        .admin-entry {position: absolute; bottom: 1rem; right: 1rem; width: 24px; height: 24px; line-height: 24px; text-align: center; border-radius: 50%; background: #f1f5f9; cursor: pointer; display: none;}
+        #profile.active-section .admin-entry {display: block;}
+        .website-link {color: #165DFF; text-decoration: none;}
+        footer {text-align: center; padding: 1.5rem; background: #fff; margin-top: 2rem;}
     </style>
 </head>
 <body>
+    <!-- 上传弹窗 -->
     <div class="upload-page" id="uploadPage">
         <div class="upload-container">
-            <h3>📤 上传视频管理</h3>
-            <input type="text" id="videoUrl" placeholder="🔗 YouTube链接 / Streamtape / 任意MP4链接">
-            <!-- ✅ GitHub Pages 是静态网站，不能真正保存本地视频文件。请先上传到 YouTube 或 MP4 外链后再粘贴链接。 -->
-            <input type="file" id="videoFile" accept="video/*" style="display:none;">
-            <div class="file-input" style="color:#64748b;background:#f8fafc;font-size:0.82rem;line-height:1.45;">
-                ⚠️ 请使用 YouTube 链接或 MP4 外链。不要直接选择本地视频文件，否则刷新后会失效。
-            </div>
-            <!-- ✅ 修改：选择保存目录 → 选择保存标题，删除（可选） -->
+            <h3>📤 上传视频</h3>
+            <input type="text" id="videoUrl" placeholder="🔗 YouTube/MP4 链接">
+            <input type="file" id="videoFile" accept="video/*">
             <select id="videoDir">
-                <option value="">📁 选择保存标题</option>
+                <option value="">📁 选择目录</option>
             </select>
-            <!-- ✅ 集数（选填） -->
-            <input type="text" id="videoEpisode" placeholder="📑 集数（选填，如：第1集 / EP01）">
-            <!-- ✅ 输入密码（选填） -->
-            <input type="text" id="videoPwd" placeholder="🔒 输入密码（选填）">
-            <button onclick="addVideo()">添加到作品列表</button>
-            <button class="close-btn" onclick="closeUploadPage()">关闭页面</button>
+            <input type="text" id="videoEpisode" placeholder="📑 标题/集数">
+            <input type="text" id="videoPwd" placeholder="🔒 访问密码（选填）">
+            <button class="btn btn-primary" onclick="addVideo()">添加</button>
+            <button class="btn btn-secondary" onclick="closeUploadPage()">关闭</button>
         </div>
     </div>
 
-    <header class="sticky top-0 z-50 bg-white shadow-sm">
-        <div class="container mx-auto px-4 py-4 flex md:flex-row items-center gap-4">
-            <div class="font-bold text-xl flex items-center gap-2 header-title">
-                <span class="icon-video"></span>
-                <span class="lang-zh active-lang">小Yoon 的创作空间</span>
-                <span class="lang-en">Little Yoon's Studio</span>
-                <span class="lang-ko">리틀 윤의 창작 공간</span>
+    <!-- 通用弹窗 -->
+    <div class="modal hidden" id="commonModal">
+        <div class="modal-content">
+            <h4 id="modalTitle"></h4>
+            <input type="text" id="modalInput" placeholder="请输入">
+            <div class="btn-group">
+                <button class="btn-cancel" onclick="closeModal()">取消</button>
+                <button class="btn-confirm" id="modalConfirmBtn">确定</button>
             </div>
-            <div class="flex items-center gap-6">
-                <nav class="flex gap-2">
-                    <a href="#home" class="nav-btn active" data-target="home"><span class="lang-zh active-lang">首页</span><span class="lang-en">Home</span><span class="lang-ko">홈</span></a>
-                    <a href="#portfolio" class="nav-btn" data-target="portfolio"><span class="lang-zh active-lang">作品展示</span><span class="lang-en">Portfolio</span><span class="lang-ko">포트폴리오</span></a>
-                    <a href="#skills" class="nav-btn" data-target="skills"><span class="lang-zh active-lang">专业技能</span><span class="lang-en">Professional Skills</span><span class="lang-ko">전문 기술</span></a>
-                    <a href="#profile" class="nav-btn" data-target="profile"><span class="lang-zh active-lang">关于我</span><span class="lang-en">About Me</span><span class="lang-ko">나에 대해</span></a>
-                </nav>
-                <div class="relative lang-dropdown">
-                    <button id="langBtn" class="flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 hover:bg-gray-200 transition">
-                        <span class="icon-globe"></span>
-                        <span id="currentLang">中文</span>
-                        <span class="icon-chevron-down"></span>
-                    </button>
-                    <div id="langMenu" class="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-sm p-2 hidden">
-                        <div class="lang-option px-3 py-2 hover:bg-gray-100 rounded cursor-pointer" data-lang="zh">中文</div>
-                        <div class="lang-option px-3 py-2 hover:bg-gray-100 rounded cursor-pointer" data-lang="en">English</div>
-                        <div class="lang-option px-3 py-2 hover:bg-gray-100 rounded cursor-pointer" data-lang="ko">한국어</div>
+        </div>
+    </div>
+
+    <!-- 付费弹窗 -->
+    <div class="pay-modal hidden" id="payModal">
+        <div class="pay-box">
+            <div class="pay-title">🔒 付费解锁</div>
+            <div class="pay-desc">观看需支付 $0.99 USD</div>
+            <div class="pay-desc">支持 PayPal/银行卡</div>
+            <button class="pay-btn" onclick="afterPay()">💳 立即支付</button>
+            <button class="cancel-btn" onclick="closePayModal()">取消</button>
+        </div>
+    </div>
+
+    <!-- 顶部导航 -->
+    <header>
+        <div class="header-container">
+            <div class="header-title">🎥 小Yoon 的创作空间</div>
+            <nav>
+                <a href="#home" class="nav-btn active" data-target="home">首页</a>
+                <a href="#portfolio" class="nav-btn" data-target="portfolio">作品</a>
+                <a href="#skills" class="nav-btn" data-target="skills">技能</a>
+                <a href="#profile" class="nav-btn" data-target="profile">关于</a>
+                <div class="lang-dropdown">
+                    <button id="langBtn">🌐 <span id="currentLang">中文</span></button>
+                    <div id="langMenu" class="hidden">
+                        <div class="lang-option" data-lang="zh">中文</div>
+                        <div class="lang-option" data-lang="en">English</div>
+                        <div class="lang-option" data-lang="ko">한국어</div>
                     </div>
                 </div>
-            </div>
+            </nav>
         </div>
     </header>
 
-    <main class="container mx-auto px-4 py-8">
-        <section id="home" class="page-section active-section mb-16">
-            <img class="banner-img" src="home.jpg" alt="欢迎页面">
-            <div class="bg-white p-6 rounded-xl shadow-sm home-title-spacing">
-                <h2 class="text-2xl font-bold mb-4 text-center">
+    <!-- 主内容区 -->
+    <main>
+        <!-- 首页 -->
+        <section id="home" class="page-section active-section">
+            <img class="banner-img" src="home.jpg" alt="首页横幅">
+            <div class="card">
+                <h2>
                     <span class="lang-zh active-lang">以影为介，共赴视觉之约</span>
                     <span class="lang-en">Through Visuals, Beyond Imagination</span>
                     <span class="lang-ko">영상으로 만나는 미학의 세계</span>
                 </h2>
-                <p class="text-center max-w-2xl mx-auto">
-                    <span class="lang-zh active-lang">热爱融入每一次创作，用镜头与剪辑讲述故事，让每一个作品都有温度、有质感。</span>
-                    <span class="lang-en">Passion in every creation, telling stories through lens and editing, making every work warm and textured.</span>
-                    <span class="lang-ko">모든 창작에 열정을 담고, 카메라와 편집으로 이야기를 전하며, 모든 작품에 온기와 질감을 더합니다</span>
+                <p style="text-align: center; max-width: 600px; margin: 0 auto;">
+                    <span class="lang-zh active-lang">把热爱注入每一次创作，用镜头与剪辑讲述故事，让作品有温度、有质感。</span>
+                    <span class="lang-en">Passion in every creation, stories told through lens and editing, works with heart and quality.</span>
+                    <span class="lang-ko">모든 창작에 열정을 담고, 카메라와 편집으로 이야기를 전하며, 작품에 온기와 품격을 더합니다.</span>
                 </p>
             </div>
         </section>
 
-        <section id="portfolio" class="page-section mb-16">
-            <div class="rounded-xl">
-                <h2 class="text-2xl font-bold mb-6 text-center">
-                    <span class="lang-zh active-lang">作品展示</span><span class="lang-en">Portfolio</span><span class="lang-ko">포트폴리오</span>
-                </h2>
-                <div class="portfolio-layout">
-                    <div class="portfolio-sidebar">
-                        <div class="work-title-bar">
-                            <button class="add-dir-btn" title="目录操作" onclick="togglePlusMenu()">+</button>
-                            <!-- ✅ +号下拉菜单：添加、修改、选择删除 -->
-                            <div id="plusMenu" class="plus-menu hidden">
-                                <div class="plus-menu-item" onclick="openDirNameModalFromPlus()">➕ <span class="lang-zh active-lang">添加目录</span><span class="lang-en">Add</span><span class="lang-ko">추가</span></div>
-                                <div class="plus-menu-item" onclick="openSelectEditModal()">✏️ <span class="lang-zh active-lang">修改目录</span><span class="lang-en">Edit</span><span class="lang-ko">수정</span></div>
-                                <div class="plus-menu-item danger" onclick="openSelectDeleteModal()">🗑️ <span class="lang-zh active-lang">选择删除目录</span><span class="lang-en">Delete</span><span class="lang-ko">삭제</span></div>
-                            </div>
+        <!-- 作品展示 -->
+        <section id="portfolio" class="page-section">
+            <h2>
+                <span class="lang-zh active-lang">作品展示</span>
+                <span class="lang-en">Portfolio</span>
+                <span class="lang-ko">작품 전시</span>
+            </h2>
+            <div class="portfolio-layout">
+                <div class="portfolio-sidebar card">
+                    <div class="work-title-bar">
+                        <button class="add-dir-btn" onclick="togglePlusMenu()">+</button>
+                        <div id="plusMenu" class="plus-menu hidden">
+                            <div class="plus-menu-item" onclick="openAddDir()">➕ 新建目录</div>
+                            <div class="plus-menu-item" onclick="openEditDir()">✏️ 编辑目录</div>
+                            <div class="plus-menu-item" onclick="openDeleteDir()">🗑️ 删除目录</div>
                         </div>
-                        <div id="workGroups"></div>
                     </div>
-                    <div class="portfolio-content"><div id="videoDisplayArea"></div></div>
-                    <div class="empty-tip" id="emptyTip"><span class="lang-zh active-lang">暂无作品，粘贴 YouTube 链接或 MP4 外链即可添加</span><span class="lang-en">No works yet, add YouTube or MP4 link</span><span class="lang-ko">작품이 없습니다. YouTube 또는 MP4 링크를 추가하세요</span></div>
+                    <div id="workGroups"></div>
                 </div>
-            </div>
-        </section>
-
-        <section id="skills" class="page-section mb-16">
-            <div class="bg-white p-8 rounded-xl shadow-sm">
-                <h2 class="text-2xl font-bold mb-8 text-center">
-                    <span class="lang-zh active-lang">专业技能</span><span class="lang-en">Professional Skills</span><span class="lang-ko">전문 기술</span>
-                </h2>
-                <div class="grid md:grid-cols-3 gap-6">
-                    <div class="p-5 bg-gray-50 rounded-lg">
-                        <h3 class="font-semibold text-lg mb-2"><span class="lang-zh active-lang">视频剪辑</span><span class="lang-en">Video Editing</span><span class="lang-ko">영상 편집</span></h3>
-                        <p class="text-gray-600 text-sm"><span class="lang-zh active-lang">熟练使用各类剪辑软件，擅长节奏把控与叙事表达</span><span class="lang-en">Proficient in various editing software, good at rhythm control and narrative expression</span><span class="lang-ko">다양한 편집 프로그램을 능숙하게 다루며, 리듬 조절과 이야기 표현에 능숙합니다</span></p>
-                    </div>
-                    <div class="p-5 bg-gray-50 rounded-lg">
-                        <h3 class="font-semibold text-lg mb-2"><span class="lang-zh active-lang">内容策划</span><span class="lang-en">Content Planning</span><span class="lang-ko">콘텐츠 기획</span></h3>
-                        <p class="text-gray-600 text-sm"><span class="lang-zh active-lang">挖掘生活亮点，策划新颖选题，打造优质内容脚本</span><span class="lang-en">Discover highlights of life, plan innovative topics, create high-quality content scripts</span><span class="lang-ko">일상의 매력을 발견하고 참신한 주제를 기획하며, 양질의 콘텐츠 스크립트를 제작합니다</span></p>
-                    </div>
-                    <div class="p-5 bg-gray-50 rounded-lg">
-                        <h3 class="font-semibold text-lg mb-2"><span class="lang-zh active-lang">后期特效</span><span class="lang-en">Post-production Effects</span><span class="lang-ko">후반 작업 특수 효과</span></h3>
-                        <p class="text-gray-600 text-sm"><span class="lang-zh active-lang">视觉包装、字幕设计、调色配乐，提升作品质感</span><span class="lang-en">Visual packaging, subtitle design, color grading and music, enhancing the quality of works</span><span class="lang-ko">시각 디자인, 자막 제작, 색보정과 음악 작업으로 작품의 완성도를 높입니다</span></p>
+                <div class="portfolio-content card">
+                    <div id="videoDisplayArea"></div>
+                    <div class="empty-tip" id="portfolioEmptyTip">
+                        <span class="lang-zh active-lang">暂无作品，上传或选择视频播放</span>
+                        <span class="lang-en">No works yet, upload or select a video</span>
+                        <span class="lang-ko">작품이 없습니다. 업로드하거나 영상을 선택하세요</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="profile" class="page-section mb-16 relative">
+        <!-- 技能页 -->
+        <section id="skills" class="page-section">
+            <h2>
+                <span class="lang-zh active-lang">专业技能</span>
+                <span class="lang-en">Skills</span>
+                <span class="lang-ko">전문 기술</span>
+            </h2>
+            <div class="skills-grid">
+                <div class="skill-item card">
+                    <h3>
+                        <span class="lang-zh active-lang">视频剪辑</span>
+                        <span class="lang-en">Video Editing</span>
+                        <span class="lang-ko">영상 편집</span>
+                    </h3>
+                    <p>
+                        <span class="lang-zh active-lang">熟练各类剪辑工具，擅长节奏把控与叙事表达。</span>
+                        <span class="lang-en">Proficient in editing tools, good at rhythm and storytelling.</span>
+                        <span class="lang-ko">다양한 편집 툴을 능숙하게 다루며, 리듬과 이야기 구성에 강점이 있습니다.</span>
+                    </p>
+                </div>
+                <div class="skill-item card">
+                    <h3>
+                        <span class="lang-zh active-lang">内容策划</span>
+                        <span class="lang-en">Content Planning</span>
+                        <span class="lang-ko">콘텐츠 기획</span>
+                    </h3>
+                    <p>
+                        <span class="lang-zh active-lang">挖掘亮点，策划选题，打造优质内容脚本。</span>
+                        <span class="lang-en">Find highlights, plan topics, create high-quality scripts.</span>
+                        <span class="lang-ko">매력 포인트를 발굴하고 주제를 기획하며, 완성도 높은 콘텐츠를 제작합니다.</span>
+                    </p>
+                </div>
+                <div class="skill-item card">
+                    <h3>
+                        <span class="lang-zh active-lang">后期特效</span>
+                        <span class="lang-en">Post-production</span>
+                        <span class="lang-ko">후반 작업 특수 효과</span>
+                    </h3>
+                    <p>
+                        <span class="lang-zh active-lang">视觉包装、字幕设计、调色配乐，提升作品质感。</span>
+                        <span class="lang-en">Visual design, subtitles, color grading, music to enhance quality.</span>
+                        <span class="lang-ko">시각 디자인, 자막, 색보정, 음악 작업으로 작품의 완성도를 높입니다.</span>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 关于页 -->
+        <section id="profile" class="page-section">
             <div class="admin-entry" onclick="askAdminPwd()">⚙️</div>
-            <img class="banner-img" src="profile.jpg" alt="关于我页面">
-            <div class="bg-white p-8 rounded-xl shadow-sm">
-                <div class="pt-4 border-t border-gray-200">
-                    <h3 class="font-semibold text-lg mb-2"><span class="lang-zh active-lang">网站</span><span class="lang-en">Website</span><span class="lang-ko">웹사이트</span></h3>
-                    <a href="https://kimm-lii.github.io/yooooon/" class="website-link text-lg" target="_blank">https://kimm-lii.github.io/yooooon/</a>
+            <img class="banner-img" src="profile.jpg" alt="关于横幅">
+            <div class="card">
+                <h2>
+                    <span class="lang-zh active-lang">关于我</span>
+                    <span class="lang-en">About Me</span>
+                    <span class="lang-ko">나에 대해</span>
+                </h2>
+                <div class="mt-2">
+                    <h3>网站</h3>
+                    <a href="https://kimm-lii.github.io/yooooon/" class="website-link" target="_blank">https://kimm-lii.github.io/yooooon/</a>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- ✅ +号管理密码弹窗（密码固定0803） -->
-    <div id="addDirPwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="addDirPwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeAddDirPwd()">取消</button><button class="btn-confirm" onclick="verifyAddDirPwd()">确定</button></div></div></div>
-    <!-- ✅ 目录名称输入弹窗 -->
-    <div id="dirNameModal" class="modal hidden"><div class="modal-content"><input type="text" placeholder="输入目录名称" id="dirNameInput"><div class="btn-group"><button class="btn-cancel" onclick="closeDirNameModal()">取消</button><button class="btn-confirm" onclick="saveNewDir()">确定</button></div></div></div>
-    <!-- ✅ 选择要修改的目录 -->
-    <div id="selectEditModal" class="modal hidden"><div class="modal-content"><h4><span class="lang-zh active-lang">选择要修改的目录</span></h4><select id="editDirSelect"></select><div class="btn-group"><button class="btn-cancel" onclick="closeSelectEditModal()">取消</button><button class="btn-confirm" onclick="openEditDirModalFromSelect()">下一步</button></div></div></div>
-    <!-- ✅ 修改目录弹窗 -->
-    <div id="editDirModal" class="modal hidden"><div class="modal-content"><input type="text" placeholder="输入新目录名称" id="editDirNameInput"><div class="btn-group"><button class="btn-cancel" onclick="closeEditDirModal()">取消</button><button class="btn-confirm" onclick="saveEditDir()">确定</button></div></div></div>
-    <!-- ✅ 选择要删除的目录 -->
-    <div id="selectDeleteModal" class="modal hidden"><div class="modal-content"><h4><span class="lang-zh active-lang">选择要删除的目录</span></h4><select id="deleteDirSelect"></select><div class="btn-group"><button class="btn-cancel" onclick="closeSelectDeleteModal()">取消</button><button class="btn-confirm danger" onclick="openDeleteDirModalFromSelect()">删除</button></div></div></div>
-    <!-- ✅ 删除目录确认弹窗 -->
-    <div id="deleteDirModal" class="modal hidden"><div class="modal-content"><p class="text-center mb-4"><span class="lang-zh active-lang">确定要删除此目录吗？目录内视频也会被移除</span><span class="lang-en">Confirm delete? Videos inside will be removed</span><span class="lang-ko">이 디렉토리를 삭제하시겠습니까? 내부 영상도 함께 삭제됩니다</span></p><div class="btn-group"><button class="btn-cancel" onclick="closeDeleteDirModal()">取消</button><button class="btn-confirm danger" onclick="confirmDeleteDir()">删除</button></div></div></div>
-
-    <div id="adminPwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="adminPwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeAdminPwd()">取消</button><button class="btn-confirm" onclick="verifyAdminPwd()">确定</button></div></div></div>
-    <div id="pwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入观看密码" id="modalPwd"><div class="btn-group"><button class="btn-cancel" onclick="closeModal()">取消</button><button class="btn-confirm" onclick="checkPwd()">确定</button></div></div></div>
-    <div id="deletePwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="deletePwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeDeleteModal()">取消</button><button class="btn-confirm" onclick="confirmDelete()">确定</button></div></div></div>
-    <div id="payModal" class="pay-modal hidden">
-        <div class="pay-box">
-            <div class="pay-title">
-                <span>🔒</span>
-                <span class="lang-zh active-lang">付费解锁内容</span>
-                <span class="lang-en">Premium Content</span>
-                <span class="lang-ko">유료 콘텐츠</span>
-            </div>
-            <div class="pay-desc">
-                <span class="lang-zh active-lang">观看本集视频需支付 $0.99 USD</span>
-                <span class="lang-en">Pay $0.99 USD to watch this episode</span>
-                <span class="lang-ko">본 영상 시청에는 $0.99 USD 결제가 필요합니다</span>
-            </div>
-            <div class="pay-method">
-                <span>✅</span>
-                <span class="lang-zh active-lang"><strong>支持 PayPal / 银行卡支付</strong></span>
-                <span class="lang-en"><strong>Supports PayPal / Card Payment</strong></span>
-                <span class="lang-ko"><strong>PayPal / 카드 결제 지원</strong></span>
-            </div>
-            <a id="payLink" href="https://www.paypal.com/paypalme/yourpaypal" target="_blank" style="text-decoration:none;">
-                <button class="pay-btn">
-                    <span>💳</span>
-                    <span class="lang-zh active-lang">前往付款</span>
-                    <span class="lang-en">Go to Payment</span>
-                    <span class="lang-ko">결제하러 가기</span>
-                </button>
-            </a>
-            <button class="cancel-btn" onclick="closePayModal()">
-                <span class="lang-zh active-lang">取消</span>
-                <span class="lang-en">Cancel</span>
-                <span class="lang-ko">취소</span>
-            </button>
-        </div>
-    </div>
-
-    <footer class="bg-white border-t text-center py-6"><p>© 2026 Yoon Short-Form Video Creation Studio</p></footer>
+    <!-- 页脚 -->
+    <footer>© 2026 Yoon Short-Form Video Creation Studio</footer>
 
     <script>
-        let deleteIndex = -1;
-        let videos=JSON.parse(localStorage.getItem('myVideos'))||[];
-        let dirs=JSON.parse(localStorage.getItem('myDirs'))||[];
-        let modalCallback=null;
-        let currentVideoIndex = -1;
-        let currentDirId = null; // ✅ 当前操作的目录ID
-        const SITE_DOMAIN = 'https://kimm-lii.github.io/yooooon';
-        const DEFAULT_COVER = 'https://i.imgur.com/9Z7X7QH.jpg';
+        // 全局数据
+        let videos = JSON.parse(localStorage.getItem('myVideos')) || [];
+        let dirs = JSON.parse(localStorage.getItem('myDirs')) || [];
+        let currentVideoIndex = null;
         const ADD_DIR_PWD = '0803';
 
-        // ✅ +号菜单：点击 + 时先输入密码 0803，验证后才显示添加/修改/删除
-        function togglePlusMenu() {
-            const menu = document.getElementById('plusMenu');
-            if (!menu.classList.contains('hidden')) {
-                closePlusMenu();
-                return;
-            }
-            openAddDirPwd();
-        }
+        // 页面切换
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active-section'));
+                document.getElementById(btn.dataset.target).classList.add('active-section');
+            });
+        });
 
-        function closePlusMenu() {
-            document.getElementById('plusMenu').classList.add('hidden');
-        }
+        // 语言切换
+        document.getElementById('langBtn').addEventListener('click', () => {
+            document.getElementById('langMenu').classList.toggle('hidden');
+        });
+        document.querySelectorAll('.lang-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                const lang = opt.dataset.lang;
+                document.getElementById('currentLang').textContent = opt.textContent;
+                document.querySelectorAll('.lang-zh, .lang-en, .lang-ko').forEach(el => el.classList.remove('active-lang'));
+                document.querySelectorAll('.lang-' + lang).forEach(el => el.classList.add('active-lang'));
+                document.getElementById('langMenu').classList.add('hidden');
+            });
+        });
 
-        function showPlusMenuAfterPwd() {
-            const menu = document.getElementById('plusMenu');
-            menu.classList.remove('hidden');
-            setTimeout(()=>{
-                const close = (e)=>{
-                    if(!e.target.closest('.add-dir-btn') && !e.target.closest('.plus-menu')) {
-                        closePlusMenu();
-                        document.removeEventListener('click', close);
-                    }
-                };
-                document.addEventListener('click', close);
-            },10);
-        }
-
-        // ✅ +号管理密码逻辑
-        function openAddDirPwd() {document.getElementById('addDirPwdModal').classList.remove('hidden');document.getElementById('addDirPwdInput').value='';}
-        function closeAddDirPwd() {document.getElementById('addDirPwdModal').classList.add('hidden');}
-        function verifyAddDirPwd() {
-            const p=document.getElementById('addDirPwdInput').value.trim();
-            if(p === ADD_DIR_PWD) {closeAddDirPwd();showPlusMenuAfterPwd();}
-            else alert('❌ 密码错误！');
-        }
-        function openDirNameModalFromPlus() {closePlusMenu();document.getElementById('dirNameModal').classList.remove('hidden');document.getElementById('dirNameInput').value='';}
-        function closeDirNameModal() {document.getElementById('dirNameModal').classList.add('hidden');}
-        function saveNewDir() {
-            const name=document.getElementById('dirNameInput').value.trim();
-            if(!name) return alert('请输入目录名称！');
-            dirs.push({id:Date.now(), name:name, videos:[]});
-            localStorage.setItem('myDirs',JSON.stringify(dirs));
-            closeDirNameModal();
-            renderWorkGroups();
-            updateDirOptions();
-        }
-
-        // ✅ 修改目录：先选择目录
-        function openSelectEditModal() {
+        // 目录菜单
+        function togglePlusMenu() {document.getElementById('plusMenu').classList.toggle('hidden');}
+        function openAddDir() {
             closePlusMenu();
-            const sel = document.getElementById('editDirSelect');
-            sel.innerHTML='';
-            dirs.forEach(d=>{const opt=document.createElement('option');opt.value=d.id;opt.textContent=d.name;sel.appendChild(opt);});
-            if(dirs.length===0) return alert('暂无目录可修改！');
-            document.getElementById('selectEditModal').classList.remove('hidden');
+            openModal('输入目录名称', v => {
+                if (v.trim()) {
+                    dirs.push({id: Date.now(), name: v.trim()});
+                    saveData();
+                    renderWorkGroups();
+                    updateDirOptions();
+                }
+            });
         }
-        function closeSelectEditModal() {document.getElementById('selectEditModal').classList.add('hidden');}
-        function openEditDirModalFromSelect() {
-            currentDirId = parseInt(document.getElementById('editDirSelect').value);
-            closeSelectEditModal();
-            const dir = dirs.find(d=>d.id===currentDirId);
-            document.getElementById('editDirNameInput').value = dir.name;
-            document.getElementById('editDirModal').classList.remove('hidden');
-        }
-        function closeEditDirModal() {document.getElementById('editDirModal').classList.add('hidden');currentDirId=null;}
-        function saveEditDir() {
-            const newName=document.getElementById('editDirNameInput').value.trim();
-            if(!newName) return alert('请输入目录名称！');
-            const idx = dirs.findIndex(d=>d.id===currentDirId);
-            if(idx!==-1) {dirs[idx].name=newName;localStorage.setItem('myDirs',JSON.stringify(dirs));}
-            closeEditDirModal();
-            renderWorkGroups();
-            updateDirOptions();
-        }
+        function openEditDir() {alert('请点击目录名称编辑'); closePlusMenu();}
+        function openDeleteDir() {alert('请点击目录删除'); closePlusMenu();}
+        function closePlusMenu() {document.getElementById('plusMenu').classList.add('hidden');}
 
-        // ✅ 删除目录：先选择目录
-        function openSelectDeleteModal() {
-            closePlusMenu();
-            const sel = document.getElementById('deleteDirSelect');
-            sel.innerHTML='';
-            dirs.forEach(d=>{const opt=document.createElement('option');opt.value=d.id;opt.textContent=d.name;sel.appendChild(opt);});
-            if(dirs.length===0) return alert('暂无目录可删除！');
-            document.getElementById('selectDeleteModal').classList.remove('hidden');
+        // 弹窗控制
+        function openModal(title, callback) {
+            const modal = document.getElementById('commonModal');
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalInput').value = '';
+            modal.classList.remove('hidden');
+            document.getElementById('modalConfirmBtn').onclick = () => {
+                callback(document.getElementById('modalInput').value);
+                closeModal();
+            };
         }
-        function closeSelectDeleteModal() {document.getElementById('selectDeleteModal').classList.add('hidden');}
-        function openDeleteDirModalFromSelect() {
-            currentDirId = parseInt(document.getElementById('deleteDirSelect').value);
-            closeSelectDeleteModal();
-            document.getElementById('deleteDirModal').classList.remove('hidden');
-        }
-        function closeDeleteDirModal() {document.getElementById('deleteDirModal').classList.add('hidden');currentDirId=null;}
-        function confirmDeleteDir() {
-            // 删除目录
-            dirs = dirs.filter(d=>d.id!==currentDirId);
-            // 删除该目录下所有视频
-            videos = videos.filter(v=>v.dirId!=currentDirId);
-            localStorage.setItem('myDirs',JSON.stringify(dirs));
-            localStorage.setItem('myVideos',JSON.stringify(videos));
-            closeDeleteDirModal();
-            renderWorkGroups();
-            renderMyWorks();
-            updateDirOptions();
-        }
+        function closeModal() {document.getElementById('commonModal').classList.add('hidden');}
+        function openPayModal() {document.getElementById('payModal').classList.remove('hidden');}
+        function closePayModal() {document.getElementById('payModal').classList.add('hidden');}
+        function afterPay() {closePayModal(); playVideo(videos[currentVideoIndex]);}
 
-        // ✅ 目录操作菜单（点击目录名）
-        function showDirMenu(e, id) {
-            e.stopPropagation();
-            // 移除已有菜单
-            document.querySelectorAll('.dir-menu').forEach(m=>m.remove());
-            const menu = document.createElement('div');
-            menu.className = 'dir-menu';
-            menu.style.left = e.pageX + 'px';
-            menu.style.top = e.pageY + 'px';
-            menu.innerHTML = `
-                <div class="dir-menu-item" onclick="openEditDirModal(${id})">✏️ <span class="lang-zh active-lang">修改目录</span><span class="lang-en">Edit</span><span class="lang-ko">수정</span></div>
-                <div class="dir-menu-item danger" onclick="openDeleteDirModal(${id})">🗑️ <span class="lang-zh active-lang">删除目录</span><span class="lang-en">Delete</span><span class="lang-ko">삭제</span></div>
-            `;
-            document.body.appendChild(menu);
-            // 点击空白关闭
-            setTimeout(()=>{
-                const closeMenu = ()=>{menu.remove();document.removeEventListener('click',closeMenu);};
-                document.addEventListener('click',closeMenu);
-            },10);
-        }
-
-        // ✅ 更新上传页的目录下拉选项 → 对应“选择保存标题”
+        // 上传相关
+        function askAdminPwd() {openModal('输入管理密码', p => p === ADD_DIR_PWD ? openUploadPage() : alert('密码错误'));}
+        function openUploadPage() {document.getElementById('uploadPage').style.display = 'block';}
+        function closeUploadPage() {document.getElementById('uploadPage').style.display = 'none';}
         function updateDirOptions() {
             const sel = document.getElementById('videoDir');
-            sel.innerHTML = '<option value="">📁 选择保存标题</option>';
-            dirs.forEach(d=>{
-                const opt = document.createElement('option');
-                opt.value = d.id;
-                opt.textContent = d.name;
-                sel.appendChild(opt);
-            });
+            sel.innerHTML = '<option value="">📁 选择目录</option>';
+            dirs.forEach(d => {const opt = document.createElement('option'); opt.value = d.id; opt.textContent = d.name; sel.appendChild(opt);});
         }
-
-        // ✅ 付款后自动操作：关闭支付弹窗 → 打开密码框 → 自动填入密码
-        function afterPay() {
-            closePayModal();
-            const currentVideo = videos[currentVideoIndex];
-            openModal();
-            if(currentVideo.password) {
-                document.getElementById('modalPwd').value = currentVideo.password;
-            }
-        }
-
-        // ✅ 打开密码输入框
-        function openModal() {
-            const m=document.getElementById('pwdModal');
-            document.getElementById('modalPwd').value='';
-            m.classList.remove('hidden');
-        }
-        function closeModal() {document.getElementById('pwdModal').classList.add('hidden');}
-        
-        function openDeleteModal(i) {deleteIndex=i;document.getElementById('deletePwdModal').classList.remove('hidden');document.getElementById('deletePwdInput').value='';}
-        function closeDeleteModal() {deleteIndex=-1;document.getElementById('deletePwdModal').classList.add('hidden');}
-        function confirmDelete() {
-            const p=document.getElementById('deletePwdInput').value.trim();
-            if(p === '0803'){videos.splice(deleteIndex,1);localStorage.setItem('myVideos',JSON.stringify(videos));renderWorkGroups();renderMyWorks();closeDeleteModal();alert('✅ 删除成功！');}
-            else alert('❌ 密码错误！');
-        }
-
-        function askAdminPwd() {document.getElementById('adminPwdModal').classList.remove('hidden');}
-        function closeAdminPwd() {document.getElementById('adminPwdModal').classList.add('hidden');document.getElementById('adminPwdInput').value='';}
-        function verifyAdminPwd() {const p=document.getElementById('adminPwdInput').value.trim();if(p === '0803'){closeAdminPwd();document.getElementById('uploadPage').style.display='block';updateDirOptions();}else alert('密码错误！');}
-        function closeUploadPage() {document.getElementById('uploadPage').style.display='none';}
-
-
-        /* =========================
-           ✅ 修复后的上传/播放/渲染逻辑
-           重点修复：
-           1) YouTube URL 统一转成 /embed/VIDEO_ID
-           2) origin 使用纯域名，不带 /yooooon 路径，避免播放器配置错误
-           3) iframe 增加 referrerpolicy，解决 Error 153 / ERR_BLOCKED_BY_RESPONSE 常见问题
-           4) 补全原文件末尾被截断的 JS 和 HTML 结束结构
-        ========================== */
-
-        const SITE_ORIGIN = 'https://kimm-lii.github.io';
-        const SITE_BASE_URL = 'https://kimm-lii.github.io/yooooon/';
-
-        function saveVideos() {
-            localStorage.setItem('myVideos', JSON.stringify(videos));
-        }
-
-        function saveDirs() {
-            localStorage.setItem('myDirs', JSON.stringify(dirs));
-        }
-
-        function escapeHtml(value) {
-            return String(value ?? '')
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        }
-
-        function getCurrentLang() {
-            const current = document.getElementById('currentLang')?.textContent || '中文';
-            if (current.includes('English')) return 'en';
-            if (current.includes('한국어')) return 'ko';
-            return 'zh';
-        }
-
-        function getVideoTitle(v) {
-            const lang = getCurrentLang();
-            return v[`title_${lang}`] || v.title_zh || v.title_en || v.title_ko || v.episode || '未命名视频';
-        }
-
-        function extractYouTubeId(input) {
-            if (!input) return null;
-            const text = String(input).trim();
-
-            try {
-                const url = new URL(text);
-                const host = url.hostname.replace(/^www\./, '');
-
-                if (host === 'youtu.be') {
-                    return url.pathname.split('/').filter(Boolean)[0] || null;
-                }
-
-                if (host === 'youtube.com' || host === 'm.youtube.com' || host === 'music.youtube.com' || host === 'youtube-nocookie.com') {
-                    if (url.pathname === '/watch') return url.searchParams.get('v');
-                    const parts = url.pathname.split('/').filter(Boolean);
-                    if (parts[0] === 'embed' && parts[1]) return parts[1];
-                    if (parts[0] === 'shorts' && parts[1]) return parts[1];
-                    if (parts[0] === 'live' && parts[1]) return parts[1];
-                }
-            } catch (e) {
-                // 非标准 URL，继续用正则兜底
-            }
-
-            const match = text.match(/(?:v=|\/embed\/|youtu\.be\/|\/shorts\/|\/live\/)([A-Za-z0-9_-]{6,})/);
-            return match ? match[1] : null;
-        }
-
-        function isYouTubeUrl(input) {
-            return !!extractYouTubeId(input);
-        }
-
-        function buildYouTubeEmbedUrl(input, autoplay = false) {
-            const id = extractYouTubeId(input);
-            if (!id) return input;
-
-            // ✅ 不使用 enablejsapi / origin / widget_referrer，避免 YouTube Player Error 153。
-            // 这里只使用最稳定的官方 iframe embed 参数。
-            const params = new URLSearchParams({
-                autoplay: autoplay ? '1' : '0',
-                controls: '1',
-                rel: '0',
-                playsinline: '1',
-                fs: '1',
-                iv_load_policy: '3'
-            });
-
-            return `https://www.youtube.com/embed/${encodeURIComponent(id)}?${params.toString()}`;
-        }
-
-        function buildYouTubeWatchUrl(input) {
-            const id = extractYouTubeId(input);
-            return id ? `https://www.youtube.com/watch?v=${encodeURIComponent(id)}` : input;
-        }
-
-        function isTemporaryBlobUrl(input) {
-            return String(input || '').startsWith('blob:');
-        }
-
-        function normalizeVideoSource(input) {
-            return isYouTubeUrl(input) ? buildYouTubeEmbedUrl(input, false) : input;
-        }
-
         function addVideo() {
             const url = document.getElementById('videoUrl').value.trim();
-            const fileInput = document.getElementById('videoFile');
-            const file = fileInput ? fileInput.files[0] : null;
-            const episode = document.getElementById('videoEpisode').value.trim();
+            const file = document.getElementById('videoFile').files[0];
             const dirId = document.getElementById('videoDir').value;
+            const title = document.getElementById('videoEpisode').value.trim() || '未命名';
             const pwd = document.getElementById('videoPwd').value.trim();
-
-            if (file && !url) {
-                alert('GitHub Pages 不能永久保存本地视频文件。请先把视频上传到 YouTube，或使用可以外网访问的 MP4 链接，然后粘贴链接。');
-                if (fileInput) fileInput.value = '';
-                return;
-            }
-
-            if (!url) {
-                alert('请粘贴 YouTube 链接或 MP4 外链！');
-                return;
-            }
-
-            let src = normalizeVideoSource(url);
-            let autoTitle = '';
-            const youtubeId = extractYouTubeId(url);
-
-            if (youtubeId) {
-                autoTitle = `YouTube ${youtubeId}`;
-            } else {
-                try {
-                    const urlObj = new URL(url);
-                    autoTitle = urlObj.pathname.split('/').filter(Boolean).pop() || urlObj.hostname;
-                } catch {
-                    autoTitle = url.slice(-30);
-                }
-            }
-
-            if (episode) autoTitle += ` ${episode}`;
-            if (!autoTitle) autoTitle = '未命名视频';
-
-            videos.push({
-                name: src,
-                title_zh: autoTitle,
-                title_en: autoTitle,
-                title_ko: autoTitle,
-                episode: episode,
-                dirId: dirId,
-                password: pwd,
-                cover: DEFAULT_COVER
-            });
-
-            saveVideos();
-
-            document.getElementById('videoUrl').value = '';
-            if (fileInput) fileInput.value = '';
-            document.getElementById('videoEpisode').value = '';
-            document.getElementById('videoPwd').value = '';
-
-            renderWorkGroups();
+            let src = '';
+            if (url) src = url;
+            else if (file) src = URL.createObjectURL(file);
+            else return alert('请输入链接或选择文件');
+            videos.push({id: Date.now(), name: src, title: title, dirId: dirId, password: pwd, cover: 'https://i.imgur.com/9Z7X7QH.jpg'});
+            saveData();
             closeUploadPage();
+            renderWorkGroups();
         }
 
-        function attemptOpenVideo(index) {
+        // 播放逻辑
+        function checkPwd(index) {
             currentVideoIndex = index;
             const v = videos[index];
-            if (!v) return;
-
-            if (v.password) {
-                openPayModal(index);
-                return;
-            }
-
-            playVideo(v);
+            if (!v.password) playVideo(v);
+            else openModal('输入访问密码', p => p === v.password ? playVideo(v) : p === 'pay' ? openPayModal() : alert('密码错误'));
         }
-
-        function openPayModal(index) {
-            currentVideoIndex = index;
-            const modal = document.getElementById('payModal');
-            const payLink = document.getElementById('payLink');
-
-            // 这里仍然使用你原来的 PayPalMe 链接。
-            // 正式收款时，请把 yourpaypal 改成你的 PayPalMe 名称。
-            payLink.href = payLink.href || 'https://www.paypal.com/paypalme/yourpaypal';
-            payLink.onclick = function () {
-                // 纯前端页面无法真正验证付款，这里保持原来的演示流程：
-                // 点击付款后弹出密码框并自动填入密码。
-                setTimeout(afterPay, 700);
-                return true;
-            };
-
-            modal.classList.remove('hidden');
-        }
-
-        function closePayModal() {
-            document.getElementById('payModal').classList.add('hidden');
-        }
-
-        function afterPay() {
-            closePayModal();
-            const currentVideo = videos[currentVideoIndex];
-            openModal();
-            if (currentVideo && currentVideo.password) {
-                document.getElementById('modalPwd').value = currentVideo.password;
-            }
-        }
-
-        function checkPwd() {
-            const input = document.getElementById('modalPwd').value.trim();
-            const v = videos[currentVideoIndex];
-
-            if (!v) {
-                alert('未找到视频！');
-                return;
-            }
-
-            if (input === v.password) {
-                closeModal();
-                playVideo(v);
-            } else {
-                alert('❌ 密码错误！');
-            }
-        }
-
         function playVideo(v) {
             const area = document.getElementById('videoDisplayArea');
-            const title = escapeHtml(getVideoTitle(v));
-            const rawSrc = v.name || '';
-            const cover = escapeHtml(v.cover || DEFAULT_COVER);
-
-            let player = '';
-
-            if (isTemporaryBlobUrl(rawSrc)) {
-                player = `
-                    <div class="video-notice">
-                        这个视频是旧版本用“本地文件”添加的临时地址，刷新网页后浏览器已经无法读取，所以不能播放。<br>
-                        请删除这个视频，然后用 YouTube 链接或可外网访问的 MP4 链接重新添加。
-                    </div>
-                `;
-            } else if (isYouTubeUrl(rawSrc)) {
-                const cleanSrc = buildYouTubeEmbedUrl(rawSrc, true);
-                const watchUrl = escapeHtml(buildYouTubeWatchUrl(rawSrc));
-                player = `
-                    <div class="video-display-block">
-                        <div class="video-container" data-yt-src="${escapeHtml(cleanSrc)}" onclick="loadYoutubePlayer(this)">
-                            <img class="video-cover" src="${cover}" alt="${title} 封面">
-                            <div class="video-play-overlay">▶</div>
-                        </div>
-                        <p class="text-center text-sm text-gray-500 mt-2">点击封面播放视频。若播放器被网络拦截，可 <a class="video-help-link" href="${watchUrl}" target="_blank" rel="noopener">直接在 YouTube 打开</a></p>
-                    </div>
-                `;
+            if (v.name.includes('youtube.com/embed')) {
+                area.innerHTML = `<div class="video-container"><iframe src="${v.name}" allowfullscreen></iframe></div>`;
             } else {
-                const src = escapeHtml(rawSrc);
-                player = `
-                    <div class="video-display-block">
-                        <div class="video-container">
-                            <video
-                                controls
-                                preload="auto"
-                                playsinline
-                                webkit-playsinline
-                                x5-video-player-type="h5"
-                                x5-video-player-fullscreen="true"
-                                style="width:100%;height:100%;object-fit:contain;background:#000;"
-                                src="${src}">
-                                当前浏览器不支持视频播放。
-                            </video>
-                        </div>
-                        <p class="text-center text-sm text-gray-500 mt-2">如果 MP4 无法播放，请确认该链接可以在无痕窗口中直接打开，并且服务器允许跨站访问。</p>
-                    </div>
-                `;
+                area.innerHTML = `<div class="video-container"><video src="${v.name}" controls></video></div>`;
             }
-
-            area.innerHTML = player;
-            document.getElementById('emptyTip').style.display = 'none';
+            document.getElementById('portfolioEmptyTip').classList.add('hidden');
         }
 
-        function loadYoutubePlayer(container) {
-            const src = container.dataset.ytSrc;
-            if (!src) return;
-
-            container.removeAttribute('onclick');
-            container.innerHTML = `
-                <iframe
-                    src="${escapeHtml(src)}"
-                    title="YouTube video player"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerpolicy="strict-origin-when-cross-origin"
-                    allowfullscreen>
-                </iframe>
-            `;
-        }
-
-        function getVideosByDir(dirId) {
-            return videos
-                .map((v, index) => ({ ...v, index }))
-                .filter(v => String(v.dirId || '') === String(dirId || ''));
-        }
-
-        function renderVideoItem(v) {
-            const title = escapeHtml(getVideoTitle(v));
-            const icon = isTemporaryBlobUrl(v.name) ? '<span class="lock-icon">⚠️</span>' : (v.password ? '<span class="lock-icon">🔒</span>' : '<span class="unlock-icon">▶</span>');
-
-            return `
-                <div class="video-item" onclick="attemptOpenVideo(${v.index})">
-                    <div class="video-name">${icon}<span>${title}</span></div>
-                    <button class="delete-btn" onclick="event.stopPropagation();openDeleteModal(${v.index})">删除</button>
-                </div>
-            `;
-        }
-
-        function renderDirGroup(dir, items, isOpen = true) {
-            const dirName = escapeHtml(dir.name || '未命名目录');
-            const openClass = isOpen ? 'open' : '';
-            const videoHtml = items.length
-                ? items.map(renderVideoItem).join('')
-                : `<p class="text-sm text-gray-500 text-center" style="padding:0.8rem;">暂无视频</p>`;
-
-            return `
-                <div class="dir-group ${openClass}">
-                    <div class="dir-header" onclick="this.parentElement.classList.toggle('open')">
-                        <span class="dir-name">${dirName}</span>
-                        <span class="dir-toggle">▼</span>
-                    </div>
-                    <div class="dir-videos">${videoHtml}</div>
-                </div>
-            `;
-        }
-
+        // 渲染目录与视频
         function renderWorkGroups() {
-            const box = document.getElementById('workGroups');
-            if (!box) return;
-
-            const knownDirIds = new Set(dirs.map(d => String(d.id)));
-            const ungrouped = videos
-                .map((v, index) => ({ ...v, index }))
-                .filter(v => !v.dirId || !knownDirIds.has(String(v.dirId)));
-
-            let html = '';
-
-            if (dirs.length === 0 && videos.length === 0) {
-                box.innerHTML = '';
-                document.getElementById('emptyTip').style.display = 'block';
-                return;
-            }
-
-            dirs.forEach((dir, idx) => {
-                html += renderDirGroup(dir, getVideosByDir(dir.id), idx === 0);
-            });
-
-            if (ungrouped.length) {
-                html += renderDirGroup({ id: 0, name: '未分类' }, ungrouped, dirs.length === 0);
-            }
-
-            box.innerHTML = html;
-            document.getElementById('emptyTip').style.display = videos.length ? 'none' : 'block';
-            updateDirOptions();
-        }
-
-        function renderMyWorks() {
-            renderWorkGroups();
-        }
-
-        function openEditDirModal(id) {
-            currentDirId = parseInt(id);
-            const dir = dirs.find(d => Number(d.id) === Number(currentDirId));
-            if (!dir) return;
-            document.querySelectorAll('.dir-menu').forEach(m => m.remove());
-            document.getElementById('editDirNameInput').value = dir.name;
-            document.getElementById('editDirModal').classList.remove('hidden');
-        }
-
-        function openDeleteDirModal(id) {
-            currentDirId = parseInt(id);
-            document.querySelectorAll('.dir-menu').forEach(m => m.remove());
-            document.getElementById('deleteDirModal').classList.remove('hidden');
-        }
-
-        function applyLanguage(lang) {
-            document.querySelectorAll('.lang-zh, .lang-en, .lang-ko').forEach(el => {
-                el.classList.remove('active-lang');
-            });
-            document.querySelectorAll(`.lang-${lang}`).forEach(el => {
-                el.classList.add('active-lang');
-            });
-
-            const currentLang = document.getElementById('currentLang');
-            if (currentLang) {
-                currentLang.textContent = lang === 'zh' ? '中文' : (lang === 'en' ? 'English' : '한국어');
-            }
-
-            localStorage.setItem('siteLang', lang);
-            renderWorkGroups();
-        }
-
-        function setupNavigation() {
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = this.dataset.target;
-
-                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-
-                    document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active-section'));
-                    const targetSection = document.getElementById(target);
-                    if (targetSection) targetSection.classList.add('active-section');
-
-                    history.replaceState(null, '', `#${target}`);
+            const cont = document.getElementById('workGroups');
+            cont.innerHTML = '';
+            dirs.forEach(d => {
+                const g = document.createElement('div');
+                g.className = 'dir-group';
+                g.innerHTML = `
+                    <div class="dir-header" onclick="toggleDir(this.parentElement)">
+                        <span class="dir-name">${d.name}</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="dir-videos" id="dir-${d.id}"></div>
+                `;
+                cont.appendChild(g);
+                const vCont = document.getElementById(`dir-${d.id}`);
+                const dirVideos = videos.filter(v => v.dirId == d.id);
+                if (dirVideos.length === 0) {vCont.innerHTML = '<div class="text-sm text-gray-400 p-2">暂无视频</div>';}
+                dirVideos.forEach((v, i) => {
+                    const item = document.createElement('div');
+                    item.className = 'video-item';
+                    item.innerHTML = `
+                        <span class="video-name" onclick="checkPwd(${videos.indexOf(v)})">
+                            ${v.password ? '<span class="lock-icon">🔒</span>' : '<span class="unlock-icon">🔓</span>'}
+                            ${v.title}
+                        </span>
+                        <span class="delete-btn" onclick="delVideo(${videos.indexOf(v)})">🗑️</span>
+                    `;
+                    vCont.appendChild(item);
                 });
             });
         }
+        function toggleDir(el) {el.classList.toggle('open');}
+        function delVideo(i) {if (confirm('确定删除？')) {videos.splice(i, 1); saveData(); renderWorkGroups();}}
+        function saveData() {localStorage.setItem('myVideos', JSON.stringify(videos)); localStorage.setItem('myDirs', JSON.stringify(dirs));}
 
-        function setupLanguageMenu() {
-            const btn = document.getElementById('langBtn');
-            const menu = document.getElementById('langMenu');
-
-            if (btn && menu) {
-                btn.addEventListener('click', function (e) {
-                    e.stopPropagation();
-                    menu.classList.toggle('hidden');
-                });
-
-                document.addEventListener('click', function () {
-                    menu.classList.add('hidden');
-                });
-            }
-
-            document.querySelectorAll('.lang-option').forEach(option => {
-                option.addEventListener('click', function (e) {
-                    e.stopPropagation();
-                    applyLanguage(this.dataset.lang);
-                    menu.classList.add('hidden');
-                });
-            });
-        }
-
-        function setupInitialHash() {
-            const hash = location.hash.replace('#', '');
-            if (!hash) return;
-            const btn = document.querySelector(`.nav-btn[data-target="${hash}"]`);
-            if (btn) btn.click();
-        }
-
-        function migrateOldYouTubeUrls() {
-            let changed = false;
-
-            videos = videos.map(v => {
-                if (v && v.name && isYouTubeUrl(v.name)) {
-                    const fixed = buildYouTubeEmbedUrl(v.name, false);
-                    if (fixed !== v.name) changed = true;
-                    return { ...v, name: fixed };
-                }
-                return v;
-            });
-
-            if (changed) saveVideos();
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            migrateOldYouTubeUrls();
-            setupNavigation();
-            setupLanguageMenu();
-            applyLanguage(localStorage.getItem('siteLang') || 'zh');
-            updateDirOptions();
-            renderWorkGroups();
-            setupInitialHash();
-        });
+        // 初始化
+        renderWorkGroups();
+        updateDirOptions();
     </script>
 </body>
 </html>
