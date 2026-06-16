@@ -72,7 +72,7 @@
         .pay-box {background:#fff;padding:2rem;border-radius:12px;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.15);}
         /* ✅ 付费解锁内容 */
         .pay-title {font-size:1.1rem;font-weight:600;margin-bottom:1rem;color:#dc3545;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
-        /* ✅ 观看本集需支付 $0.99 USD —— 已删除“付款后获得密码” */
+        /* ✅ 观看本集需支付 $0.99 USD */
         .pay-desc {font-size:0.95rem;color:#6c757d;margin-bottom:1rem;line-height:1.5;}
         /* ✅ 支持 PayPal / 银行卡支付 - 加粗突出 */
         .pay-method {color:#28a745;font-size:1rem;font-weight:600;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:0.3rem;}
@@ -196,7 +196,7 @@
                 <input type="file" id="videoFile" accept="video/*">
             </div>
             <input type="text" id="videoTitle" placeholder="📝 输入视频标题" required>
-            <!-- ✅ 已修改：改为“输入密码（选填）” -->
+            <!-- ✅ 选题（选填） → 输入密码（选填） -->
             <input type="text" id="videoPwd" placeholder="🔒 输入密码（选填）">
             <button onclick="addVideo()">添加到作品列表</button>
             <button class="close-btn" onclick="closeUploadPage()">关闭页面</button>
@@ -316,10 +316,10 @@
                 <span class="lang-en">🔒 Premium Content</span>
                 <span class="lang-ko">🔒 유료 콘텐츠</span>
             </div>
-            <!-- ✅ 仅保留“观看本集视频需支付 $0.99 USD”，删除“付款后获得密码” -->
+            <!-- ✅ 观看本视频需支付 → 观看本集视频需支付 -->
             <div class="pay-desc">
                 <span class="lang-zh active-lang">观看本集视频需支付 $0.99 USD</span>
-                <span class="lang-en">Pay $0.99 USD to watch this video</span>
+                <span class="lang-en">Pay $0.99 USD to watch this episode</span>
                 <span class="lang-ko">본 영상 시청에는 $0.99 USD 결제가 필요합니다</span>
             </div>
             <!-- ✅ 支持 PayPal / 银行卡支付 - 加粗显示 -->
@@ -466,7 +466,7 @@
             const inputPwd = document.getElementById('modalPwd').value.trim();
             const currentVideo = videos[currentVideoIndex];
             
-            if(!currentVideo.password || inputPwd === currentVideo.password) { // ✅ 没设密码直接播放
+            if(!currentVideo.password || inputPwd === currentVideo.password) { 
                 closeModal();
                 playVideo(currentVideo);
             } else {
@@ -494,13 +494,19 @@
             c.innerHTML='';
             videos.forEach((v,i)=>{
                 const d=document.createElement('div');d.className='video-item';
-                const icon='<span class="lock-icon">🔒</span>';
+                // ✅ 有密码显示锁图标，无密码显示解锁图标
+                const icon= v.password ? '<span class="lock-icon">🔒</span>' : '<span class="unlock-icon">🔓</span>';
                 const t=lang==='zh'?v.title_zh:lang==='en'?v.title_en:v.title_ko;
                 d.innerHTML=`<div class="video-name">${t} ${icon}</div><span class="delete-btn" onclick="event.stopPropagation(); openDeleteModal(${i})">删除</span>`;
                 
                 d.onclick=()=>{
                     currentVideoIndex = i;
-                    document.getElementById('payModal').classList.remove('hidden');
+                    // ✅ 核心逻辑：有密码 → 弹出支付；无密码 → 直接播放
+                    if(v.password && v.password.trim() !== '') {
+                        document.getElementById('payModal').classList.remove('hidden');
+                    } else {
+                        playVideo(v);
+                    }
                 };
                 c.appendChild(d);
             });
