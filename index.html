@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yoon Short-Form Video Creation Studio</title>
+    <style>
+        * {margin:0;padding:0;box-sizing:border-box;}
+        ::-webkit-scrollbar {width:6px;}
+        ::-webkit-scrollbar-thumb {background:#888;border-radius:3px;}
+        body {font-family: 'Noto Sans SC', 'Noto Sans KR', 'Noto Sans', sans-serif;transition:all 0.3s;line-height:1.6;background-color: #f3f4f6;}
+        
+        .lang-zh, .lang-en, .lang-ko {display:none;}
+        .active-lang {display:block !important;}
+        
+        .page-section {display:none;}
+        .active-section {display:block;animation:fadeIn 0.5s;}
+        @keyframes fadeIn {from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+        
+        .lang-dropdown {position:relative;z-index:9999 !important;}
+        #langMenu {z-index:9999 !important;}
+
+        .video-container {position:relative;overflow:hidden;border-radius:8px;background:#000;margin-bottom:1rem;}
+        video {width:100%;display:block;min-height:300px;}
+        .subtitle-box {position:absolute;bottom:0;left:0;right:0;padding:12px 16px;background:rgba(0,0,0,0.75);color:white;font-size:1rem;line-height:1.4;text-align:center;min-height:48px;display:flex;align-items:center;justify-content:center;}
+
+        .website-link {color: #165DFF !important; text-decoration: none; font-size: 0.85rem;}
+        .website-link:hover {text-decoration: underline;}
+
+        /* ✅ 设置按钮：正常显示，仅关于我右下角出现 */
+        .admin-entry {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            width: 22px;
+            height: 22px;
+            line-height: 22px;
+            text-align: center;
+            font-size: 11px;
+            color: #999;
+            cursor: pointer;
+            z-index: 999;
+            user-select: none;
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            transition: color 0.2s;
+        }
+        #profile.active-section .admin-entry {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+        .admin-entry:hover {color:#165DFF;}
+
+        /* ✅ 上传页面 */
+        .upload-page {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.98);z-index:9999;display:none;overflow-y:auto;padding:2rem;}
+        .upload-container {max-width:400px;margin:0 auto;background:#fff;padding:2rem;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1);}
+        .upload-container h3 {text-align:center;margin-bottom:1.5rem;color:#1a1a1a;}
+        .upload-container input {width:100%;padding:0.6rem;margin-bottom:0.8rem;border:1px solid #ddd;border-radius:6px;font-size:0.9rem;}
+        .upload-container button {width:100%;padding:0.7rem;background:#165DFF;color:white;border:none;border-radius:6px;cursor:pointer;font-size:0.9rem;margin-bottom:0.6rem;}
+        .upload-container .close-btn {background:#6c757d;}
+        .upload-tip {font-size:0.75rem;color:#888;text-align:center;margin-top:1rem;}
+
+        /* ✅ 付款弹窗 - 完全匹配截图 + 单语言显示 */
+        .pay-modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:10000;}
+        .pay-box {background:#fff;padding:2rem;border-radius:12px;width:340px;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,0.15);}
+        .pay-title {color:#d32f2f;font-size:1.1rem;font-weight:600;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
+        .pay-title::before {content:"🔒";}
+        .pay-desc {color:#666;font-size:0.95rem;line-height:1.6;margin-bottom:1.8rem;}
+        .pay-btn {display:block;width:100%;background:#0070ba;color:white;padding:0.8rem 1.4rem;border-radius:6px;text-decoration:none;font-weight:500;margin-bottom:1rem;transition:background 0.2s;border:none;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
+        .pay-btn::before {content:"💳";}
+        .pay-btn:hover {background:#005ea6;}
+        .pay-note {font-size:0.85rem;color:#888;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:0.4rem;}
+        .pay-note::before {content:"✅";}
+        .cancel-btn {width:100%;padding:0.8rem;background:#e5e7eb;color:#374151;border:none;border-radius:6px;cursor:pointer;font-size:1rem;transition:background 0.2s;}
+        .cancel-btn:hover {background:#d1d5db;}
+        .hidden {display:none !important;}
+
+        /* ✅ 作品展示布局：删除全部作品，只保留我的作品 */
+        .portfolio-layout {display:flex;gap:1.5rem;position:relative;min-height:400px;}
+        .portfolio-sidebar {width:280px;flex-shrink:0;}
+        .portfolio-content {flex:1;}
+        .work-title {font-weight:600;font-size:1.125rem;margin-bottom:0.5rem;color:#1a1a1a;}
+        .video-item {background:#fff;border-radius:8px;padding:1rem;margin-bottom:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.1);display:flex;justify-content:space-between;align-items:center;}
+        .video-name {font-weight:500;display:flex;align-items:center;gap:0.5rem;}
+        .lock-icon {color:#dc3545;}
+        .unlock-icon {color:#28a745;}
+
+        /* ✅ 暂无作品提示：居中靠下 */
+        .empty-tip {
+            position: absolute;
+            left: 50%;
+            bottom: 2rem;
+            transform: translateX(-50%);
+            text-align: center;
+            color: #999;
+            font-size: 0.9rem;
+            font-style: normal;
+            width: 100%;
+        }
+
+        /* ✅ 密码弹窗 */
+        .modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;}
+        .modal-content {background:#fff;padding:1.5rem;border-radius:8px;width:300px;box-shadow:0 4px 12px rgba(0,0,0,0.15);}
+        .modal-content h4 {margin-bottom:1rem;text-align:center;}
+        .modal-content input {width:100%;padding:0.5rem;margin-bottom:1rem;border:1px solid #ddd;border-radius:4px;}
+        .modal-content .btn-group {display:flex;gap:0.5rem;}
+        .modal-content button {flex:1;padding:0.5rem;border:none;border-radius:4px;cursor:pointer;}
+        .btn-cancel {background:#6c757d;color:white;}
+        .btn-confirm {background:#165DFF;color:white;}
+
+        /* ✅ 内置图标 */
+        .icon-video::before {content:"🎥";margin-right:0.5rem;}
+        .icon-globe::before {content:"🌐";margin-right:0.25rem;}
+        .icon-chevron-down::after {content:"▼";font-size:0.7rem;margin-left:0.25rem;}
+
+        /* ✅ 基础样式 */
+        .sticky {position:sticky;top:0;z-index:50;}
+        .bg-white {background-color:#ffffff;}
+        .shadow-sm {box-shadow:0 1px 2px 0 rgba(0,0,0,0.05);}
+        .container {width:100%;margin-left:auto;margin-right:auto;}
+        .px-4 {padding-left:1rem;padding-right:1rem;}
+        .py-4 {padding-top:1rem;padding-bottom:1rem;}
+        .py-8 {padding-top:2rem;padding-bottom:2rem;}
+        .mb-4 {margin-bottom:1rem;}
+        .mb-6 {margin-bottom:1.5rem;}
+        .mb-8 {margin-bottom:2rem;}
+        .mt-2 {margin-top:0.5rem;}
+        .mx-auto {margin-left:auto;margin-right:auto;}
+        .flex {display:flex;}
+        .grid {display:grid;}
+        .items-center {align-items:center;}
+        .justify-between {justify-content:space-between;}
+        .gap-2 {gap:0.5rem;}
+        .gap-6 {gap:1.5rem;}
+        .w-full {width:100%;}
+        .rounded-xl {border-radius:0.75rem;}
+        .border-t {border-width:1px;border-style:solid;}
+        .border-gray-200 {border-color:#e5e7eb;}
+        .text-xl {font-size:1.25rem;}
+        .text-2xl {font-size:1.5rem;}
+        .text-lg {font-size:1.125rem;}
+        .text-sm {font-size:0.875rem;}
+        .font-bold {font-weight:700;}
+        .font-semibold {font-weight:600;}
+        .text-center {text-align:center;}
+        .text-gray-500 {color:#6b7280;}
+        .p-6 {padding:1.5rem;}
+        .p-8 {padding:2rem;}
+        .relative {position:relative;}
+        .absolute {position:absolute;}
+        .right-0 {right:0;}
+        .md\:flex-col {flex-direction:column;}
+        @media (min-width:768px) {
+            .md\:flex-row {flex-direction:row;}
+            .md\:grid-cols-3 {grid-template-columns:repeat(3,minmax(0,1fr));}
+        }
+
+        /* ✅ 导航样式 + 标题与导航分离 */
+        .nav-btn {color: #0F48C9 !important;text-decoration:none;transition: color 0.2s;}
+        .nav-btn.active {color: #69B1FF !important;font-weight:600;}
+        .header-title {margin-right:1.5rem;}
+
+        /* ✅ 图片样式 */
+        .banner-img {
+            width:100%;
+            height:auto;
+            border-radius:8px;
+            margin-bottom:20px;
+            box-shadow:0 2px 8px rgba(0,0,0,0.1);
+            object-fit:cover;
+        }
+
+        /* ✅ 首页标题间距 */
+        .home-title-spacing {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- ✅ 上传页面 -->
+    <div class="upload-page" id="uploadPage">
+        <div class="upload-container">
+            <h3>📤 上传视频管理</h3>
+            <input type="file" id="videoFileInput" accept="video/*">
+            <input type="text" id="videoTitle" placeholder="输入视频标题">
+            <input type="text" id="videoPwd" placeholder="观看密码（可选）">
+            <button onclick="addVideo()">添加到作品列表</button>
+            <button class="close-btn" onclick="closeUploadPage()">关闭页面</button>
+            <div class="upload-tip">⚠️ 仅管理员可见，上传后复制链接替换代码</div>
+        </div>
+    </div>
+
+    <header class="sticky top-0 z-50 bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-4 flex md:flex-row items-center gap-4">
+            <div class="font-bold text-xl flex items-center gap-2 header-title">
+                <span class="icon-video"></span>
+                <span class="lang-zh active-lang">小Yoon 的创作空间</span>
+                <span class="lang-en">Little Yoon's Studio</span>
+                <span class="lang-ko">리틀 윤의 창작 공간</span>
+            </div>
+            <div class="flex items-center gap-6">
+                <nav class="flex gap-6">
+                    <a href="#home" class="nav-btn active" data-target="home">
+                        <span class="lang-zh active-lang">首页</span><span class="lang-en">Home</span><span class="lang-ko">홈</span>
+                    </a>
+                    <a href="#portfolio" class="nav-btn" data-target="portfolio">
+                        <span class="lang-zh active-lang">作品展示</span><span class="lang-en">Portfolio</span><span class="lang-ko">포트폴리오</span>
+                    </a>
+                    <a href="#skills" class="nav-btn" data-target="skills">
+                        <span class="lang-zh active-lang">专业技能</span><span class="lang-en">Professional Skills</span><span class="lang-ko">전문 기술</span>
+                    </a>
+                    <a href="#profile" class="nav-btn" data-target="profile">
+                        <span class="lang-zh active-lang">关于我</span><span class="lang-en">About Me</span><span class="lang-ko">나에 대해</span>
+                    </a>
+                </nav>
+                <div class="relative lang-dropdown">
+                    <button id="langBtn" class="flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 hover:bg-gray-200 transition">
+                        <span class="icon-globe"></span>
+                        <span id="currentLang">中文</span>
+                        <span class="icon-chevron-down"></span>
+                    </button>
+                    <div id="langMenu" class="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-sm p-2 hidden">
+                        <div class="lang-option px-3 py-2 hover:bg-gray-100 rounded cursor-pointer" data-lang="zh">中文</div>
+                        <div class="lang-option px-3 py-2 hover:bg-gray-100 rounded cursor-pointer" data-lang="en">English</div>
+                        <div class="lang-option px-3 py-2 hover:bg-gray-100 rounded cursor-pointer" data-lang="ko">한국어</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <!-- ✅ 首页 -->
+        <section id="home" class="page-section active-section mb-16">
+            <img class="banner-img" src="home.jpg" alt="欢迎页面">
+            <div class="bg-white p-6 rounded-xl shadow-sm home-title-spacing">
+                <h2 class="text-2xl font-bold mb-4 text-center">
+                    <span class="lang-zh active-lang">以影为介，共赴视觉之约</span>
+                    <span class="lang-en">Through Visuals, Beyond Imagination</span>
+                    <span class="lang-ko">영상으로 만나는 미학의 세계</span>
+                </h2>
+                <p class="text-center max-w-2xl mx-auto">
+                    <span class="lang-zh active-lang">热爱融入每一次创作，用镜头与剪辑讲述故事，让每一个作品都有温度、有质感。</span>
+                    <span class="lang-en">Passion in every creation, telling stories through lens and editing, making every work warm and textured.</span>
+                    <span class="lang-ko">모든 창작에 열정을 담고, 카메라와 편집으로 이야기를 전하며, 모든 작품에 온기와 질감을 더합니다</span>
+                </p>
+            </div>
+        </section>
+
+        <!-- ✅ 作品展示：删除全部作品，只保留我的作品，无默认测试视频 -->
+        <section id="portfolio" class="page-section mb-16">
+            <div class="bg-white p-8 rounded-xl shadow-sm">
+                <h2 class="text-2xl font-bold mb-6 text-center">
+                    <span class="lang-zh active-lang">作品展示</span><span class="lang-en">Portfolio</span><span class="lang-ko">포트폴리오</span>
+                </h2>
+                <div class="portfolio-layout">
+                    <div class="portfolio-sidebar">
+                        <h3 class="work-title mb-4 text-gray-700">
+                            <span class="lang-zh active-lang">我的作品（<span id="workCount">0</span>）</span>
+                            <span class="lang-en">My Works (<span id="workCountEn">0</span>)</span>
+                            <span class="lang-ko">내 작품 (<span id="workCountKo">0</span>)</span>
+                        </h3>
+                        <div id="workGroups"></div>
+                    </div>
+                    <div class="portfolio-content">
+                        <div id="videoDisplayArea"></div>
+                    </div>
+                    <!-- ✅ 暂无作品提示：居中靠下 -->
+                    <div class="empty-tip" id="emptyTip">
+                        <span class="lang-zh active-lang">暂无作品，上传视频到文件夹即可显示</span>
+                        <span class="lang-en">No works yet, upload videos to folder</span>
+                        <span class="lang-ko">작품이 없습니다, 동영상을 폴더에 업로드하세요</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ✅ 专业技能 -->
+        <section id="skills" class="page-section mb-16">
+            <div class="bg-white p-8 rounded-xl shadow-sm">
+                <h2 class="text-2xl font-bold mb-8 text-center">
+                    <span class="lang-zh active-lang">专业技能</span><span class="lang-en">Professional Skills</span><span class="lang-ko">전문 기술</span>
+                </h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="p-5 bg-gray-50 rounded-lg">
+                        <h3 class="font-semibold text-lg mb-2">
+                            <span class="lang-zh active-lang">视频剪辑</span>
+                            <span class="lang-en">Video Editing</span>
+                            <span class="lang-ko">영상 편집</span>
+                        </h3>
+                        <p class="text-gray-600 text-sm">
+                            <span class="lang-zh active-lang">熟练使用各类剪辑软件，擅长节奏把控与叙事表达</span>
+                            <span class="lang-en">Proficient in various editing software, good at rhythm control and narrative expression</span>
+                            <span class="lang-ko">다양한 편집 프로그램을 능숙하게 다루며, 리듬 조절과 이야기 표현에 능숙합니다</span>
+                        </p>
+                    </div>
+                    <div class="p-5 bg-gray-50 rounded-lg">
+                        <h3 class="font-semibold text-lg mb-2">
+                            <span class="lang-zh active-lang">内容策划</span>
+                            <span class="lang-en">Content Planning</span>
+                            <span class="lang-ko">콘텐츠 기획</span>
+                        </h3>
+                        <p class="text-gray-600 text-sm">
+                            <span class="lang-zh active-lang">挖掘生活亮点，策划新颖选题，打造优质内容脚本</span>
+                            <span class="lang-en">Discover highlights of life, plan innovative topics, create high-quality content scripts</span>
+                            <span class="lang-ko">일상의 매력을 발견하고 참신한 주제를 기획하며, 양질의 콘텐츠 스크립트를 제작합니다</span>
+                        </p>
+                    </div>
+                    <div class="p-5 bg-gray-50 rounded-lg">
+                        <h3 class="font-semibold text-lg mb-2">
+                            <span class="lang-zh active-lang">后期特效</span>
+                            <span class="lang-en">Post-production Effects</span>
+                            <span class="lang-ko">후반 작업 특수 효과</span>
+                        </h3>
+                        <p class="text-gray-600 text-sm">
+                            <span class="lang-zh active-lang">视觉包装、字幕设计、调色配乐，提升作品质感</span>
+                            <span class="lang-en">Visual packaging, subtitle design, color grading and music, enhancing the quality of works</span>
+                            <span class="lang-ko">시각 디자인, 자막 제작, 색보정과 음악 작업으로 작품의 완성도를 높입니다</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ✅ 关于我：恢复设置按钮 -->
+        <section id="profile" class="page-section mb-16 relative">
+            <div class="admin-entry" onclick="askAdminPwd()">⚙️</div>
+            <img class="banner-img" src="profile.jpg" alt="关于我页面">
+            <div class="bg-white p-8 rounded-xl shadow-sm">
+                <div class="pt-4 border-t border-gray-200">
+                    <h3 class="font-semibold text-lg mb-2">
+                        <span class="lang-zh active-lang">网站</span>
+                        <span class="lang-en">Website</span>
+                        <span class="lang-ko">웹사이트</span>
+                    </h3>
+                    <a href="https://kimm-lii.github.io/yooooon/" class="website-link text-lg" target="_blank">https://kimm-lii.github.io/yooooon/</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ✅ 管理员密码弹窗 -->
+    <div id="adminPwdModal" class="modal hidden">
+        <div class="modal-content">
+            <h4>管理员验证</h4>
+            <input type="password" id="adminPwdInput" placeholder="输入密码">
+            <div class="btn-group">
+                <button class="btn-cancel" onclick="closeAdminPwd()">取消</button>
+                <button class="btn-confirm" onclick="verifyAdminPwd()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ 密码弹窗 -->
+    <div id="pwdModal" class="modal hidden">
+        <div class="modal-content">
+            <h4 id="modalTitle">请输入密码</h4>
+            <input type="password" id="modalPwd" placeholder="输入密码">
+            <div class="btn-group">
+                <button class="btn-cancel" onclick="closeModal()">取消</button>
+                <button class="btn-confirm" onclick="checkPwd()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ 付款弹窗 - 严格单语言 + 截图样式 -->
+    <div id="payModal" class="pay-modal hidden">
+        <div class="pay-box">
+            <!-- 标题 -->
+            <div class="pay-title lang-zh active-lang">付费解锁内容</div>
+            <div class="pay-title lang-en">Premium Content</div>
+            <div class="pay-title lang-ko">유료 콘텐츠</div>
+
+            <!-- 描述 -->
+            <div class="pay-desc">
+                <p class="lang-zh active-lang">观看本视频需支付 <strong>$0.99 USD</strong><br>付款后即可获得密码并观看</p>
+                <p class="lang-en">Access this video for <strong>$0.99 USD</strong><br>Pay to get password & watch</p>
+                <p class="lang-ko">이 동영상은 <strong>$0.99 USD</strong> 결제 후<br>비밀번호를 받아 시청할 수 있습니다</p>
+            </div>
+
+            <!-- 支付按钮 -->
+            <a href="https://www.paypal.com/paypalme/YOUR_LINK/0.99USD" target="_blank" class="pay-btn lang-zh active-lang">立即支付 $0.99</a>
+            <a href="https://www.paypal.com/paypalme/YOUR_LINK/0.99USD" target="_blank" class="pay-btn lang-en">Pay $0.99 Now</a>
+            <a href="https://www.paypal.com/paypalme/YOUR_LINK/0.99USD" target="_blank" class="pay-btn lang-ko">$0.99 결제하기</a>
+
+            <!-- 备注 -->
+            <div class="pay-note">
+                <span class="lang-zh active-lang">付款后自动显示密码 / 或联系我获取</span>
+                <span class="lang-en">Password shown after payment / Contact me</span>
+                <span class="lang-ko">결제 후 비밀번호 표시 / 문의하세요</span>
+            </div>
+
+            <!-- 取消按钮 -->
+            <button class="cancel-btn" onclick="closePayModal()">
+                <span class="lang-zh active-lang">取消</span>
+                <span class="lang-en">Cancel</span>
+                <span class="lang-ko">취소</span>
+            </button>
+        </div>
+    </div>
+
+    <footer class="bg-white border-t text-center py-6">
+        <p>© 2026 Yoon Short-Form Video Creation Studio</p>
+    </footer>
+
+    <script>
+        // ✅ 关闭付费弹窗
+        function closePayModal() {
+            const payModal = document.getElementById('payModal');
+            if (payModal) payModal.classList.add('hidden');
+        }
+
+        // ✅ 核心函数：全部修复，无报错
+        function openModal(title, callback) {
+            const modalTitle = document.getElementById('modalTitle');
+            const modalPwd = document.getElementById('modalPwd');
+            const pwdModal = document.getElementById('pwdModal');
+            if (!modalTitle || !modalPwd || !pwdModal) return;
+            modalTitle.textContent = title;
+            modalPwd.value = '';
+            pwdModal.classList.remove('hidden');
+            modalCallback = callback;
+        }
+
+        function closeModal() {
+            const pwdModal = document.getElementById('pwdModal');
+            if (pwdModal) pwdModal.classList.add('hidden');
+            modalCallback = null;
+        }
+
+        // ✅ 已删除默认测试视频，初始为空数组
+        const videos = [];
+
+        let modalCallback = null;
+
+        // ✅ 管理员入口逻辑（完全修复）
+        function askAdminPwd() {
+            const adminPwdModal = document.getElementById('adminPwdModal');
+            if (adminPwdModal) adminPwdModal.classList.remove('hidden');
+        }
+        function closeAdminPwd() {
+            const adminPwdModal = document.getElementById('adminPwdModal');
+            const adminPwdInput = document.getElementById('adminPwdInput');
+            if (adminPwdModal) adminPwdModal.classList.add('hidden');
+            if (adminPwdInput) adminPwdInput.value = '';
+        }
+        function verifyAdminPwd() {
+            const adminPwdInput = document.getElementById('adminPwdInput');
+            if (!adminPwdInput) return;
+            const pwd = adminPwdInput.value.trim();
+            if (pwd === '0803') {
+                closeAdminPwd();
+                const uploadPage = document.getElementById('uploadPage');
+                if (uploadPage) uploadPage.style.display = 'block';
+            } else {
+                alert('密码错误！');
+            }
+        }
+        function closeUploadPage() {
+            const uploadPage = document.getElementById('uploadPage');
+            if (uploadPage) uploadPage.style.display = 'none';
+        }
+
+        // ✅ 上传视频
+        function addVideo() {
+            const fileInput = document.getElementById('videoFileInput');
+            const title = document.getElementById('videoTitle');
+            const pwd = document.getElementById('videoPwd');
+            if (!fileInput || !title || !pwd) return;
+
+            if (!fileInput.files[0] || !title.value.trim()) {
+                alert('请选择视频并输入标题！');
+                return;
+            }
+
+            const url = URL.createObjectURL(fileInput.files[0]);
+            videos.push({
+                name: url,
+                title_zh: title.value.trim(),
+                title_en: title.value.trim(),
+                title_ko: title.value.trim(),
+                password: pwd.value.trim()
+            });
+
+            fileInput.value = '';
+            title.value = '';
+            pwd.value = '';
+
+            renderWorkGroups();
+            closeUploadPage();
+            renderMyWorks();
+        }
+
+        // ✅ 指定播放器
+        function playVideo(src) {
+            const videoPlayer = document.getElementById('videoPlayer');
+            if (!videoPlayer) return;
+            videoPlayer.innerHTML = `
+                <div class="video-container">
+                    <video controls autoplay preload="metadata" playsinline style="width:100%;">
+                        <source src="${src}" type="video/mp4">
+                        浏览器不支持视频播放
+                    </video>
+                </div>
+            `;
+        }
+
+        // ✅ 弹窗逻辑
+        function checkPwd() {
+            const modalPwd = document.getElementById('modalPwd');
+            if (!modalPwd) return;
+            const input = modalPwd.value.trim();
+            if (modalCallback) modalCallback(input);
+            closeModal();
+        }
+
+        // ✅ 多语言工具
+        function getCurrentLang() {
+            if (document.querySelector('.lang-zh.active-lang')) return 'zh';
+            if (document.querySelector('.lang-en.active-lang')) return 'en';
+            return 'ko';
+        }
+
+        // ✅ 渲染我的作品（删除全部作品）
+        function renderWorkGroups() {
+            const workCount = document.getElementById('workCount');
+            const workCountEn = document.getElementById('workCountEn');
+            const workCountKo = document.getElementById('workCountKo');
+            const count = videos.length;
+            if (workCount) workCount.textContent = count;
+            if (workCountEn) workCountEn.textContent = count;
+            if (workCountKo) workCountKo.textContent = count;
+
+            // ✅ 有作品时隐藏提示，无作品时显示
+            const emptyTip = document.getElementById('emptyTip');
+            if (emptyTip) emptyTip.style.display = count === 0 ? 'block' : 'none';
+        }
+
+        function renderMyWorks() {
+            const lang = getCurrentLang();
+            const container = document.getElementById('videoDisplayArea');
+            if (!container) return;
+            container.innerHTML = `<div id="videoPlayer" class="mb-4"></div>`;
+
+            videos.forEach(video => {
+                const item = document.createElement('div');
+                item.className = 'video-item';
+                const icon = video.password ? '<span class="lock-icon"></span>' : '<span class="unlock-icon"></span>';
+                
+                let displayTitle;
+                if (lang === 'zh') displayTitle = video.title_zh;
+                else if (lang === 'en') displayTitle = video.title_en;
+                else displayTitle = video.title_ko;
+
+                item.innerHTML = `<div class="video-name">${displayTitle} ${icon}</div>`;
+                
+                item.onclick = () => {
+                    if (!video.password) {
+                        playVideo(video.name);
+                        return;
+                    }
+                    const payModal = document.getElementById('payModal');
+                    if (payModal) payModal.classList.remove('hidden');
+                    setTimeout(() => {
+                        let pwdText;
+                        if (lang === 'zh') pwdText = '输入该视频密码';
+                        else if (lang === 'en') pwdText = 'Enter Video Password';
+                        else pwdText = '동영상 비밀번호 입력';
+
+                        openModal(pwdText, input => {
+                            if (input === video.password) playVideo(video.name);
+                            else {
+                                let errText;
+                                if (lang === 'zh') errText = '密码错误！请先支付获取密码';
+                                else if (lang === 'en') errText = 'Wrong password! Pay first to get it';
+                                else errText = '비밀번호 오류! 결제 후 받으세요';
+                                alert(errText);
+                            }
+                        });
+                    }, 300);
+                };
+                container.appendChild(item);
+            });
+        }
+
+        // ✅ 多语言切换 - 核心：切换时自动隐藏其他语言
+        const langBtn = document.getElementById('langBtn');
+        const langMenu = document.getElementById('langMenu');
+        const langOptions = document.querySelectorAll('.lang-option');
+        const currentLangText = document.getElementById('currentLang');
+
+        if (langBtn && langMenu) {
+            langBtn.addEventListener('click', e => {
+                e.stopPropagation();
+                langMenu.classList.toggle('hidden');
+            });
+            document.addEventListener('click', () => langMenu.classList.add('hidden'));
+        }
+
+        langOptions.forEach(option => {
+            option.addEventListener('click', e => {
+                e.stopPropagation();
+                const lang = option.dataset.lang;
+                if (currentLangText) currentLangText.textContent = option.textContent;
+                
+                // ✅ 关键：只激活当前选中语言，其他全部隐藏
+                document.querySelectorAll('.lang-zh, .lang-en, .lang-ko').forEach(el => el.classList.remove('active-lang'));
+                document.querySelectorAll(`.lang-${lang}`).forEach(el => el.classList.add('active-lang'));
+                
+                localStorage.setItem('preferredLang', lang);
+                langMenu.classList.add('hidden');
+                renderWorkGroups();
+                const portfolio = document.getElementById('portfolio');
+                if (portfolio && portfolio.classList.contains('active-section')) {
+                    renderMyWorks();
+                }
+            });
+        });
+
+        // ✅ 初始化
+        window.addEventListener('load', () => {
+            renderWorkGroups();
+            const savedLang = localStorage.getItem('preferredLang') || 'zh';
+            const el = document.querySelector(`.lang-option[data-lang="${savedLang}"]`);
+            if (el) el.click();
+        });
+
+        // ✅ 导航切换
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const target = btn.dataset.target;
+                document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active-section'));
+                const targetSection = document.getElementById(target);
+                if (targetSection) targetSection.classList.add('active-section');
+                if (target === 'portfolio') renderMyWorks();
+            });
+        });
+    </script>
+</body>
+</html>
