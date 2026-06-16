@@ -226,12 +226,13 @@
         <div class="upload-container">
             <h3>📤 上传视频管理</h3>
             <input type="text" id="videoUrl" placeholder="🔗 YouTube链接 / Streamtape / 任意MP4链接">
+            <!-- ✅ 已删除：封面图链接 -->
             <div class="file-input">
                 <input type="file" id="videoFile" accept="video/*">
             </div>
-            <!-- ✅ 选择保存目录 -->
+            <!-- ✅ 修改：选择保存目录 → 选择保存标题，删除（可选） -->
             <select id="videoDir">
-                <option value="">📁 选择保存目录（可选）</option>
+                <option value="">📁 选择保存标题</option>
             </select>
             <!-- ✅ 集数（选填） -->
             <input type="text" id="videoEpisode" placeholder="📑 集数（选填，如：第1集 / EP01）">
@@ -476,10 +477,10 @@
             },10);
         }
 
-        // ✅ 更新上传页的目录下拉选项
+        // ✅ 更新上传页的目录下拉选项 → 对应“选择保存标题”
         function updateDirOptions() {
             const sel = document.getElementById('videoDir');
-            sel.innerHTML = '<option value="">📁 选择保存目录（可选）</option>';
+            sel.innerHTML = '<option value="">📁 选择保存标题</option>';
             dirs.forEach(d=>{
                 const opt = document.createElement('option');
                 opt.value = d.id;
@@ -522,7 +523,6 @@
         function addVideo() {
             const url=document.getElementById('videoUrl').value.trim();
             const file=document.getElementById('videoFile').files[0];
-            const cover=document.getElementById('videoCover')?.value?.trim() || DEFAULT_COVER;
             const episode=document.getElementById('videoEpisode').value.trim();
             const dirId=document.getElementById('videoDir').value;
             const pwd=document.getElementById('videoPwd').value.trim();
@@ -566,7 +566,7 @@
                 episode:episode,
                 dirId:dirId,
                 password:pwd,
-                cover:cover
+                cover: DEFAULT_COVER // ✅ 保留默认封面
             });
             localStorage.setItem('myVideos',JSON.stringify(videos));
             document.getElementById('videoUrl').value='';document.getElementById('videoFile').value='';document.getElementById('videoEpisode').value='';document.getElementById('videoPwd').value='';
