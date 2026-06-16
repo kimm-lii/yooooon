@@ -69,20 +69,21 @@
         .file-input {padding:0.5rem 0.75rem;}
 
         .pay-modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;z-index:10000;padding:1rem;}
-        .pay-box {background:#fff;padding:2rem;border-radius:12px;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.15);}
+        /* ✅ 弹窗整体缩小 */
+        .pay-box {background:#fff;padding:1.2rem;border-radius:10px;width:100%;max-width:280px;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,0.15);}
         /* ✅ 付费解锁内容 */
-        .pay-title {font-size:1.1rem;font-weight:600;margin-bottom:1rem;color:#dc3545;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
+        .pay-title {font-size:1rem;font-weight:600;margin-bottom:0.6rem;color:#dc3545;display:flex;align-items:center;justify-content:center;gap:0.4rem;}
         /* ✅ 观看本集需支付 $0.99 USD */
-        .pay-desc {font-size:0.95rem;color:#6c757d;margin-bottom:1rem;line-height:1.5;}
+        .pay-desc {font-size:0.85rem;color:#6c757d;margin-bottom:0.6rem;line-height:1.4;}
         /* ✅ 支持 PayPal / 银行卡支付 - 加粗突出 */
-        .pay-method {color:#28a745;font-size:1rem;font-weight:600;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:0.3rem;}
+        .pay-method {color:#28a745;font-size:0.85rem;font-weight:600;margin-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:0.3rem;}
         /* ✅ 隐藏：点击下方按钮跳转... 以及 已付款按钮 */
         .pay-note, .auto-fill-btn {display: none !important;}
-        /* ✅ 前往付款按钮 */
-        .pay-btn {width:100%;padding:0.9rem;background:#28a745;color:white;border:none;border-radius:8px;cursor:pointer;font-size:1rem;transition:background 0.2s;margin-bottom:0.7rem;}
+        /* ✅ 前往付款按钮 - 缩小尺寸 */
+        .pay-btn {width:100%;padding:0.6rem 0.8rem;background:#28a745;color:white;border:none;border-radius:6px;cursor:pointer;font-size:0.85rem;transition:background 0.2s;margin-bottom:0.5rem;}
         .pay-btn:hover {background:#218838;}
-        /* ✅ 取消按钮：修复层级和点击事件，确保能点击 */
-        .cancel-btn {width:100%;padding:0.9rem;background:#e5e7eb;color:#374151;border:none;border-radius:8px;cursor:pointer;font-size:1rem;transition:background 0.2s;position:relative;z-index:10001 !important;pointer-events: auto !important;}
+        /* ✅ 取消按钮 - 缩小尺寸 */
+        .cancel-btn {width:100%;padding:0.6rem 0.8rem;background:#e5e7eb;color:#374151;border:none;border-radius:6px;cursor:pointer;font-size:0.85rem;transition:background 0.2s;position:relative;z-index:10001 !important;pointer-events: auto !important;}
         .cancel-btn:hover {background:#d1d5db;}
         .hidden {display:none !important;}
 
