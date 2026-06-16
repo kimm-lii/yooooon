@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yoon Short-Form Video Creation Studio</title>
+    <style>
+        * {margin:0;padding:0;box-sizing:border-box;}
+        ::-webkit-scrollbar {width:6px;}
+        ::-webkit-scrollbar-thumb {background:#888;border-radius:3px;}
+        body {font-family: 'Noto Sans SC', 'Noto Sans KR', 'Noto Sans', sans-serif;transition:all 0.3s;line-height:1.6;background-color: #f3f4f6;}
+        
+        .lang-zh, .lang-en, .lang-ko {display:none;}
+        .active-lang {display:block !important;}
+        
+        .page-section {display:none;}
+        .active-section {display:block;animation:fadeIn 0.5s;}
+        @keyframes fadeIn {from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+        
+        .lang-dropdown {position:relative;z-index:9999 !important;}
+        #langMenu {z-index:9999 !important;}
+
+        .video-container {position:relative;overflow:hidden;border-radius:8px;background:#000;margin-bottom:1rem;min-height:300px;}
+        video, iframe {width:100%;height:100%;display:block;border:none;}
+        @media (min-width: 1920px) { .video-container {min-height: 600px;} }
+        .error-tip {color:#dc3545;padding:2rem;text-align:center;background:#fff;border-radius:8px;}
+
+        .website-link {color: #165DFF !important; text-decoration: none; font-size: 0.85rem;}
+        .website-link:hover {text-decoration: underline;}
+
+        .admin-entry {position: absolute;bottom: 1rem;right: 1rem;width: 22px;height: 22px;line-height: 22px;text-align: center;font-size: 11px;color: #999;cursor: pointer;z-index: 999;user-select: none;display: none !important;visibility: hidden !important;opacity: 0 !important;pointer-events: none !important;transition: color 0.2s;}
+        #profile.active-section .admin-entry {display: block !important;visibility: visible !important;opacity: 1 !important;pointer-events: auto !important;}
+        .admin-entry:hover {color:#165DFF;}
+
+        .upload-page {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.98);z-index:9999;display:none;overflow-y:auto;padding:2rem;}
+        .upload-container {max-width:400px;margin:0 auto;background:#fff;padding:2rem;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1);}
+        .upload-container h3 {text-align:center;margin-bottom:1.5rem;color:#1a1a1a;}
+        .upload-container input, .upload-container .file-input {width:100%;padding:0.6rem;margin-bottom:0.8rem;border:1px solid #ddd;border-radius:6px;font-size:0.9rem;}
+        .upload-container button {width:100%;padding:0.7rem;background:#165DFF;color:white;border:none;border-radius:6px;cursor:pointer;font-size:0.9rem;margin-bottom:0.6rem;}
+        .upload-container .close-btn {background:#6c757d;}
+        .upload-tip {font-size:0.75rem;color:#888;text-align:center;margin-top:1rem;}
+
+        .pay-modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:10000;}
+        .pay-box {background:#fff;padding:2rem;border-radius:12px;width:340px;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,0.15);}
+        .pay-title {color:#d32f2f;font-size:1.1rem;font-weight:600;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
+        .pay-title::before {content:"🔒";}
+        .pay-desc {color:#666;font-size:0.95rem;line-height:1.6;margin-bottom:1.8rem;}
+        .pay-btn {display:block;width:100%;background:#0070ba;color:white;padding:0.8rem 1.4rem;border-radius:6px;text-decoration:none;font-weight:500;margin-bottom:1rem;transition:background 0.2s;border:none;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
+        .pay-btn::before {content:"💳";}
+        .pay-btn:hover {background:#005ea6;}
+        .pay-note {font-size:0.85rem;color:#888;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:0.4rem;}
+        .pay-note::before {content:"✅";}
+        .cancel-btn {width:100%;padding:0.8rem;background:#e5e7eb;color:#374151;border:none;border-radius:6px;cursor:pointer;font-size:1rem;transition:background 0.2s;}
+        .cancel-btn:hover {background:#d1d5db;}
+        .hidden {display:none !important;}
+
+        .portfolio-layout {display:flex;gap:1.5rem;position:relative;min-height:400px;}
+        .portfolio-sidebar {width:280px;flex-shrink:0;}
+        .portfolio-content {flex:1;}
+        .work-title {font-weight:600;font-size:1.125rem;margin-bottom:0.5rem;color:#1a1a1a;}
+        .video-item {background:#fff;border-radius:8px;padding:1rem;margin-bottom:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.1);display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:all 0.2s;}
+        .video-item:hover {background:#f8f9fa;}
+        .video-name {font-weight:500;display:flex;align-items:center;gap:0.5rem;}
+        .lock-icon {color:#dc3545;}
+        .unlock-icon {color:#28a745;}
+        .delete-btn {color: #dc3545; font-size: 0.8rem; cursor: pointer; padding: 0.2rem 0.5rem; border: 1px solid #dc3545; border-radius: 4px; transition: all 0.2s;}
+        .delete-btn:hover {background: #dc3545; color: white;}
+
+        .video-display-block {margin-bottom:2rem;}
+        .video-main-title {font-size:1.3rem;font-weight:600;margin-bottom:1rem;color:#1a1a1a;text-align:center;padding-bottom:0.5rem;border-bottom:1px solid #eee;}
+
+        .empty-tip {position: absolute;left: 50%;bottom: 2rem;transform: translateX(-50%);text-align: center;color: #999;font-size: 0.9rem;font-style: normal;width: 100%;}
+
+        .modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;}
+        .modal-content {background:#fff;padding:1.5rem;border-radius:8px;width:300px;box-shadow:0 4px 12px rgba(0,0,0,0.15);}
+        .modal-content h4 {margin-bottom:1rem;text-align:center;display:none;}
+        .modal-content input {width:100%;padding:0.5rem;margin-bottom:1rem;border:1px solid #ddd;border-radius:4px;}
+        .modal-content .btn-group {display:flex;gap:0.5rem;}
+        .modal-content button {flex:1;padding:0.5rem;border:none;border-radius:4px;cursor:pointer;}
+        .btn-cancel {background:#6c757d;color:white;}
+        .btn-confirm {background:#165DFF;color:white;}
+
+        .icon-video::before {content:"🎥";margin-right:0.5rem;}
+        .icon-globe::before {content:"🌐";margin-right:0.25rem;}
+        .icon-chevron-down::after {content:"▼";font-size:0.7rem;margin-left:0.25rem;}
+
+        .sticky {position:sticky;top:0;z-index:50;}
+        .bg-white {background-color:#ffffff;}
+        .shadow-sm {box-shadow:0 1px 2px 0 rgba(0,0,0,0.05);}
+        .container {width:100%;margin-left:auto;margin-right:auto;}
+        .px-4 {padding-left:1rem;padding-right:1rem;}
+        .py-4 {padding-top:1rem;padding-bottom:1rem;}
+        .py-8 {padding-top:2rem;padding-bottom:2rem;}
+        .mb-4 {margin-bottom:1rem;}
+        .mb-6 {margin-bottom:1.5rem;}
+        .mb-8 {margin-bottom:2rem;}
+        .mt-2 {margin-top:0.5rem;}
+        .mx-auto {margin-left:auto;margin-right:auto;}
+        .flex {display:flex;}
+        .grid {display:grid;}
+        .items-center {align-items:center;}
+        .justify-between {justify-content:space-between;}
+        .gap-2 {gap:0.5rem;}
+        .gap-6 {gap:1.5rem;}
+        .w-full {width:100%;}
+        .rounded-xl {border-radius:0.75rem;}
+        .border-t {border-width:1px;border-style:solid;}
+        .border-gray-200 {border-color:#e5e7eb;}
+        .text-xl {font-size:1.25rem;}
+        .text-2xl {font-size:1.5rem;}
+        .text-lg {font-size:1.125rem;}
+        .text-sm {font-size:0.875rem;}
+        .font-bold {font-weight:700;}
+        .font-semibold {font-weight:600;}
+        .text-center {text-align:center;}
+        .text-gray-500 {color:#6b7280;}
+        .p-6 {padding:1.5rem;}
+        .p-8 {padding:2rem;}
+        .relative {position:relative;}
+        .absolute {position:absolute;}
+        .right-0 {right:0;}
+        .md\:flex-col {flex-direction:column;}
+        @media (min-width:768px) {.md\:flex-row {flex-direction:row;}.md\:grid-cols-3 {grid-template-columns:repeat(3,minmax(0,1fr));}}
+
+        .nav-btn {color: #0F48C9 !important;text-decoration:none;transition: color 0.2s;}
+        .nav-btn.active {color: #69B1FF !important;font-weight:600;}
+        .header-title {margin-right:1.5rem;}
+
+        .banner-img {width:100%;height:auto;border-radius:8px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.1);object-fit:cover;}
+        .home-title-spacing {padding-top: 1rem;padding-bottom: 1rem;}
+    </style>
+</head>
+<body>
+    <div class="upload-page" id="uploadPage">
+        <div class="upload-container">
+            <h3>📤 上传视频管理</h3>
+            <input type="text" id="videoUrl" placeholder="🔗 粘贴：https://www.youtube.com/embed/A7yxPM9v-sQ">
+            <div class="file-input">
+                <label>📁 选择文件：</label>
+                <input type="file" id="videoFile" accept="video/*">
+            </div>
+            <input type="text" id="videoTitle" placeholder="📝 输入视频标题" required>
+            <input type="text" id="videoPwd" placeholder="🔒 观看密码（可选）">
+            <button onclick="addVideo()">添加到作品列表</button>
+            <button class="close-btn" onclick="closeUploadPage()">关闭页面</button>
+            <div class="upload-tip">✅ 优先用YouTube链接，全球/电视都能播</div>
+        </div>
+    </div>
+
+    <header class="sticky top-0 z-50 bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-4 flex md:flex-row items-center gap-4">
+            <div class="font-bold text-xl flex items-center gap-2 header-title">
+                <span class="icon-video"></span>
+                <span class="lang-zh active-lang">小Yoon 的创作空间</span>
+                <span class="lang-en">Little Yoon's Studio</span>
+                <span class="lang-ko">리틀 윤의 창작 공간</span>
+            </div>
+            <div class="flex items-center gap-6">
+                <nav class="flex gap-6">
+                    <a href="#home" class="nav-btn active" data-target="home"><span class="lang-zh active-lang">首页</span><span class="lang-en">Home</span><span class="lang-ko">홈</span></a>
+                    <a href="#portfolio" class="nav-btn" data-target="portfolio"><span class="lang-zh active-lang">作品展示</span><span class="lang-en">Portfolio</span><span class="lang-ko">포트폴리오</span></a>
+                    <a href="#skills" class="nav-btn" data-target="skills"><span class="lang-zh active-lang">专业技能</span><span class="lang-en">Professional Skills</span><span class="lang-ko">전문 기술</span></a>
+                    <a href="#profile" class="nav-btn" data-target="profile"><span class="lang-zh active-lang">关于我</span><span class="lang-en">About Me</span><span class="lang-ko">나에 대해</span></a>
+                </nav>
+                <div class="relative lang-dropdown">
+                    <button id="langBtn" class="flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 hover:bg-gray-200 transition">
+                        <span class="icon-globe"></span>
+                        <span id="currentLang">中文</span>
+                        <span class="icon-chevron-down"></span>
+                    </button>
+                    <div id="langMenu" class="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-sm p-2 hidden">
+                        <div class="lang-option px-3 py-2 hover:bg-gray-100 rounded cursor-pointer" data-lang="zh">中文</div>
+                        <div class="lang-option px-3 py-2 hover:bg-gray-100 rounded cursor-pointer" data-lang="en">English</div>
+                        <div class="lang-option px-3 py-2 hover:bg-gray-100 rounded cursor-pointer" data-lang="ko">한국어</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <section id="home" class="page-section active-section mb-16">
+            <img class="banner-img" src="home.jpg" alt="欢迎页面">
+            <div class="bg-white p-6 rounded-xl shadow-sm home-title-spacing">
+                <h2 class="text-2xl font-bold mb-4 text-center">
+                    <span class="lang-zh active-lang">以影为介，共赴视觉之约</span>
+                    <span class="lang-en">Through Visuals, Beyond Imagination</span>
+                    <span class="lang-ko">영상으로 만나는 미학의 세계</span>
+                </h2>
+                <p class="text-center max-w-2xl mx-auto">
+                    <span class="lang-zh active-lang">热爱融入每一次创作，用镜头与剪辑讲述故事，让每一个作品都有温度、有质感。</span>
+                    <span class="lang-en">Passion in every creation, telling stories through lens and editing, making every work warm and textured.</span>
+                    <span class="lang-ko">모든 창작에 열정을 담고, 카메라와 편집으로 이야기를 전하며, 모든 작품에 온기와 질감을 더합니다</span>
+                </p>
+            </div>
+        </section>
+
+        <section id="portfolio" class="page-section mb-16">
+            <div class="bg-white p-8 rounded-xl shadow-sm">
+                <h2 class="text-2xl font-bold mb-6 text-center">
+                    <span class="lang-zh active-lang">作品展示</span><span class="lang-en">Portfolio</span><span class="lang-ko">포트폴리오</span>
+                </h2>
+                <div class="portfolio-layout">
+                    <div class="portfolio-sidebar">
+                        <h3 class="work-title mb-4 text-gray-700">
+                            <span class="lang-zh active-lang">我的作品（<span id="workCount">0</span>）</span>
+                            <span class="lang-en">My Works (<span id="workCountEn">0</span>)</span>
+                            <span class="lang-ko">내 작품 (<span id="workCountKo">0</span>)</span>
+                        </h3>
+                        <div id="workGroups"></div>
+                    </div>
+                    <div class="portfolio-content"><div id="videoDisplayArea"></div></div>
+                    <div class="empty-tip" id="emptyTip"><span class="lang-zh active-lang">暂无作品，粘贴链接或选择文件即可添加</span><span class="lang-en">No works yet, add link or file</span><span class="lang-ko">작품이 없습니다, 링크 또는 파일을 추가하세요</span></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="page-section mb-16">
+            <div class="bg-white p-8 rounded-xl shadow-sm">
+                <h2 class="text-2xl font-bold mb-8 text-center">
+                    <span class="lang-zh active-lang">专业技能</span><span class="lang-en">Professional Skills</span><span class="lang-ko">전문 기술</span>
+                </h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="p-5 bg-gray-50 rounded-lg">
+                        <h3 class="font-semibold text-lg mb-2"><span class="lang-zh active-lang">视频剪辑</span><span class="lang-en">Video Editing</span><span class="lang-ko">영상 편집</span></h3>
+                        <p class="text-gray-600 text-sm"><span class="lang-zh active-lang">熟练使用各类剪辑软件，擅长节奏把控与叙事表达</span><span class="lang-en">Proficient in various editing software, good at rhythm control and narrative expression</span><span class="lang-ko">다양한 편집 프로그램을 능숙하게 다루며, 리듬 조절과 이야기 표현에 능숙합니다</span></p>
+                    </div>
+                    <div class="p-5 bg-gray-50 rounded-lg">
+                        <h3 class="font-semibold text-lg mb-2"><span class="lang-zh active-lang">内容策划</span><span class="lang-en">Content Planning</span><span class="lang-ko">콘텐츠 기획</span></h3>
+                        <p class="text-gray-600 text-sm"><span class="lang-zh active-lang">挖掘生活亮点，策划新颖选题，打造优质内容脚本</span><span class="lang-en">Discover highlights of life, plan innovative topics, create high-quality content scripts</span><span class="lang-ko">일상의 매력을 발견하고 참신한 주제를 기획하며, 양질의 콘텐츠 스크립트를 제작합니다</span></p>
+                    </div>
+                    <div class="p-5 bg-gray-50 rounded-lg">
+                        <h3 class="font-semibold text-lg mb-2"><span class="lang-zh active-lang">后期特效</span><span class="lang-en">Post-production Effects</span><span class="lang-ko">후반 작업 특수 효과</span></h3>
+                        <p class="text-gray-600 text-sm"><span class="lang-zh active-lang">视觉包装、字幕设计、调色配乐，提升作品质感</span><span class="lang-en">Visual packaging, subtitle design, color grading and music, enhancing the quality of works</span><span class="lang-ko">시각 디자인, 자막 제작, 색보정과 음악 작업으로 작품의 완성도를 높입니다</span></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="profile" class="page-section mb-16 relative">
+            <div class="admin-entry" onclick="askAdminPwd()">⚙️</div>
+            <img class="banner-img" src="profile.jpg" alt="关于我页面">
+            <div class="bg-white p-8 rounded-xl shadow-sm">
+                <div class="pt-4 border-t border-gray-200">
+                    <h3 class="font-semibold text-lg mb-2"><span class="lang-zh active-lang">网站</span><span class="lang-en">Website</span><span class="lang-ko">웹사이트</span></h3>
+                    <a href="https://kimm-lii.github.io/yooooon/" class="website-link text-lg" target="_blank">https://kimm-lii.github.io/yooooon/</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="adminPwdModal" class="modal hidden"><div class="modal-content"><input type="password" id="adminPwdInput" placeholder=""><div class="btn-group"><button class="btn-cancel" onclick="closeAdminPwd()">取消</button><button class="btn-confirm" onclick="verifyAdminPwd()">确定</button></div></div></div>
+    <div id="pwdModal" class="modal hidden"><div class="modal-content"><input type="password" id="modalPwd" placeholder=""><div class="btn-group"><button class="btn-cancel" onclick="closeModal()">取消</button><button class="btn-confirm" onclick="checkPwd()">确定</button></div></div></div>
+    <div id="deletePwdModal" class="modal hidden"><div class="modal-content"><input type="password" id="deletePwdInput" placeholder=""><div class="btn-group"><button class="btn-cancel" onclick="closeDeleteModal()">取消</button><button class="btn-confirm" onclick="confirmDelete()">确定</button></div></div></div>
+    <div id="payModal" class="pay-modal hidden"><div class="pay-box"><div class="pay-title lang-zh active-lang">付费解锁内容</div><div class="pay-title lang-en">Premium Content</div><div class="pay-title lang-ko">유료 콘텐츠</div><div class="pay-desc"><p class="lang-zh active-lang">观看本视频需支付 <strong>$0.99 USD</strong><br>付款后即可获得密码并观看</p><p class="lang-en">Access this video for <strong>$0.99 USD</strong><br>Pay to get password & watch</p><p class="lang-ko">이 동영상은 <strong>$0.99 USD</strong> 결제 후<br>비밀번호를 받아 시청할 수 있습니다</p></div><a href="https://www.paypal.com/paypalme/YOUR_LINK/0.99USD" target="_blank" class="pay-btn lang-zh active-lang">立即支付 $0.99</a><a href="https://www.paypal.com/paypalme/YOUR_LINK/0.99USD" target="_blank" class="pay-btn lang-en">Pay $0.99 Now</a><a href="https://www.paypal.com/paypalme/YOUR_LINK/0.99USD" target="_="_blank" class="pay-btn lang-ko">$0.99 결제하기</a><div class="pay-note"><span class="lang-zh active-lang">付款后自动显示密码 / 或联系我获取</span><span class="lang-en">Password shown after payment / Contact me</span><span class="lang-ko">결제 후 비밀번호 표시 / 문의하세요</span></div><button class="cancel-btn" onclick="closePayModal()"><span class="lang-zh active-lang">取消</span><span class="lang-en">Cancel</span><span class="lang-ko">취소</span></button></div></div>
+
+    <footer class="bg-white border-t text-center py-6"><p>© 2026 Yoon Short-Form Video Creation Studio</p></footer>
+
+    <script>
+        let deleteIndex = -1;
+        let videos=JSON.parse(localStorage.getItem('myVideos'))||[];
+        let modalCallback=null;
+
+        function closePayModal() {document.getElementById('payModal').classList.add('hidden');}
+        function openModal(title, callback) {const m=document.getElementById('pwdModal');document.getElementById('modalPwd').value='';m.classList.remove('hidden');modalCallback=callback;}
+        function closeModal() {document.getElementById('pwdModal').classList.add('hidden');modalCallback=null;}
+        
+        function openDeleteModal(i) {deleteIndex=i;document.getElementById('deletePwdModal').classList.remove('hidden');document.getElementById('deletePwdInput').value='';}
+        function closeDeleteModal() {deleteIndex=-1;document.getElementById('deletePwdModal').classList.add('hidden');}
+        function confirmDelete() {
+            const p=document.getElementById('deletePwdInput').value.trim();
+            if(p==='0803'){videos.splice(deleteIndex,1);localStorage.setItem('myVideos',JSON.stringify(videos));renderWorkGroups();renderMyWorks();closeDeleteModal();alert('✅ 删除成功！');}
+            else alert('❌ 密码错误！');
+        }
+
+        function askAdminPwd() {document.getElementById('adminPwdModal').classList.remove('hidden');}
+        function closeAdminPwd() {document.getElementById('adminPwdModal').classList.add('hidden');document.getElementById('adminPwdInput').value='';}
+        function verifyAdminPwd() {const p=document.getElementById('adminPwdInput').value.trim();if(p==='0803'){closeAdminPwd();document.getElementById('uploadPage').style.display='block';}else alert('密码错误！');}
+        function closeUploadPage() {document.getElementById('uploadPage').style.display='none';}
+
+        function addVideo() {
+            const url=document.getElementById('videoUrl').value.trim();
+            const file=document.getElementById('videoFile').files[0];
+            const title=document.getElementById('videoTitle').value.trim();
+            const pwd=document.getElementById('videoPwd').value.trim();
+            if(!title){alert('请输入标题！');return;}
+            if(!url&&!file){alert('请粘贴链接或选择文件！');return;}
+            let src=url;
+            if(file) src='file:'+file.name;
+            videos.push({name:src,title_zh:title,title_en:title,title_ko:title,password:pwd});
+            localStorage.setItem('myVideos',JSON.stringify(videos));
+            document.getElementById('videoUrl').value='';document.getElementById('videoFile').value='';document.getElementById('videoTitle').value='';document.getElementById('videoPwd').value='';
+            renderWorkGroups();closeUploadPage();renderMyWorks();
+        }
+
+        // ✅ 核心修复：YouTube完整兼容+电视播放
+        function playVideo(v) {
+            const area=document.getElementById('videoDisplayArea');
+            const lang=getCurrentLang();
+            const title=lang==='zh'?v.title_zh:lang==='en'?v.title_en:v.title_ko;
+            let player='';
+
+            if(v.name.includes('youtube.com/embed/')){
+                // ✅ 加所有必要参数，韩国/全球都能播
+                player=`
+                <div class="video-container">
+                    <iframe 
+                        src="${v.name}" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" 
+                        allowfullscreen
+                        sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        loading="lazy"
+                    ></iframe>
+                </div>`;
+            } else if(v.name.startsWith('file:')){
+                // ✅ 本地文件兼容
+                player=`
+                <div class="video-container">
+                    <video 
+                        controls autoplay preload="auto" 
+                        playsinline webkit-playsinline 
+                        x5-video-player-type="h5" x5-video-player-fullscreen="true"
+                        style="width:100%;height:100%;"
+                    >
+                        <source src="${v.name.slice(5)}" type="video/mp4">
+                        <div class="error-tip">❌ 本地文件仅在你电脑可看，上传GitHub后请用YouTube链接</div>
+                    </video>
+                </div>`;
+            } else {
+                player='<div class="error-tip">❌ 链接格式错误，请用YouTube嵌入链接</div>';
+            }
+
+            area.innerHTML=`
+                <div class="video-display-block">
+                    <h3 class="video-main-title">${title}</h3>
+                    ${player}
+                </div>`;
+        }
+
+        function checkPwd() {const i=document.getElementById('modalPwd').value.trim();if(modalCallback)modalCallback(i);closeModal();}
+        function getCurrentLang() {return document.querySelector('.lang-zh.active-lang')?'zh':document.querySelector('.lang-en.active-lang')?'en':'ko';}
+
+        function renderWorkGroups() {
+            const c=videos.length;
+            document.getElementById('workCount').textContent=c;document.getElementById('workCountEn').textContent=c;document.getElementById('workCountKo').textContent=c;
+            document.getElementById('emptyTip').style.display=c?'none':'block';
+        }
+
+        function renderMyWorks() {
+            const lang=getCurrentLang();
+            const c=document.getElementById('workGroups');
+            c.innerHTML='';
+            videos.forEach((v,i)=>{
+                const d=document.createElement('div');d.className='video-item';
+                const icon=v.password?'<span class="lock-icon">🔒</span>':'<span class="unlock-icon">🔓</span>';
+                const t=lang==='zh'?v.title_zh:lang==='en'?v.title_en:v.title_ko;
+                d.innerHTML=`<div class="video-name">${t} ${icon}</div><span class="delete-btn" onclick="event.stopPropagation(); openDeleteModal(${i})">🗑️ 删除</span>`;
+                
+                d.onclick=()=>{
+                    if(!v.password){playVideo(v);return;}
+                    document.getElementById('payModal').classList.remove('hidden');
+                    setTimeout(()=>{
+                        const txt=lang==='zh'?'输入密码':lang==='en'?'Enter Password':'비밀번호 입력';
+                        openModal(txt,inp=>{if(inp===v.password)playVideo(v);else alert(lang==='zh'?'密码错误！':'Wrong password!');});
+                    },300);
+                };
+                c.appendChild(d);
+            });
+            document.getElementById('videoDisplayArea').innerHTML='';
+        }
+
+        const langBtn=document.getElementById('langBtn');const langMenu=document.getElementById('langMenu');const langOptions=document.querySelectorAll('.lang-option');const currentLangText=document.getElementById('currentLang');
+        if(langBtn&&langMenu){langBtn.addEventListener('click',e=>{e.stopPropagation();langMenu.classList.toggle('hidden');});document.addEventListener('click',()=>langMenu.classList.add('hidden'));}
+        langOptions.forEach(o=>{o.addEventListener('click',e=>{e.stopPropagation();const l=o.dataset.lang;currentLangText.textContent=o.textContent;document.querySelectorAll('.lang-zh,.lang-en,.lang-ko').forEach(el=>el.classList.remove('active-lang'));document.querySelectorAll(`.lang-${l}`).forEach(el=>el.classList.add('active-lang'));localStorage.setItem('preferredLang',l);langMenu.classList.add('hidden');renderWorkGroups();renderMyWorks();});});
+
+        window.addEventListener('load',()=>{renderWorkGroups();renderMyWorks();const l=localStorage.getItem('preferredLang')||'zh';document.querySelector(`.lang-option[data-lang="${l}"]`).click();});
+        document.querySelectorAll('.nav-btn').forEach(b=>{b.addEventListener('click',e=>{e.preventDefault();document.querySelectorAll('.nav-btn').forEach(btn=>btn.classList.remove('active'));b.classList.add('active');const t=b.dataset.target;document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active-section'));document.getElementById(t).classList.add('active-section');if(t==='portfolio')renderMyWorks();});});
+    </script>
+</body>
+</html>
