@@ -60,8 +60,8 @@
         .upload-page {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.98);z-index:9999;display:none;overflow-y:auto;padding:2rem 1rem;}
         .upload-container {max-width:420px;margin:0 auto;background:#fff;padding:2rem;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.12);}
         .upload-container h3 {text-align:center;margin-bottom:1.5rem;color:#1a1a1a;font-size:1.2rem;}
-        .upload-container input, .upload-container .file-input {width:100%;padding:0.75rem;margin-bottom:0.8rem;border:1px solid #e2e8f0;border-radius:8px;font-size:0.95rem;transition:border-color 0.2s;}
-        .upload-container input:focus, .upload-container .file-input:focus {outline:none;border-color:#165DFF;box-shadow:0 0 0 3px rgba(22,93,255,0.1);}
+        .upload-container input, .upload-container select, .upload-container .file-input {width:100%;padding:0.75rem;margin-bottom:0.8rem;border:1px solid #e2e8f0;border-radius:8px;font-size:0.95rem;transition:border-color 0.2s;}
+        .upload-container input:focus, .upload-container select:focus, .upload-container .file-input:focus {outline:none;border-color:#165DFF;box-shadow:0 0 0 3px rgba(22,93,255,0.1);}
         .upload-container button {width:100%;padding:0.85rem;background:#165DFF;color:white;border:none;border-radius:8px;cursor:pointer;font-size:0.95rem;margin-bottom:0.7rem;transition:background 0.2s;}
         .upload-container button:hover {background:#0F48C9;}
         .upload-container .close-btn {background:#64748b;}
@@ -93,18 +93,18 @@
         .portfolio-content {flex:1;width:100%;background:#fff;padding:1.2rem;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid #f1f5f9;}
         @media (min-width: 768px) {.portfolio-layout {flex-wrap:nowrap;}.portfolio-sidebar {width:280px;}}
         
-        /* ✅ 作品标题栏 - 新增隐藏式+号 */
-        .work-title-bar {display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
-        .work-title {font-weight:600;font-size:1.1rem;color:#1a1a1a;padding-bottom:0.5rem;border-bottom:1px solid #f1f5f9;}
+        /* ✅ 标题栏 - 隐藏式+号 */
+        .work-title-bar {display:flex;align-items:center;justify-content:flex-end;margin-bottom:1rem;}
         /* ✅ 隐藏式+号：默认透明，hover显示；密码0803 */
         .add-dir-btn {width:22px;height:22px;border-radius:50%;border:none;background:#165DFF;color:#fff;font-size:16px;cursor:pointer;opacity:0;transition:all 0.2s;display:flex;align-items:center;justify-content:center;line-height:1;}
-        .work-title-bar:hover .add-dir-btn {opacity:0.8;}
+        .portfolio-sidebar:hover .add-dir-btn {opacity:0.8;}
         .add-dir-btn:hover {opacity:1 !important;transform:scale(1.1);}
         
-        /* ✅ 目录分组样式 */
+        /* ✅ 目录分组样式 - ▼缩小变灰色 */
         .dir-group {margin-bottom:1rem;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;}
         .dir-header {padding:0.6rem 0.8rem;background:#f8fafc;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:space-between;}
         .dir-header:hover {background:#f1f5f9;}
+        .dir-toggle {font-size:0.55rem !important;color:##999 !important;opacity:0.6;}
         .dir-videos {padding:0.4rem 0.6rem;background:#fff;display:none;}
         .dir-group.open .dir-videos {display:block;}
 
@@ -153,7 +153,6 @@
 
         .icon-video::before {content:"🎥";margin-right:0.5rem;}
         .icon-globe::before {content:"🌐";margin-right:0.25rem;}
-        .icon-chevron-down::after {content:"▼";font-size:0.7rem;margin-left:0.25rem;}
 
         .sticky {position:sticky;top:0;z-index:50;}
         .bg-white {background-color:#ffffff;}
@@ -211,8 +210,15 @@
             <div class="file-input">
                 <input type="file" id="videoFile" accept="video/*">
             </div>
+            <!-- ✅ 选择目录 -->
+            <select id="videoDir">
+                <option value="">📂 选择保存目录（可选）</option>
+            </select>
+            <!-- ✅ 视频标题 -->
             <input type="text" id="videoTitle" placeholder="📝 输入视频标题" required>
-            <!-- ✅ 选题（选填） → 输入密码（选填） -->
+            <!-- ✅ 新增集数（选填） -->
+            <input type="text" id="videoEpisode" placeholder="📑 集数（选填，如：第1集 / EP01）">
+            <!-- ✅ 输入密码（选填） -->
             <input type="text" id="videoPwd" placeholder="🔒 输入密码（选填）">
             <button onclick="addVideo()">添加到作品列表</button>
             <button class="close-btn" onclick="closeUploadPage()">关闭页面</button>
@@ -274,13 +280,8 @@
                 </h2>
                 <div class="portfolio-layout">
                     <div class="portfolio-sidebar">
-                        <!-- ✅ 标题栏+隐藏式+号 -->
+                        <!-- ✅ 已删除「我的作品」项，仅保留+号 -->
                         <div class="work-title-bar">
-                            <h3 class="work-title">
-                                <span class="lang-zh active-lang">我的作品（<span id="workCount">0</span>）</span>
-                                <span class="lang-en">My Works (<span id="workCountEn">0</span>)</span>
-                                <span class="lang-ko">내 작품 (<span id="workCountKo">0</span>)</span>
-                            </h3>
                             <button class="add-dir-btn" title="添加目录" onclick="openAddDirPwd()">+</button>
                         </div>
                         <div id="workGroups"></div>
@@ -325,9 +326,9 @@
         </section>
     </main>
 
-    <!-- ✅ 新增：添加目录密码弹窗（密码固定0803） -->
+    <!-- ✅ 添加目录密码弹窗（密码固定0803） -->
     <div id="addDirPwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="addDirPwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeAddDirPwd()">取消</button><button class="btn-confirm" onclick="verifyAddDirPwd()">确定</button></div></div></div>
-    <!-- ✅ 新增：目录名称输入弹窗 -->
+    <!-- ✅ 目录名称输入弹窗 -->
     <div id="dirNameModal" class="modal hidden"><div class="modal-content"><input type="text" placeholder="输入目录名称" id="dirNameInput"><div class="btn-group"><button class="btn-cancel" onclick="closeDirNameModal()">取消</button><button class="btn-confirm" onclick="saveNewDir()">确定</button></div></div></div>
 
     <div id="adminPwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="adminPwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeAdminPwd()">取消</button><button class="btn-confirm" onclick="verifyAdminPwd()">确定</button></div></div></div>
@@ -378,7 +379,7 @@
     <script>
         let deleteIndex = -1;
         let videos=JSON.parse(localStorage.getItem('myVideos'))||[];
-        let dirs=JSON.parse(localStorage.getItem('myDirs'))||[]; // 存储目录
+        let dirs=JSON.parse(localStorage.getItem('myDirs'))||[];
         let modalCallback=null;
         let currentVideoIndex = -1;
         const SITE_DOMAIN = 'https://kimm-lii.github.io/yooooon';
@@ -401,6 +402,19 @@
             localStorage.setItem('myDirs',JSON.stringify(dirs));
             closeDirNameModal();
             renderWorkGroups();
+            updateDirOptions(); // ✅ 更新上传页目录选项
+        }
+
+        // ✅ 更新上传页的目录下拉选项
+        function updateDirOptions() {
+            const sel = document.getElementById('videoDir');
+            sel.innerHTML = '<option value="">📂 选择保存目录（可选）</option>';
+            dirs.forEach(d=>{
+                const opt = document.createElement('option');
+                opt.value = d.id;
+                opt.textContent = d.name;
+                sel.appendChild(opt);
+            });
         }
 
         // ✅ 付款后自动操作：关闭支付弹窗 → 打开密码框 → 自动填入密码
@@ -431,7 +445,7 @@
 
         function askAdminPwd() {document.getElementById('adminPwdModal').classList.remove('hidden');}
         function closeAdminPwd() {document.getElementById('adminPwdModal').classList.add('hidden');document.getElementById('adminPwdInput').value='';}
-        function verifyAdminPwd() {const p=document.getElementById('adminPwdInput').value.trim();if(p === '0803'){closeAdminPwd();document.getElementById('uploadPage').style.display='block';}else alert('密码错误！');}
+        function verifyAdminPwd() {const p=document.getElementById('adminPwdInput').value.trim();if(p === '0803'){closeAdminPwd();document.getElementById('uploadPage').style.display='block';updateDirOptions();}else alert('密码错误！');}
         function closeUploadPage() {document.getElementById('uploadPage').style.display='none';}
 
         function addVideo() {
@@ -439,6 +453,8 @@
             const cover=document.getElementById('coverUrl').value.trim() || DEFAULT_COVER;
             const file=document.getElementById('videoFile').files[0];
             const title=document.getElementById('videoTitle').value.trim();
+            const episode=document.getElementById('videoEpisode').value.trim(); // ✅ 集数
+            const dirId=document.getElementById('videoDir').value; // ✅ 选择的目录
             const pwd=document.getElementById('videoPwd').value.trim();
             if(!title){alert('请输入标题！');return;}
             if(!url&&!file){alert('请粘贴链接或选择文件！');return;}
@@ -459,9 +475,18 @@
             }
             
             if(file) src=URL.createObjectURL(file);
-            videos.push({name:src,title_zh:title,title_en:title,title_ko:title,password:pwd,cover:cover});
+            videos.push({
+                name:src,
+                title_zh:title,
+                title_en:title,
+                title_ko:title,
+                episode:episode,
+                dirId:dirId,
+                password:pwd,
+                cover:cover
+            });
             localStorage.setItem('myVideos',JSON.stringify(videos));
-            document.getElementById('videoUrl').value='';document.getElementById('coverUrl').value='';document.getElementById('videoFile').value='';document.getElementById('videoTitle').value='';document.getElementById('videoPwd').value='';
+            document.getElementById('videoUrl').value='';document.getElementById('coverUrl').value='';document.getElementById('videoFile').value='';document.getElementById('videoTitle').value='';document.getElementById('videoEpisode').value='';document.getElementById('videoPwd').value='';
             renderWorkGroups();closeUploadPage();renderMyWorks();
         }
 
@@ -520,10 +545,7 @@
 
         // ✅ 渲染目录+作品列表
         function renderWorkGroups() {
-            const c=videos.length;
-            document.getElementById('workCount').textContent=c;document.getElementById('workCountEn').textContent=c;document.getElementById('workCountKo').textContent=c;
-            document.getElementById('emptyTip').style.display=c?'none':'block';
-            
+            document.getElementById('emptyTip').style.display=videos.length?'none':'block';
             const container=document.getElementById('workGroups');
             container.innerHTML='';
             
@@ -534,23 +556,11 @@
                 dirEl.innerHTML=`
                 <div class="dir-header" onclick="this.parentElement.classList.toggle('open')">
                     <span>${d.name}</span>
-                    <span>▼</span>
+                    <span class="dir-toggle">▼</span>
                 </div>
                 <div class="dir-videos" id="dir-${d.id}"></div>`;
                 container.appendChild(dirEl);
             });
-            
-            // 渲染未分类作品
-            const uncatEl=document.createElement('div');
-            uncatEl.className='dir-group open';
-            uncatEl.innerHTML=`
-            <div class="dir-header">
-                <span>📁 全部作品</span>
-            </div>
-            <div class="dir-videos" id="uncat-videos"></div>`;
-            container.appendChild(uncatEl);
-
-            renderMyWorks();
         }
 
         function renderMyWorks() {
@@ -562,7 +572,8 @@
                 const d=document.createElement('div');d.className='video-item';
                 const icon= v.password && v.password.trim() !== '' ? '<span class="lock-icon">🔒</span>' : '';
                 const t=lang==='zh'?v.title_zh:lang==='en'?v.title_en:v.title_ko;
-                d.innerHTML=`<div class="video-name">${t} ${icon}</div><span class="delete-btn" onclick="event.stopPropagation(); openDeleteModal(${i})">删除</span>`;
+                const ep=v.episode?` <span style="color:#888;font-size:0.75rem;">${v.episode}</span>`:'';
+                d.innerHTML=`<div class="video-name">${t}${ep} ${icon}</div><span class="delete-btn" onclick="event.stopPropagation(); openDeleteModal(${i})">删除</span>`;
                 
                 d.onclick=()=>{
                     currentVideoIndex = i;
@@ -572,8 +583,11 @@
                         playVideo(v);
                     }
                 };
-                // 暂时全部放入未分类，后续可加拖拽分配
-                document.getElementById('uncat-videos').appendChild(d);
+                // 放入对应目录
+                if(v.dirId) {
+                    const el = document.getElementById(`dir-${v.dirId}`);
+                    if(el) el.appendChild(d);
+                }
             });
             document.getElementById('videoDisplayArea').innerHTML='';
         }
