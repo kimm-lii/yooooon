@@ -304,21 +304,21 @@
     <div id="deletePwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="deletePwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeDeleteModal()">取消</button><button class="btn-confirm" onclick="confirmDelete()">确定</button></div></div></div>
     <div id="payModal" class="pay-modal hidden">
         <div class="pay-box">
+            <!-- ✅ 只显示当前选中语言的标题 -->
             <div class="pay-title">
                 <span class="lang-zh active-lang">🔒 付费解锁内容</span>
                 <span class="lang-en">🔒 Premium Content</span>
                 <span class="lang-ko">🔒 유료 콘텐츠</span>
             </div>
-            <div class="pay-desc">
-                <span class="lang-zh active-lang">观看本视频需支付 $0.99 USD，付款后自动获取观看密码</span>
-                <span class="lang-en">Access requires $0.99 USD, password will be shown after payment</span>
-                <span class="lang-ko">시청하려면 $0.99 USD 결제가 필요하며, 결제 후 비밀번호가 표시됩니다</span>
-            </div>
+            <!-- ✅ 保留价格，删除“付款后联系我” -->
+            <div class="pay-desc">观看本视频需支付 $0.99 USD</div>
+            <!-- ✅ 单个✅ -->
             <div class="pay-method">✅ 支持 PayPal / 银行卡支付</div>
+            <!-- ✅ 自动生成密码区域 -->
             <div class="password-area" id="generatedPwdArea">
-                <div class="lang-zh active-lang">您的观看密码：</div>
-                <div class="lang-en">Your password:</div>
-                <div class="lang-ko">시청 비밀번호:</div>
+                <span class="lang-zh active-lang">观看密码：</span>
+                <span class="lang-en">Password:</span>
+                <span class="lang-ko">비밀번호:</span>
                 <div class="password-text" id="generatedPwd"></div>
             </div>
             <button class="pay-btn" onclick="generatePassword()">
@@ -345,7 +345,7 @@
         // ✅ 默认封面图
         const DEFAULT_COVER = 'https://i.imgur.com/9Z7X7QH.jpg';
 
-        // 生成随机6位密码
+        // ✅ 生成6位随机密码
         function generateRandomPwd() {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             let pwd = '';
@@ -355,15 +355,17 @@
             return pwd;
         }
 
+        // ✅ 点击后显示密码
         function generatePassword() {
             const pwd = generateRandomPwd();
             document.getElementById('generatedPwd').textContent = pwd;
             document.getElementById('generatedPwdArea').style.display = 'block';
         }
 
+        // ✅ 关闭弹窗重置
         function closePayModal() {
             document.getElementById('payModal').classList.add('hidden');
-            document.getElementById('generatedPwdArea').style.display = 'none'; // 关闭时重置
+            document.getElementById('generatedPwdArea').style.display = 'none';
             document.getElementById('generatedPwd').textContent = '';
         }
 
