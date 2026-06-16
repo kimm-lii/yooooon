@@ -111,6 +111,7 @@
             justify-content:center;
             line-height:1;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            z-index:10;
         }
         .portfolio-sidebar:hover .add-dir-btn {opacity:1;}
         .add-dir-btn:hover {transform:scale(1.1);}
@@ -659,7 +660,7 @@
                 const cleanSrc = v.name + '&controls=1&rel=0&playsinline=1&autoplay=0&mute=0';
                 player=`
                 <div class="video-display-block">
-                    <div class="video-container" onclick="loadYoutubePlayer(this, '${cleanSrc}')">
+                    <div class="video-container">
                         <img class="video-cover" src="${v.cover}" alt="${v.title_zh} 封面">
                     </div>
                 </div>`;
@@ -673,3 +674,6 @@
                             x5-video-player-type="h5" x5-video-player-fullscreen="true"
                             style="width:100%;height:100%;background:#000;"
                         >
+                            <source src="${v.name}" type="video/mp4">
+                            <source src="${v.name}" type="video/webm">
+                            您的浏览器不支持
