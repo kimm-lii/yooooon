@@ -248,6 +248,11 @@
         .dir-menu-item {padding:0.4rem 0.8rem;cursor:pointer;font-size:0.85rem;transition:background 0.2s;}
         .dir-menu-item:hover {background:#f1f5f9;}
         .dir-menu-item.danger {color:#dc3545;}
+
+        .video-play-overlay {position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:58px;height:58px;border-radius:50%;background:rgba(0,0,0,0.55);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;pointer-events:none;box-shadow:0 2px 10px rgba(0,0,0,0.25);}
+        .video-notice {padding:1rem;border-radius:10px;background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;font-size:0.9rem;line-height:1.6;margin-bottom:1rem;}
+        .video-help-link {color:#165DFF;text-decoration:none;font-size:0.85rem;}
+        .video-help-link:hover {text-decoration:underline;}
     </style>
 </head>
 <body>
@@ -255,9 +260,10 @@
         <div class="upload-container">
             <h3>📤 上传视频管理</h3>
             <input type="text" id="videoUrl" placeholder="🔗 YouTube链接 / Streamtape / 任意MP4链接">
-            <!-- ✅ 已删除：封面图链接 -->
-            <div class="file-input">
-                <input type="file" id="videoFile" accept="video/*">
+            <!-- ✅ GitHub Pages 是静态网站，不能真正保存本地视频文件。请先上传到 YouTube 或 MP4 外链后再粘贴链接。 -->
+            <input type="file" id="videoFile" accept="video/*" style="display:none;">
+            <div class="file-input" style="color:#64748b;background:#f8fafc;font-size:0.82rem;line-height:1.45;">
+                ⚠️ 请使用 YouTube 链接或 MP4 外链。不要直接选择本地视频文件，否则刷新后会失效。
             </div>
             <!-- ✅ 修改：选择保存目录 → 选择保存标题，删除（可选） -->
             <select id="videoDir">
@@ -268,6 +274,7 @@
             <!-- ✅ 输入密码（选填） -->
             <input type="text" id="videoPwd" placeholder="🔒 输入密码（选填）">
             <button onclick="addVideo()">添加到作品列表</button>
+            <button onclick="repairSavedVideos()" style="background:#0f766e;">修复旧视频链接 / 清理失效视频</button>
             <button class="close-btn" onclick="closeUploadPage()">关闭页面</button>
         </div>
     </div>
@@ -339,7 +346,7 @@
                         <div id="workGroups"></div>
                     </div>
                     <div class="portfolio-content"><div id="videoDisplayArea"></div></div>
-                    <div class="empty-tip" id="emptyTip"><span class="lang-zh active-lang">暂无作品，粘贴链接或选择文件即可添加</span><span class="lang-en">No works yet, add link or file</span><span class="lang-ko">작품이 없습니다, 링크 또는 파일을 추가하세요</span></div>
+                    <div class="empty-tip" id="emptyTip"><span class="lang-zh active-lang">暂无作品，粘贴 YouTube 链接或 MP4 外链即可添加</span><span class="lang-en">No works yet, add YouTube or MP4 link</span><span class="lang-ko">작품이 없습니다. YouTube 또는 MP4 링크를 추가하세요</span></div>
                 </div>
             </div>
         </section>
@@ -547,6 +554,27 @@
             updateDirOptions();
         }
 
+        // ✅ 目录操作菜单（点击目录名）
+        function showDirMenu(e, id) {
+            e.stopPropagation();
+            // 移除已有菜单
+            document.querySelectorAll('.dir-menu').forEach(m=>m.remove());
+            const menu = document.createElement('div');
+            menu.className = 'dir-menu';
+            menu.style.left = e.pageX + 'px';
+            menu.style.top = e.pageY + 'px';
+            menu.innerHTML = `
+                <div class="dir-menu-item" onclick="openEditDirModal(${id})">✏️ <span class="lang-zh active-lang">修改目录</span><span class="lang-en">Edit</span><span class="lang-ko">수정</span></div>
+                <div class="dir-menu-item danger" onclick="openDeleteDirModal(${id})">🗑️ <span class="lang-zh active-lang">删除目录</span><span class="lang-en">Delete</span><span class="lang-ko">삭제</span></div>
+            `;
+            document.body.appendChild(menu);
+            // 点击空白关闭
+            setTimeout(()=>{
+                const closeMenu = ()=>{menu.remove();document.removeEventListener('click',closeMenu);};
+                document.addEventListener('click',closeMenu);
+            },10);
+        }
+
         // ✅ 更新上传页的目录下拉选项 → 对应“选择保存标题”
         function updateDirOptions() {
             const sel = document.getElementById('videoDir');
@@ -590,6 +618,17 @@
         function verifyAdminPwd() {const p=document.getElementById('adminPwdInput').value.trim();if(p === '0803'){closeAdminPwd();document.getElementById('uploadPage').style.display='block';updateDirOptions();}else alert('密码错误！');}
         function closeUploadPage() {document.getElementById('uploadPage').style.display='none';}
 
+        function repairSavedVideos() {
+            const before = videos.length;
+            migrateOldYouTubeUrls();
+            videos = videos.filter(v => v && v.name && !isTemporaryBlobUrl(v.name));
+            const removed = before - videos.length;
+            saveVideos();
+            renderWorkGroups();
+            updateDirOptions();
+            alert(removed > 0 ? `已修复 YouTube 链接，并清理 ${removed} 个旧本地临时视频。请用 YouTube 或 MP4 外链重新添加被清理的视频。` : '已重新修复 YouTube 链接，没有发现失效的本地临时视频。');
+        }
+
 
         /* =========================
            ✅ 修复后的上传/播放/渲染逻辑
@@ -597,11 +636,11 @@
            1) YouTube URL 统一转成 /embed/VIDEO_ID
            2) origin 使用纯域名，不带 /yooooon 路径，避免播放器配置错误
            3) iframe 增加 referrerpolicy，解决 Error 153 / ERR_BLOCKED_BY_RESPONSE 常见问题
-           4) 补全原文件末尾被截断的 JS 和 HTML 结束结构
+           4) 补全原文件末尾被截断的 JS、</script>、</body>、</html>
         ========================== */
 
-        const SITE_ORIGIN = window.location.origin || 'https://kimm-lii.github.io';
-        const SITE_BASE_URL = window.location.href.split('#')[0] || 'https://kimm-lii.github.io/yooooon/';
+        const SITE_ORIGIN = 'https://kimm-lii.github.io';
+        const SITE_BASE_URL = 'https://kimm-lii.github.io/yooooon/';
 
         function saveVideos() {
             localStorage.setItem('myVideos', JSON.stringify(videos));
@@ -667,21 +706,27 @@
             const id = extractYouTubeId(input);
             if (!id) return input;
 
+            // ✅ 不使用 enablejsapi / origin / widget_referrer，避免 YouTube Player Error 153。
+            // 这里只使用最稳定的官方 iframe embed 参数。
             const params = new URLSearchParams({
                 autoplay: autoplay ? '1' : '0',
                 controls: '1',
                 rel: '0',
                 playsinline: '1',
-                mute: '0',
-                iv_load_policy: '3',
                 fs: '1',
-                disablekb: '0',
-                enablejsapi: '1',
-                origin: SITE_ORIGIN,
-                widget_referrer: SITE_BASE_URL
+                iv_load_policy: '3'
             });
 
             return `https://www.youtube.com/embed/${encodeURIComponent(id)}?${params.toString()}`;
+        }
+
+        function buildYouTubeWatchUrl(input) {
+            const id = extractYouTubeId(input);
+            return id ? `https://www.youtube.com/watch?v=${encodeURIComponent(id)}` : input;
+        }
+
+        function isTemporaryBlobUrl(input) {
+            return String(input || '').startsWith('blob:');
         }
 
         function normalizeVideoSource(input) {
@@ -690,35 +735,35 @@
 
         function addVideo() {
             const url = document.getElementById('videoUrl').value.trim();
-            const file = document.getElementById('videoFile').files[0];
+            const fileInput = document.getElementById('videoFile');
+            const file = fileInput ? fileInput.files[0] : null;
             const episode = document.getElementById('videoEpisode').value.trim();
             const dirId = document.getElementById('videoDir').value;
             const pwd = document.getElementById('videoPwd').value.trim();
 
-            if (!url && !file) {
-                alert('请粘贴链接或选择文件！');
+            if (file && !url) {
+                alert('GitHub Pages 不能永久保存本地视频文件。请先把视频上传到 YouTube，或使用可以外网访问的 MP4 链接，然后粘贴链接。');
+                if (fileInput) fileInput.value = '';
                 return;
             }
 
-            let src = '';
+            if (!url) {
+                alert('请粘贴 YouTube 链接或 MP4 外链！');
+                return;
+            }
+
+            let src = normalizeVideoSource(url);
             let autoTitle = '';
+            const youtubeId = extractYouTubeId(url);
 
-            if (file) {
-                src = URL.createObjectURL(file);
-                autoTitle = file.name;
+            if (youtubeId) {
+                autoTitle = `YouTube ${youtubeId}`;
             } else {
-                src = normalizeVideoSource(url);
-                const youtubeId = extractYouTubeId(url);
-
-                if (youtubeId) {
-                    autoTitle = `YouTube ${youtubeId}`;
-                } else {
-                    try {
-                        const urlObj = new URL(url);
-                        autoTitle = urlObj.pathname.split('/').filter(Boolean).pop() || urlObj.hostname;
-                    } catch {
-                        autoTitle = url.slice(-30);
-                    }
+                try {
+                    const urlObj = new URL(url);
+                    autoTitle = urlObj.pathname.split('/').filter(Boolean).pop() || urlObj.hostname;
+                } catch {
+                    autoTitle = url.slice(-30);
                 }
             }
 
@@ -739,7 +784,7 @@
             saveVideos();
 
             document.getElementById('videoUrl').value = '';
-            document.getElementById('videoFile').value = '';
+            if (fileInput) fileInput.value = '';
             document.getElementById('videoEpisode').value = '';
             document.getElementById('videoPwd').value = '';
 
@@ -816,14 +861,23 @@
 
             let player = '';
 
-            if (isYouTubeUrl(rawSrc)) {
+            if (isTemporaryBlobUrl(rawSrc)) {
+                player = `
+                    <div class="video-notice">
+                        这个视频是旧版本用“本地文件”添加的临时地址，刷新网页后浏览器已经无法读取，所以不能播放。<br>
+                        请删除这个视频，然后用 YouTube 链接或可外网访问的 MP4 链接重新添加。
+                    </div>
+                `;
+            } else if (isYouTubeUrl(rawSrc)) {
                 const cleanSrc = buildYouTubeEmbedUrl(rawSrc, true);
+                const watchUrl = escapeHtml(buildYouTubeWatchUrl(rawSrc));
                 player = `
                     <div class="video-display-block">
                         <div class="video-container" data-yt-src="${escapeHtml(cleanSrc)}" onclick="loadYoutubePlayer(this)">
                             <img class="video-cover" src="${cover}" alt="${title} 封面">
+                            <div class="video-play-overlay">▶</div>
                         </div>
-                        <p class="text-center text-sm text-gray-500 mt-2">点击封面播放视频</p>
+                        <p class="text-center text-sm text-gray-500 mt-2">点击封面播放视频。若播放器被网络拦截，可 <a class="video-help-link" href="${watchUrl}" target="_blank" rel="noopener">直接在 YouTube 打开</a></p>
                     </div>
                 `;
             } else {
@@ -843,6 +897,7 @@
                                 当前浏览器不支持视频播放。
                             </video>
                         </div>
+                        <p class="text-center text-sm text-gray-500 mt-2">如果 MP4 无法播放，请确认该链接可以在无痕窗口中直接打开，并且服务器允许跨站访问。</p>
                     </div>
                 `;
             }
@@ -875,7 +930,7 @@
 
         function renderVideoItem(v) {
             const title = escapeHtml(getVideoTitle(v));
-            const icon = v.password ? '<span class="lock-icon">🔒</span>' : '<span class="unlock-icon">▶</span>';
+            const icon = isTemporaryBlobUrl(v.name) ? '<span class="lock-icon">⚠️</span>' : (v.password ? '<span class="lock-icon">🔒</span>' : '<span class="unlock-icon">▶</span>');
 
             return `
                 <div class="video-item" onclick="attemptOpenVideo(${v.index})">
