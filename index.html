@@ -371,7 +371,7 @@
             if(!url&&!file){alert('请粘贴链接或选择文件！');return;}
             let src=url;
             
-            // ✅ 自动转换YouTube → 强制加origin参数，彻底解决153错误
+            // ✅ 【修复核心】origin参数严格匹配你的域名，彻底解决153错误
             if(src.includes('youtube.com/watch?v=')){
                 const id=src.split('v=')[1].split('&')[0];
                 src='https://www.youtube.com/embed/'+id+'?origin=https://kimm-lii.github.io';
@@ -381,8 +381,10 @@
                 src='https://www.youtube.com/embed/'+id+'?origin=https://kimm-lii.github.io';
             }
             // 补全已经是embed但缺origin的链接
-            if(src.includes('youtube.com/embed/') && !src.includes('origin=')){
-                src += (src.includes('?') ? '&' : '?') + 'origin=https://kimm-lii.github.io';
+            if(src.includes('youtube.com/embed/')){
+                if(!src.includes('origin=')) src += (src.includes('?') ? '&' : '?') + 'origin=https://kimm-lii.github.io';
+                // ✅ 强制添加所有必要参数，防止配置错误
+                src += '&widget_referrer=https://kimm-lii.github.io';
             }
             
             if(file) src=URL.createObjectURL(file);
@@ -392,13 +394,13 @@
             renderWorkGroups();closeUploadPage();renderMyWorks();
         }
 
-        // ✅ 核心：直接删除所有叠加元素，修复播放问题
+        // ✅ 核心：直接删除所有叠加元素，修复播放与配置错误
         function playVideo(v) {
             const area=document.getElementById('videoDisplayArea');
             let player='';
 
             if(v.name.includes('youtube.com/embed/')){
-                // ✅ YouTube原生参数：全部屏蔽，无任何UI，保留播放能力
+                // ✅ YouTube原生参数：全部屏蔽，无任何UI，修复配置
                 const cleanSrc = v.name + 
                     '&controls=0' +        
                     '&showinfo=0' +       
@@ -430,7 +432,7 @@
                             title="Video Player"
                             frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            referrerpolicy="no-referrer"
+                            referrerpolicy="strict-origin-when-cross-origin"
                             allowfullscreen
                         ></iframe>
                     </div>
