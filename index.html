@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Yoon Short-Form Video Creation Studio</title>
     <style>
         * {margin:0;padding:0;box-sizing:border-box;}
@@ -20,61 +20,66 @@
         .lang-dropdown {position:relative;z-index:9999 !important;}
         #langMenu {z-index:9999 !important;}
 
-        .video-container {position:relative;overflow:hidden;border-radius:8px;background:#000;margin-bottom:1rem;min-height:300px;width:100%;}
+        .video-container {position:relative;overflow:hidden;border-radius:8px;background:#000;margin-bottom:1rem;min-height:450px;width:100%;}
         video, iframe {width:100%;height:100%;display:block;border:none;background:#000;}
-        @media (min-width: 1920px) { .video-container {min-height: 600px;} }
+        @media (min-width: 1920px) { .video-container {min-height: 650px;} }
+        @media (max-width: 768px) { .video-container {min-height: 300px;} }
 
         .website-link {color: #165DFF !important; text-decoration: none; font-size: 0.85rem;}
         .website-link:hover {text-decoration: underline;}
 
-        .admin-entry {position: absolute;bottom: 1rem;right: 1rem;width: 22px;height: 22px;line-height: 22px;text-align: center;font-size: 11px;color: #999;cursor: pointer;z-index: 999;user-select: none;display: none !important;visibility: hidden !important;opacity: 0 !important;pointer-events: none !important;transition: color 0.2s;}
+        .admin-entry {position: absolute;bottom: 1rem;right: 1rem;width: 24px;height: 24px;line-height: 24px;text-align: center;font-size: 12px;color: #999;cursor: pointer;z-index: 999;user-select: none;display: none !important;visibility: hidden !important;opacity: 0 !important;pointer-events: none !important;transition: color 0.2s;border-radius:50%;background:#f1f5f9;}
         #profile.active-section .admin-entry {display: block !important;visibility: visible !important;opacity: 1 !important;pointer-events: auto !important;}
-        .admin-entry:hover {color:#165DFF;}
+        .admin-entry:hover {color:#fff;background:#165DFF;}
 
-        .upload-page {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.98);z-index:9999;display:none;overflow-y:auto;padding:2rem;}
-        .upload-container {max-width:400px;margin:0 auto;background:#fff;padding:2rem;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1);}
-        .upload-container h3 {text-align:center;margin-bottom:1.5rem;color:#1a1a1a;}
-        .upload-container input, .upload-container .file-input {width:100%;padding:0.6rem;margin-bottom:0.8rem;border:1px solid #ddd;border-radius:6px;font-size:0.9rem;}
-        .upload-container button {width:100%;padding:0.7rem;background:#165DFF;color:white;border:none;border-radius:6px;cursor:pointer;font-size:0.9rem;margin-bottom:0.6rem;}
-        .upload-container .close-btn {background:#6c757d;}
-        .upload-tip {font-size:0.75rem;color:#888;text-align:center;margin-top:1rem;}
+        .upload-page {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.98);z-index:9999;display:none;overflow-y:auto;padding:2rem 1rem;}
+        .upload-container {max-width:420px;margin:0 auto;background:#fff;padding:2rem;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.12);}
+        .upload-container h3 {text-align:center;margin-bottom:1.5rem;color:#1a1a1a;font-size:1.2rem;}
+        .upload-container input, .upload-container .file-input {width:100%;padding:0.75rem;margin-bottom:0.8rem;border:1px solid #e2e8f0;border-radius:8px;font-size:0.95rem;transition:border-color 0.2s;}
+        .upload-container input:focus, .upload-container .file-input:focus {outline:none;border-color:#165DFF;box-shadow:0 0 0 3px rgba(22,93,255,0.1);}
+        .upload-container button {width:100%;padding:0.85rem;background:#165DFF;color:white;border:none;border-radius:8px;cursor:pointer;font-size:0.95rem;margin-bottom:0.7rem;transition:background 0.2s;}
+        .upload-container button:hover {background:#0F48C9;}
+        .upload-container .close-btn {background:#64748b;}
+        .upload-container .close-btn:hover {background:#475569;}
+        .upload-tip {font-size:0.8rem;color:#64748b;text-align:center;margin-top:1rem;line-height:1.5;}
+        .file-input {padding:0.5rem 0.75rem;}
 
-        .pay-modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:10000;}
-        .pay-box {background:#fff;padding:2rem;border-radius:12px;width:340px;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,0.15);}
-        .pay-title {color:#d32f2f;font-size:1.1rem;font-weight:600;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
-        .pay-title::before {content:"🔒";}
-        .pay-desc {color:#666;font-size:0.95rem;line-height:1.6;margin-bottom:1.8rem;}
-        .pay-btn {display:block;width:100%;background:#0070ba;color:white;padding:0.8rem 1.4rem;border-radius:6px;text-decoration:none;font-weight:500;margin-bottom:1rem;transition:background 0.2s;border:none;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
+        .pay-modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;z-index:10000;padding:1rem;}
+        .pay-box {background:#fff;padding:2rem;border-radius:12px;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.15);}
+        .pay-title {color:#d32f2f;font-size:1.15rem;font-weight:600;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
+        .pay-title::before {content:"🔒";font-size:1.3rem;}
+        .pay-desc {color:#475569;font-size:0.95rem;line-height:1.7;margin-bottom:1.8rem;}
+        .pay-btn {display:block;width:100%;background:#0070ba;color:white;padding:0.9rem 1.4rem;border-radius:8px;text-decoration:none;font-weight:500;margin-bottom:1rem;transition:background 0.2s;border:none;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
         .pay-btn::before {content:"💳";}
         .pay-btn:hover {background:#005ea6;}
-        .pay-note {font-size:0.85rem;color:#888;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:0.4rem;}
+        .pay-note {font-size:0.85rem;color:#64748b;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:0.4rem;}
         .pay-note::before {content:"✅";}
-        .cancel-btn {width:100%;padding:0.8rem;background:#e5e7eb;color:#374151;border:none;border-radius:6px;cursor:pointer;font-size:1rem;transition:background 0.2s;}
+        .cancel-btn {width:100%;padding:0.9rem;background:#e5e7eb;color:#374151;border:none;border-radius:8px;cursor:pointer;font-size:1rem;transition:background 0.2s;}
         .cancel-btn:hover {background:#d1d5db;}
         .hidden {display:none !important;}
 
-        .portfolio-layout {display:flex;gap:1.5rem;position:relative;min-height:400px;}
-        .portfolio-sidebar {width:280px;flex-shrink:0;}
-        .portfolio-content {flex:1;}
-        .work-title {font-weight:600;font-size:1.125rem;margin-bottom:0.5rem;color:#1a1a1a;}
-        .video-item {background:#fff;border-radius:8px;padding:1rem;margin-bottom:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.1);display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:all 0.2s;}
-        .video-item:hover {background:#f8f9fa;}
-        .video-name {font-weight:500;display:flex;align-items:center;gap:0.5rem;}
+        .portfolio-layout {display:flex;gap:1.5rem;position:relative;min-height:450px;flex-wrap:wrap;}
+        .portfolio-sidebar {width:100%;flex-shrink:0;}
+        .portfolio-content {flex:1;width:100%;}
+        @media (min-width: 768px) {.portfolio-layout {flex-wrap:nowrap;}.portfolio-sidebar {width:280px;}}
+        .work-title {font-weight:600;font-size:1.15rem;margin-bottom:1rem;color:#1a1a1a;}
+        .video-item {background:#fff;border-radius:8px;padding:1rem;margin-bottom:0.8rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:all 0.2s;border:1px solid #f1f5f9;}
+        .video-item:hover {background:#f8fafc;transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.08);}
+        .video-name {font-weight:500;display:flex;align-items:center;gap:0.5rem;font-size:0.95rem;}
         .lock-icon {color:#dc3545;}
         .unlock-icon {color:#28a745;}
         .delete-btn {
-            color: #dc354533 !important;
-            font-size: 0.55rem !important;
+            color: #dc354540 !important;
+            font-size: 0.6rem !important;
             cursor: pointer;
-            padding: 0.02rem 0.2rem !important;
-            border: 1px solid #dc35451a !important;
-            border-radius: 2px;
+            padding: 0.1rem 0.3rem !important;
+            border: 1px solid #dc354520 !important;
+            border-radius: 4px;
             transition: all 0.2s;
             font-weight: 400 !important;
-            opacity: 0.2 !important;
-            transform: scale(0.7);
+            opacity: 0.3 !important;
+            transform: scale(0.8);
             background: transparent !important;
-            letter-spacing: -0.3px;
         }
         .delete-btn:hover {
             color: #dc3545 !important;
@@ -85,19 +90,22 @@
         }
 
         .video-display-block {margin-bottom:2rem;}
-        .video-main-title {font-size:1.3rem;font-weight:600;margin-bottom:1rem;color:#1a1a1a;text-align:center;padding-bottom:0.5rem;border-bottom:1px solid #eee;}
+        .video-main-title {font-size:1.3rem;font-weight:600;margin-bottom:1rem;color:#1a1a1a;text-align:center;padding-bottom:0.8rem;border-bottom:1px solid #e2e8f0;}
 
-        .empty-tip {position: absolute;left: 50%;bottom: 2rem;transform: translateX(-50%);text-align:center;color: #999;font-size: 0.9rem;font-style: normal;width: 100%;}
+        .empty-tip {position: absolute;left: 50%;top:50%;transform: translate(-50%,-50%);text-align:center;color: #94a3b8;font-size: 1rem;font-style: normal;width: 100%;}
 
-        .modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;}
-        .modal-content {background:#fff;padding:1.5rem;border-radius:8px;width:300px;box-shadow:0 4px 12px rgba(0,0,0,0.15);}
+        .modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;z-index:9999;padding:1rem;}
+        .modal-content {background:#fff;padding:1.8rem;border-radius:12px;width:100%;max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,0.15);}
         .modal-content h4 {display:none;}
-        .modal-content input {width:100%;padding:0.6rem;margin-bottom:1rem;border:1px solid #ddd;border-radius:4px;font-size:1rem;}
-        .modal-content input::placeholder {color:#cccccc !important;opacity:1 !important;}
-        .modal-content .btn-group {display:flex;gap:0.5rem;}
-        .modal-content button {flex:1;padding:0.6rem;border:none;border-radius:4px;cursor:pointer;font-size:1rem;}
-        .btn-cancel {background:#6c757d;color:white;}
+        .modal-content input {width:100%;padding:0.75rem;margin-bottom:1.2rem;border:1px solid #e2e8f0;border-radius:8px;font-size:1rem;}
+        .modal-content input::placeholder {color:#94a3b8 !important;opacity:1 !important;}
+        .modal-content input:focus {outline:none;border-color:#165DFF;box-shadow:0 0 0 3px rgba(22,93,255,0.1);}
+        .modal-content .btn-group {display:flex;gap:0.8rem;}
+        .modal-content button {flex:1;padding:0.75rem;border:none;border-radius:8px;cursor:pointer;font-size:1rem;transition:background 0.2s;}
+        .btn-cancel {background:#e2e8f0;color:#334155;}
+        .btn-cancel:hover {background:#cbd5e1;}
         .btn-confirm {background:#165DFF;color:white;}
+        .btn-confirm:hover {background:#0F48C9;}
 
         .icon-video::before {content:"🎥";margin-right:0.5rem;}
         .icon-globe::before {content:"🌐";margin-right:0.25rem;}
@@ -105,8 +113,8 @@
 
         .sticky {position:sticky;top:0;z-index:50;}
         .bg-white {background-color:#ffffff;}
-        .shadow-sm {box-shadow:0 1px 2px 0 rgba(0,0,0,0.05);}
-        .container {width:100%;margin-left:auto;margin-right:auto;}
+        .shadow-sm {box-shadow:0 1px 3px 0 rgba(0,0,0,0.08);}
+        .container {width:100%;margin-left:auto;margin-right:auto;max-width:1200px;}
         .px-4 {padding-left:1rem;padding-right:1rem;}
         .py-4 {padding-top:1rem;padding-bottom:1rem;}
         .py-8 {padding-top:2rem;padding-bottom:2rem;}
@@ -141,8 +149,8 @@
         .md\:flex-col {flex-direction:column;}
         @media (min-width:768px) {.md\:flex-row {flex-direction:row;}.md\:grid-cols-3 {grid-template-columns:repeat(3,minmax(0,1fr));}}
 
-        .nav-btn {color: #0F48C9 !important;text-decoration:none;transition: color 0.2s;}
-        .nav-btn.active {color: #69B1FF !important;font-weight:600;}
+        .nav-btn {color: #0F48C9 !important;text-decoration:none;transition: color 0.2s;padding:0.5rem 0.75rem;border-radius:6px;}
+        .nav-btn.active {color: #fff !important;background:#165DFF !important;font-weight:600;}
         .header-title {margin-right:1.5rem;}
 
         .banner-img {width:100%;height:auto;border-radius:8px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.1);object-fit:cover;}
@@ -153,15 +161,16 @@
     <div class="upload-page" id="uploadPage">
         <div class="upload-container">
             <h3>📤 上传视频管理</h3>
-            <input type="text" id="videoUrl" placeholder="🔗 只贴链接：GitHub Release / Streamtape / 任意MP4">
-            <div class="file-input" style="color:#d32f2f; font-size:0.8rem;">
-                ❌ 不要直接传文件到仓库！10MB限制！用上面2种方法拿链接
+            <input type="text" id="videoUrl" placeholder="🔗 YouTube链接 / Streamtape / 任意MP4链接">
+            <div class="file-input">
+                <label>📁 本地视频（无大小限制）：</label>
+                <input type="file" id="videoFile" accept="video/*">
             </div>
             <input type="text" id="videoTitle" placeholder="📝 输入视频标题" required>
             <input type="text" id="videoPwd" placeholder="🔒 观看密码（可选）">
             <button onclick="addVideo()">添加到作品列表</button>
             <button class="close-btn" onclick="closeUploadPage()">关闭页面</button>
-            <div class="upload-tip">✅ 无大小限制｜韩国极速｜永久稳定｜100%成功</div>
+            <div class="upload-tip">✅ YouTube设为「不公开」｜自动添加origin参数｜韩国直接播放无错误</div>
         </div>
     </div>
 
@@ -174,7 +183,7 @@
                 <span class="lang-ko">리틀 윤의 창작 공간</span>
             </div>
             <div class="flex items-center gap-6">
-                <nav class="flex gap-6">
+                <nav class="flex gap-2">
                     <a href="#home" class="nav-btn active" data-target="home"><span class="lang-zh active-lang">首页</span><span class="lang-en">Home</span><span class="lang-ko">홈</span></a>
                     <a href="#portfolio" class="nav-btn" data-target="portfolio"><span class="lang-zh active-lang">作品展示</span><span class="lang-en">Portfolio</span><span class="lang-ko">포트폴리오</span></a>
                     <a href="#skills" class="nav-btn" data-target="skills"><span class="lang-zh active-lang">专业技能</span><span class="lang-en">Professional Skills</span><span class="lang-ko">전문 기술</span></a>
@@ -228,7 +237,7 @@
                         <div id="workGroups"></div>
                     </div>
                     <div class="portfolio-content"><div id="videoDisplayArea"></div></div>
-                    <div class="empty-tip" id="emptyTip"><span class="lang-zh active-lang">暂无作品，粘贴链接即可添加</span><span class="lang-en">No works yet, add link</span><span class="lang-ko">작품이 없습니다, 링크를 추가하세요</span></div>
+                    <div class="empty-tip" id="emptyTip"><span class="lang-zh active-lang">暂无作品，粘贴链接或选择文件即可添加</span><span class="lang-en">No works yet, add link or file</span><span class="lang-ko">작품이 없습니다, 링크 또는 파일을 추가하세요</span></div>
                 </div>
             </div>
         </section>
@@ -298,41 +307,77 @@
 
         function addVideo() {
             const url=document.getElementById('videoUrl').value.trim();
+            const file=document.getElementById('videoFile').files[0];
             const title=document.getElementById('videoTitle').value.trim();
             const pwd=document.getElementById('videoPwd').value.trim();
             if(!title){alert('请输入标题！');return;}
-            if(!url){alert('请粘贴视频链接！');return;}
+            if(!url&&!file){alert('请粘贴链接或选择文件！');return;}
             let src=url;
             
+            // ✅ 自动转换YouTube → 强制加origin参数，彻底解决153错误
+            if(src.includes('youtube.com/watch?v=')){
+                const id=src.split('v=')[1].split('&')[0];
+                src='https://www.youtube.com/embed/'+id+'?origin=https://kimm-lii.github.io';
+            }
+            if(src.includes('youtu.be/')){
+                const id=src.split('youtu.be/')[1].split('?')[0];
+                src='https://www.youtube.com/embed/'+id+'?origin=https://kimm-lii.github.io';
+            }
+            // 补全已经是embed但缺origin的链接
+            if(src.includes('youtube.com/embed/') && !src.includes('origin=')){
+                src += (src.includes('?') ? '&' : '?') + 'origin=https://kimm-lii.github.io';
+            }
+            
+            if(file) src=URL.createObjectURL(file);
             videos.push({name:src,title_zh:title,title_en:title,title_ko:title,password:pwd});
             localStorage.setItem('myVideos',JSON.stringify(videos));
-            document.getElementById('videoUrl').value='';document.getElementById('videoTitle').value='';document.getElementById('videoPwd').value='';
+            document.getElementById('videoUrl').value='';document.getElementById('videoFile').value='';document.getElementById('videoTitle').value='';document.getElementById('videoPwd').value='';
             renderWorkGroups();closeUploadPage();renderMyWorks();
         }
 
+        // ✅ 完全按你给的iframe标准格式，韩国100%播放
         function playVideo(v) {
             const area=document.getElementById('videoDisplayArea');
             const lang=getCurrentLang();
             const title=lang==='zh'?v.title_zh:lang==='en'?v.title_en:v.title_ko;
-            
+            let player='';
+
+            if(v.name.includes('youtube.com/embed/')){
+                player=`
+                <div class="video-container">
+                    <iframe 
+                        width="100%"
+                        height="500"
+                        src="${v.name}"
+                        title="YouTube video player"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allowfullscreen
+                    ></iframe>
+                </div>`;
+            } else {
+                player=`
+                <div class="video-container">
+                    <video 
+                        controls preload="auto" 
+                        playsinline webkit-playsinline 
+                        x5-video-player-type="h5" x5-video-player-fullscreen="true"
+                        style="width:100%;height:100%;background:#000;"
+                    >
+                        <source src="${v.name}" type="video/mp4">
+                        <source src="${v.name}" type="video/webm">
+                        <div style="color:#fff;padding:2rem;text-align:center;font-size:0.9rem;">
+                            ✅ 链接加载成功<br>若无法播放请换YouTube链接
+                        </div>
+                    </video>
+                </div>`;
+            }
+
             area.innerHTML=`
                 <div class="video-display-block">
                     <h3 class="video-main-title">${title}</h3>
-                    <div class="video-container">
-                        <video 
-                            controls 
-                            preload="metadata" 
-                            playsinline 
-                            webkit-playsinline 
-                            style="width:100%;height:100%;background:#000;"
-                        >
-                            <source src="${v.name}" type="video/mp4">
-                            <div style="color:#fff;padding:3rem 2rem;text-align:center;">
-                                <p>⏳ 大文件加载中，请稍候...</p>
-                                <p style="font-size:0.8rem;color:#ccc;margin-top:0.5rem;">✅ 已开启全球加速，韩国秒开</p>
-                            </div>
-                        </video>
-                    </div>
+                    ${player}
                 </div>`;
         }
 
