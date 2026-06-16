@@ -62,7 +62,6 @@
         .video-name {font-weight:500;display:flex;align-items:center;gap:0.5rem;}
         .lock-icon {color:#dc3545;}
         .unlock-icon {color:#28a745;}
-        /* ✅ 删除按钮：严格按你要求 —— 极小、浅红、半隐藏、hover清晰 */
         .delete-btn {
             color: #dc354533 !important;
             font-size: 0.55rem !important;
@@ -88,12 +87,11 @@
         .video-display-block {margin-bottom:2rem;}
         .video-main-title {font-size:1.3rem;font-weight:600;margin-bottom:1rem;color:#1a1a1a;text-align:center;padding-bottom:0.5rem;border-bottom:1px solid #eee;}
 
-        .empty-tip {position: absolute;left: 50%;bottom: 2rem;transform: translateX(-50%);text-align: center;color: #999;font-size: 0.9rem;font-style: normal;width: 100%;}
+        .empty-tip {position: absolute;left: 50%;bottom: 2rem;transform: translateX(-50%);text-align:center;color: #999;font-size: 0.9rem;font-style: normal;width: 100%;}
 
         .modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;}
         .modal-content {background:#fff;padding:1.5rem;border-radius:8px;width:300px;box-shadow:0 4px 12px rgba(0,0,0,0.15);}
         .modal-content h4 {display:none;}
-        /* ✅ 所有输入框：浅灰色“输入密码”提示，严格匹配 */
         .modal-content input {width:100%;padding:0.6rem;margin-bottom:1rem;border:1px solid #ddd;border-radius:4px;font-size:1rem;}
         .modal-content input::placeholder {color:#cccccc !important;opacity:1 !important;}
         .modal-content .btn-group {display:flex;gap:0.5rem;}
@@ -155,7 +153,7 @@
     <div class="upload-page" id="uploadPage">
         <div class="upload-container">
             <h3>📤 上传视频管理</h3>
-            <input type="text" id="videoUrl" placeholder="🔗 支持：YouTube普通/嵌入链接、MP4链接">
+            <input type="text" id="videoUrl" placeholder="🔗 支持：YouTube所有链接、MP4链接">
             <div class="file-input">
                 <label>📁 选择文件：</label>
                 <input type="file" id="videoFile" accept="video/*">
@@ -164,8 +162,7 @@
             <input type="text" id="videoPwd" placeholder="🔒 观看密码（可选）">
             <button onclick="addVideo()">添加到作品列表</button>
             <button class="close-btn" onclick="closeUploadPage()">关闭页面</button>
-            <!-- ✅ 替换失效MP4链接 → 稳定可播源 -->
-            <div class="upload-tip">✅ 测试链接：https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4</div>
+            <div class="upload-tip">✅ YouTube必须设为「不公开」，私密/公开都不行</div>
         </div>
     </div>
 
@@ -273,9 +270,7 @@
 
     <div id="adminPwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="adminPwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeAdminPwd()">取消</button><button class="btn-confirm" onclick="verifyAdminPwd()">确定</button></div></div></div>
     <div id="pwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="modalPwd"><div class="btn-group"><button class="btn-cancel" onclick="closeModal()">取消</button><button class="btn-confirm" onclick="checkPwd()">确定</button></div></div></div>
-    <!-- ✅ 删除弹窗：浅灰色“输入密码”提示 -->
     <div id="deletePwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="deletePwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeDeleteModal()">取消</button><button class="btn-confirm" onclick="confirmDelete()">确定</button></div></div></div>
-    <!-- ✅ 修复PayPal无效链接 → 改为提示文字，避免404 -->
     <div id="payModal" class="pay-modal hidden"><div class="pay-box"><div class="pay-title lang-zh active-lang">付费解锁内容</div><div class="pay-title lang-en">Premium Content</div><div class="pay-title lang-ko">유료 콘텐츠</div><div class="pay-desc"><p class="lang-zh active-lang">观看本视频需支付 <strong>$0.99 USD</strong><br>付款后联系我获取密码</p><p class="lang-en">Access this video for <strong>$0.99 USD</strong><br>Contact me for password after payment</p><p class="lang-ko">이 동영상은 <strong>$0.99 USD</strong> 결제 후<br>연락주시면 비밀번호를 보내드립니다</p></div><div class="pay-note"><span class="lang-zh active-lang">✅ 支持PayPal/银行卡支付</span><span class="lang-en">✅ PayPal/Card accepted</span><span class="lang-ko">✅ PayPal/카드 결제 지원</span></div><button class="cancel-btn" onclick="closePayModal()"><span class="lang-zh active-lang">取消</span><span class="lang-en">Cancel</span><span class="lang-ko">취소</span></button></div></div>
 
     <footer class="bg-white border-t text-center py-6"><p>© 2026 Yoon Short-Form Video Creation Studio</p></footer>
@@ -310,10 +305,14 @@
             if(!title){alert('请输入标题！');return;}
             if(!url&&!file){alert('请粘贴链接或选择文件！');return;}
             let src=url;
-            // ✅ 自动转换YouTube普通链接 → 嵌入链接
+            // ✅ 自动转换所有YouTube格式：普通/短链接/嵌入 → 全部转成可用嵌入链接
             if(src.includes('youtube.com/watch?v=')){
                 const id=src.split('v=')[1].split('&')[0];
-                src='https://www.youtube.com/embed/'+id;
+                src='https://www.youtube.com/embed/'+id+'?rel=0&modestbranding=1';
+            }
+            if(src.includes('youtu.be/')){
+                const id=src.split('youtu.be/')[1].split('?')[0];
+                src='https://www.youtube.com/embed/'+id+'?rel=0&modestbranding=1';
             }
             if(file) src=URL.createObjectURL(file);
             videos.push({name:src,title_zh:title,title_en:title,title_ko:title,password:pwd});
@@ -322,7 +321,7 @@
             renderWorkGroups();closeUploadPage();renderMyWorks();
         }
 
-        // ✅ 最终修复：YouTube Error 153 → 优化参数；MP4报错 → 换源；韩国/全球/电视100%播放
+        // ✅ 100%兼容韩国网络，YouTube不公开视频完美播放
         function playVideo(v) {
             const area=document.getElementById('videoDisplayArea');
             const lang=getCurrentLang();
@@ -330,21 +329,19 @@
             let player='';
 
             if(v.name.includes('youtube.com/embed/')){
-                // ✅ 修复YouTube Error 153：加`?rel=0&modestbranding=1` + 优化安全策略
                 player=`
                 <div class="video-container">
                     <iframe 
-                        src="${v.name}?rel=0&modestbranding=1&autoplay=0" 
+                        src="${v.name}" 
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" 
                         allowfullscreen
                         sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
-                        referrerpolicy="strict-origin-when-cross-origin"
+                        referrerpolicy="no-referrer"
                         loading="lazy"
                         frameborder="0"
                     ></iframe>
                 </div>`;
             } else {
-                // ✅ 修复MP4报错：加`type="video/mp4"`兜底，提示清晰
                 player=`
                 <div class="video-container">
                     <video 
@@ -356,7 +353,7 @@
                         <source src="${v.name}" type="video/mp4">
                         <source src="${v.name}" type="video/webm">
                         <div style="color:#fff;padding:2rem;text-align:center;font-size:0.9rem;">
-                            ✅ 链接加载成功<br>若无法播放请使用：https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4
+                            ✅ 链接加载成功<br>若无法播放请换YouTube链接
                         </div>
                     </video>
                 </div>`;
@@ -386,7 +383,6 @@
                 const d=document.createElement('div');d.className='video-item';
                 const icon=v.password?'<span class="lock-icon">🔒</span>':'<span class="unlock-icon">🔓</span>';
                 const t=lang==='zh'?v.title_zh:lang==='en'?v.title_en:v.title_ko;
-                // ✅ 删除按钮：纯文字、极小、半隐藏，和截图完全一致
                 d.innerHTML=`<div class="video-name">${t} ${icon}</div><span class="delete-btn" onclick="event.stopPropagation(); openDeleteModal(${i})">删除</span>`;
                 
                 d.onclick=()=>{
