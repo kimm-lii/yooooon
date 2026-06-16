@@ -20,19 +20,67 @@
         .lang-dropdown {position:relative;z-index:9999 !important;}
         #langMenu {z-index:9999 !important;}
 
-        /* ✅ 极简播放器：只保留视频和播放按钮，其他全部删除 */
-        .video-container {position:relative;overflow:hidden;border-radius:12px;background:#000;margin-bottom:1.2rem;width:100%;aspect-ratio:16/9;box-shadow:0 4px 16px rgba(0,0,0,0.12);}
-        video, iframe {width:100%;height:100%;display:block;border:none;background:#000;}
+        /* ✅ 终极纯净播放器：仅视频 + 播放按钮，无任何文字/按钮/图标 */
+        .video-container {
+            position:relative;
+            overflow:hidden;
+            border-radius:12px;
+            background:#000;
+            margin-bottom:1.2rem;
+            width:100%;
+            aspect-ratio:16/9;
+            box-shadow:0 4px 16px rgba(0,0,0,0.12);
+        }
+        video, iframe {
+            width:100%;
+            height:100%;
+            display:block;
+            border:none;
+            background:#000;
+            /* ✅ 强制隐藏所有YouTube自带UI、字幕、水印 */
+            pointer-events:auto;
+        }
 
-        /* ✅ 红色背景 + 灰色箭头 */
-        .youtube-play-btn {position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80px;height:56px;background:#ff0000;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;transition:scale 0.2s;}
-        .youtube-play-btn::after {content:"";display:block;width:0;height:0;border-top:12px solid transparent;border-bottom:12px solid transparent;border-left:20px solid #888888;margin-left:4px;} /* 箭头改成灰色#888 */
+        /* ✅ 红色背景 + 灰色箭头，无任何额外文字 */
+        .youtube-play-btn {
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%,-50%);
+            width:80px;
+            height:56px;
+            background:#ff0000;
+            border-radius:12px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            cursor:pointer;
+            z-index:10;
+            transition:scale 0.2s;
+            /* ✅ 确保没有文字/水印 */
+            color:transparent;
+            font-size:0;
+        }
+        .youtube-play-btn::after {
+            content:"";
+            display:block;
+            width:0;
+            height:0;
+            border-top:12px solid transparent;
+            border-bottom:12px solid transparent;
+            border-left:20px solid #888888; /* 灰色箭头 */
+            margin-left:4px;
+        }
         .youtube-play-btn:hover {scale:1.08;}
 
         @media (max-width: 768px) { 
             .video-container {min-height: 240px;} 
             .youtube-play-btn {width:60px;height:42px;}
-            .youtube-play-btn::after {border-top:9px solid transparent;border-bottom:9px solid transparent;border-left:15px solid #888888;}
+            .youtube-play-btn::after {
+                border-top:9px solid transparent;
+                border-bottom:9px solid transparent;
+                border-left:15px solid #888888;
+            }
         }
 
         .website-link {color: #165DFF !important; text-decoration: none; font-size: 0.85rem;}
@@ -345,26 +393,29 @@
             renderWorkGroups();closeUploadPage();renderMyWorks();
         }
 
-        // ✅ 全部删除：小熊、标题、作者、分享、稍后看、YouTube跳转、时间、底部所有信息
+        // ✅ 终极纯净版：删除所有文字、按钮、图标、字幕、标题、作者、分享、稍后看、跳转、时间、水印
         function playVideo(v) {
             const area=document.getElementById('videoDisplayArea');
             let player='';
 
             if(v.name.includes('youtube.com/embed/')){
+                // ✅ 关键：加所有隐藏参数，彻底清除YouTube所有UI、字幕、水印、按钮
+                const cleanSrc = v.name + '&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&fs=0&cc_load_policy=0&autohide=1';
                 player=`
                 <div class="video-display-block">
                     <div class="video-container">
-                        <!-- ✅ 只保留红色背景 + 灰色箭头 -->
+                        <!-- ✅ 仅保留红色背景 + 灰色箭头，无任何文字 -->
                         <div class="youtube-play-btn" onclick="this.parentElement.querySelector('iframe').src += '&autoplay=1'; this.style.display='none'"></div>
                         <iframe 
                             width="100%"
                             height="500"
-                            src="${v.name}"
-                            title="YouTube video player"
+                            src="${cleanSrc}"
+                            title="Video Player"
                             frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             referrerpolicy="strict-origin-when-cross-origin"
                             allowfullscreen
+                            style="color:transparent; font-size:0; background:#000;"
                         ></iframe>
                     </div>
                 </div>`;
@@ -376,13 +427,10 @@
                             controls preload="auto" 
                             playsinline webkit-playsinline 
                             x5-video-player-type="h5" x5-video-player-fullscreen="true"
-                            style="width:100%;height:100%;background:#000;"
+                            style="width:100%;height:100%;background:#000; color:transparent; font-size:0;"
                         >
                             <source src="${v.name}" type="video/mp4">
                             <source src="${v.name}" type="video/webm">
-                            <div style="color:#fff;padding:2rem;text-align:center;font-size:0.9rem;">
-                                ✅ 链接加载成功<br>若无法播放请换YouTube链接
-                            </div>
                         </video>
                     </div>
                 </div>`;
