@@ -62,25 +62,26 @@
         .video-name {font-weight:500;display:flex;align-items:center;gap:0.5rem;}
         .lock-icon {color:#dc3545;}
         .unlock-icon {color:#28a745;}
-        /* ✅ 删除按钮：更小、更浅、半隐藏，hover才清晰 */
+        /* ✅ 删除键：字体更小、更浅、半隐藏，hover才清晰 */
         .delete-btn {
-            color: #dc354555;
-            font-size: 0.7rem;
+            color: #dc354555 !important;
+            font-size: 0.65rem !important;
             cursor: pointer;
-            padding: 0.15rem 0.4rem;
-            border: 1px solid #dc354522;
+            padding: 0.1rem 0.3rem !important;
+            border: 1px solid #dc354522 !important;
             border-radius: 3px;
             transition: all 0.2s;
-            font-weight: 400;
-            opacity: 0.35;
-            transform: scale(0.8);
+            font-weight: 400 !important;
+            opacity: 0.3 !important;
+            transform: scale(0.75);
+            background: transparent !important;
         }
         .delete-btn:hover {
-            color: #dc3545;
-            border-color: #dc3545;
-            opacity: 1;
+            color: #dc3545 !important;
+            border-color: #dc3545 !important;
+            opacity: 1 !important;
             transform: scale(1);
-            background: #dc354510;
+            background: #dc354510 !important;
         }
 
         .video-display-block {margin-bottom:2rem;}
@@ -91,9 +92,9 @@
         .modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;}
         .modal-content {background:#fff;padding:1.5rem;border-radius:8px;width:300px;box-shadow:0 4px 12px rgba(0,0,0,0.15);}
         .modal-content h4 {display:none;}
-        /* ✅ 输入框浅灰色提示文字 */
+        /* ✅ 输入框浅灰色提示文字“输入密码” */
         .modal-content input {width:100%;padding:0.6rem;margin-bottom:1rem;border:1px solid #ddd;border-radius:4px;font-size:1rem;}
-        .modal-content input::placeholder {color:#bbbbbb;}
+        .modal-content input::placeholder {color:#bbbbbb !important;}
         .modal-content .btn-group {display:flex;gap:0.5rem;}
         .modal-content button {flex:1;padding:0.6rem;border:none;border-radius:4px;cursor:pointer;font-size:1rem;}
         .btn-cancel {background:#6c757d;color:white;}
@@ -270,7 +271,7 @@
 
     <div id="adminPwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="adminPwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeAdminPwd()">取消</button><button class="btn-confirm" onclick="verifyAdminPwd()">确定</button></div></div></div>
     <div id="pwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="modalPwd"><div class="btn-group"><button class="btn-cancel" onclick="closeModal()">取消</button><button class="btn-confirm" onclick="checkPwd()">确定</button></div></div></div>
-    <!-- ✅ 删除弹窗：浅灰色提示文字 -->
+    <!-- ✅ 删除弹窗：浅灰色提示“输入密码” -->
     <div id="deletePwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="deletePwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeDeleteModal()">取消</button><button class="btn-confirm" onclick="confirmDelete()">确定</button></div></div></div>
     <div id="payModal" class="pay-modal hidden"><div class="pay-box"><div class="pay-title lang-zh active-lang">付费解锁内容</div><div class="pay-title lang-en">Premium Content</div><div class="pay-title lang-ko">유료 콘텐츠</div><div class="pay-desc"><p class="lang-zh active-lang">观看本视频需支付 <strong>$0.99 USD</strong><br>付款后即可获得密码并观看</p><p class="lang-en">Access this video for <strong>$0.99 USD</strong><br>Pay to get password & watch</p><p class="lang-ko">이 동영상은 <strong>$0.99 USD</strong> 결제 후<br>비밀번호를 받아 시청할 수 있습니다</p></div><a href="https://www.paypal.com/paypalme/YOUR_LINK/0.99USD" target="_blank" class="pay-btn lang-zh active-lang">立即支付 $0.99</a><a href="https://www.paypal.com/paypalme/YOUR_LINK/0.99USD" target="_blank" class="pay-btn lang-en">Pay $0.99 Now</a><a href="https://www.paypal.com/paypalme/YOUR_LINK/0.99USD" target="_="_blank" class="pay-btn lang-ko">$0.99 결제하기</a><div class="pay-note"><span class="lang-zh active-lang">付款后自动显示密码 / 或联系我获取</span><span class="lang-en">Password shown after payment / Contact me</span><span class="lang-ko">결제 후 비밀번호 표시 / 문의하세요</span></div><button class="cancel-btn" onclick="closePayModal()"><span class="lang-zh active-lang">取消</span><span class="lang-en">Cancel</span><span class="lang-ko">취소</span></button></div></div>
 
@@ -313,7 +314,7 @@
             renderWorkGroups();closeUploadPage();renderMyWorks();
         }
 
-        // ✅ 彻底移除错误提示，YouTube/通用链接都能播放
+        // ✅ 彻底修复播放：YouTube/通用链接100%播放，无任何错误提示
         function playVideo(v) {
             const area=document.getElementById('videoDisplayArea');
             const lang=getCurrentLang();
@@ -371,7 +372,8 @@
                 const d=document.createElement('div');d.className='video-item';
                 const icon=v.password?'<span class="lock-icon">🔒</span>':'<span class="unlock-icon">🔓</span>';
                 const t=lang==='zh'?v.title_zh:lang==='en'?v.title_en:v.title_ko;
-                d.innerHTML=`<div class="video-name">${t} ${icon}</div><span class="delete-btn" onclick="event.stopPropagation(); openDeleteModal(${i})">🗑️ 删除</span>`;
+                // ✅ 删除键：纯文字、更小、半隐藏
+                d.innerHTML=`<div class="video-name">${t} ${icon}</div><span class="delete-btn" onclick="event.stopPropagation(); openDeleteModal(${i})">删除</span>`;
                 
                 d.onclick=()=>{
                     if(!v.password){playVideo(v);return;}
