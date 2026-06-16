@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Yoon Short-Form Video Creation Studio</title>
     <style>
         * {margin:0;padding:0;box-sizing:border-box;}
@@ -20,7 +23,7 @@
         .lang-dropdown {position:relative;z-index:9999 !important;}
         #langMenu {z-index:9999 !important;}
 
-        /* ✅ 视频播放器：封面+灰色按钮+纯净播放，无多余元素 */
+        /* ✅ 视频容器：封面直接显示，无任何遮挡按钮 */
         .video-container {
             position:relative;
             overflow:hidden;
@@ -32,43 +35,19 @@
             box-shadow:0 4px 16px rgba(0,0,0,0.12);
             cursor:pointer;
         }
-        /* 封面图：使用《寒城烬爱》海报 */
+        /* 封面图：直接展示，无遮挡 */
         .video-cover {
             width:100%;
             height:100%;
             object-fit:cover;
             display:block;
         }
-        /* 播放按钮：与原红色按钮同比例，灰色遮挡，居中 */
-        .custom-play-btn {
-            position:absolute;
-            top:50%;
-            left:50%;
-            transform:translate(-50%,-50%);
-            width:96px;
-            height:68px;
-            background:#888888;
-            border:none;
-            border-radius:8px;
-            font-size:28px;
-            color:#ffffff;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            z-index:10;
-            transition:scale 0.2s;
-        }
-        .custom-play-btn:hover {scale:1.08;}
         iframe {
             width:100%;
             height:100%;
             display:block;
             border:none !important;
             background:#000;
-        }
-
-        @media (max-width: 768px) { 
-            .custom-play-btn {width:64px;height:46px;font-size:20px;}
         }
 
         .website-link {color: #165DFF !important; text-decoration: none; font-size: 0.85rem;}
@@ -216,7 +195,7 @@
             <input type="text" id="videoPwd" placeholder="🔒 观看密码（可选）">
             <button onclick="addVideo()">添加到作品列表</button>
             <button class="close-btn" onclick="closeUploadPage()">关闭页面</button>
-            <div class="upload-tip">✅ YouTube设为「不公开」｜自动添加origin参数｜韩国直接播放无错误</div>
+            <div class="upload-tip">✅ YouTube 必须设为「不公开」｜已固定你的域名｜所有人可看</div>
         </div>
     </div>
 
@@ -333,6 +312,8 @@
         let deleteIndex = -1;
         let videos=JSON.parse(localStorage.getItem('myVideos'))||[];
         let modalCallback=null;
+        // ✅ 严格绑定你的完整域名，所有参数匹配，别人也能看
+        const SITE_DOMAIN = 'https://kimm-lii.github.io/yooooon';
 
         function closePayModal() {document.getElementById('payModal').classList.add('hidden');}
         function openModal(title, callback) {const m=document.getElementById('pwdModal');document.getElementById('modalPwd').value='';m.classList.remove('hidden');modalCallback=callback;}
@@ -360,18 +341,18 @@
             if(!url&&!file){alert('请粘贴链接或选择文件！');return;}
             let src=url;
             
-            // ✅ 修复配置错误，origin 固定为你的域名
+            // ✅ 自动修正所有YouTube链接，域名完全匹配，解决153错误
             if(src.includes('youtube.com/watch?v=')){
                 const id=src.split('v=')[1].split('&')[0];
-                src='https://www.youtube.com/embed/'+id+'?origin=https://kimm-lii.github.io&widget_referrer=https://kimm-lii.github.io';
+                src=`https://www.youtube.com/embed/${id}?origin=${SITE_DOMAIN}&widget_referrer=${SITE_DOMAIN}`;
             }
             if(src.includes('youtu.be/')){
                 const id=src.split('youtu.be/')[1].split('?')[0];
-                src='https://www.youtube.com/embed/'+id+'?origin=https://kimm-lii.github.io&widget_referrer=https://kimm-lii.github.io';
+                src=`https://www.youtube.com/embed/${id}?origin=${SITE_DOMAIN}&widget_referrer=${SITE_DOMAIN}`;
             }
             if(src.includes('youtube.com/embed/')){
-                if(!src.includes('origin=')) src += (src.includes('?') ? '&' : '?') + 'origin=https://kimm-lii.github.io';
-                if(!src.includes('widget_referrer=')) src += '&widget_referrer=https://kimm-lii.github.io';
+                if(!src.includes('origin=')) src += (src.includes('?') ? '&' : '?') + `origin=${SITE_DOMAIN}`;
+                if(!src.includes('widget_referrer=')) src += `&widget_referrer=${SITE_DOMAIN}`;
             }
             
             if(file) src=URL.createObjectURL(file);
@@ -381,22 +362,18 @@
             renderWorkGroups();closeUploadPage();renderMyWorks();
         }
 
-        // ✅ 最终版播放器：封面+灰色按钮+纯净播放，无任何多余元素
+        // ✅ 播放器：只显示封面，无任何遮挡按钮，点击封面直接播放
         function playVideo(v) {
             const area=document.getElementById('videoDisplayArea');
             let player='';
 
             if(v.name.includes('youtube.com/embed/')){
-                // ✅ 按你指定的简化参数，无多余UI
-                const cleanSrc = v.name + 
-                    '&controls=0&rel=0&playsinline=1&autoplay=0&mute=0';
-
-                // ✅ 封面用《寒城烬爱》海报，按钮灰色遮挡原红色
+                const cleanSrc = v.name + '&controls=0&rel=0&playsinline=1&autoplay=0&mute=0';
+                // ✅ 取消灰色按钮，直接显示封面，点击整个区域播放
                 player=`
                 <div class="video-display-block">
                     <div class="video-container" onclick="loadYoutubePlayer(this, '${cleanSrc}')">
                         <img class="video-cover" src="https://i.imgur.com/9Z7X7QH.jpg" alt="寒城烬爱 封面">
-                        <div class="custom-play-btn">▶</div>
                     </div>
                 </div>`;
             } else {
@@ -419,7 +396,7 @@
             area.innerHTML=player;
         }
 
-        // ✅ 点击后加载纯净播放器
+        // ✅ 加载视频，参数完整，所有人可见
         function loadYoutubePlayer(container, src) {
             container.innerHTML = `
                 <iframe
