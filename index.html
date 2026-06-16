@@ -70,14 +70,7 @@
 
         .pay-modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;z-index:10000;padding:1rem;}
         .pay-box {background:#fff;padding:2rem;border-radius:12px;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.15);}
-        .pay-title {color:#d32f2f;font-size:1.15rem;font-weight:600;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
-        .pay-title::before {content:"🔒";font-size:1.3rem;}
         .pay-desc {color:#475569;font-size:0.95rem;line-height:1.7;margin-bottom:1.8rem;}
-        .pay-btn {display:block;width:100%;background:#0070ba;color:white;padding:0.9rem 1.4rem;border-radius:8px;text-decoration:none;font-weight:500;margin-bottom:1rem;transition:background 0.2s;border:none;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
-        .pay-btn::before {content:"💳";}
-        .pay-btn:hover {background:#005ea6;}
-        .pay-note {font-size:0.85rem;color:#64748b;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:0.4rem;}
-        .pay-note::before {content:"✅";}
         .cancel-btn {width:100%;padding:0.9rem;background:#e5e7eb;color:#374151;border:none;border-radius:8px;cursor:pointer;font-size:1rem;transition:background 0.2s;}
         .cancel-btn:hover {background:#d1d5db;}
         .hidden {display:none !important;}
@@ -303,7 +296,7 @@
     <div id="adminPwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="adminPwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeAdminPwd()">取消</button><button class="btn-confirm" onclick="verifyAdminPwd()">确定</button></div></div></div>
     <div id="pwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="modalPwd"><div class="btn-group"><button class="btn-cancel" onclick="closeModal()">取消</button><button class="btn-confirm" onclick="checkPwd()">确定</button></div></div></div>
     <div id="deletePwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="deletePwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeDeleteModal()">取消</button><button class="btn-confirm" onclick="confirmDelete()">确定</button></div></div></div>
-    <div id="payModal" class="pay-modal hidden"><div class="pay-box"><div class="pay-title lang-zh active-lang">付费解锁内容</div><div class="pay-title lang-en">Premium Content</div><div class="pay-title lang-ko">유료 콘텐츠</div><div class="pay-desc"><p class="lang-zh active-lang">观看本视频需支付 <strong>$0.99 USD</strong><br>付款后联系我获取密码</p><p class="lang-en">Access this video for <strong>$0.99 USD</strong><br>Contact me for password after payment</p><p class="lang-ko">이 동영상은 <strong>$0.99 USD</strong> 결제 후<br>연락주시면 비밀번호를 보내드립니다</p></div><div class="pay-note"><span class="lang-zh active-lang">✅ 支持PayPal/银行卡支付</span><span class="lang-en">✅ PayPal/Card accepted</span><span class="lang-ko">✅ PayPal/카드 결제 지원</span></div><button class="cancel-btn" onclick="closePayModal()"><span class="lang-zh active-lang">取消</span><span class="lang-en">Cancel</span><span class="lang-ko">취소</span></button></div></div>
+    <div id="payModal" class="pay-modal hidden"><div class="pay-box"><div class="pay-desc"><p>观看本视频需支付 $0.99 USD<br>付款后联系我获取密码</p></div><button class="cancel-btn" onclick="closePayModal()">取消</button></div></div>
 
     <footer class="bg-white border-t text-center py-6"><p>© 2026 Yoon Short-Form Video Creation Studio</p></footer>
 
