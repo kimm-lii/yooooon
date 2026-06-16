@@ -70,12 +70,18 @@
 
         .pay-modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;z-index:10000;padding:1rem;}
         .pay-box {background:#fff;padding:2rem;border-radius:12px;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.15);}
+        /* ✅ 保留标题 */
         .pay-title {font-size:1.1rem;font-weight:600;margin-bottom:1rem;color:#dc3545;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
-        /* ✅ 保留支付方式文字，隐藏其他不需要的内容 */
+        /* ✅ 保留：观看本集需支付 $0.99 USD */
+        .pay-desc {font-size:0.95rem;color:#6c757d;margin-bottom:1rem;line-height:1.5;}
+        /* ✅ 保留：支持 PayPal / 银行卡支付 */
         .pay-method {color:#28a745;font-size:0.95rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:0.3rem;}
-        .pay-desc, .pay-note, .auto-fill-btn {display: none !important;}
+        /* ✅ 隐藏：点击下方按钮跳转... 以及 已付款按钮 */
+        .pay-note, .auto-fill-btn {display: none !important;}
+        /* ✅ 前往付款按钮 */
         .pay-btn {width:100%;padding:0.9rem;background:#28a745;color:white;border:none;border-radius:8px;cursor:pointer;font-size:1rem;transition:background 0.2s;margin-bottom:0.7rem;}
         .pay-btn:hover {background:#218838;}
+        /* ✅ 取消按钮：修复点击事件 */
         .cancel-btn {width:100%;padding:0.9rem;background:#e5e7eb;color:#374151;border:none;border-radius:8px;cursor:pointer;font-size:1rem;transition:background 0.2s;}
         .cancel-btn:hover {background:#d1d5db;}
         .hidden {display:none !important;}
@@ -303,30 +309,31 @@
     <div id="deletePwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="deletePwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeDeleteModal()">取消</button><button class="btn-confirm" onclick="confirmDelete()">确定</button></div></div></div>
     <div id="payModal" class="pay-modal hidden">
         <div class="pay-box">
-            <!-- ✅ Premium Content 标题 -->
+            <!-- ✅ 付费解锁内容 -->
             <div class="pay-title">
                 <span class="lang-zh active-lang">🔒 付费解锁内容</span>
                 <span class="lang-en">🔒 Premium Content</span>
                 <span class="lang-ko">🔒 유료 콘텐츠</span>
             </div>
-            <!-- ✅ Supports PayPal / Card Payment 保留 -->
-            <div class="pay-method">
-                <span class="lang-zh active-lang">✅ 支持 PayPal / 银行卡支付</span>
-                <span class="lang-en">✅ Supports PayPal / Card Payment</span>
-                <span class="lang-ko">✅ PayPal / 카드 결제 지원</span>
-            </div>
-            <!-- ✅ 隐藏所有其他描述文字 -->
+            <!-- ✅ 观看本集需支付 $0.99 USD -->
             <div class="pay-desc">
                 <span class="lang-zh active-lang">观看本视频需支付 $0.99 USD，付款后获得密码</span>
                 <span class="lang-en">Pay $0.99 USD to watch, get password after payment</span>
                 <span class="lang-ko">본 영상 시청에는 $0.99 USD 결제가 필요하며, 결제 후 비밀번호를 받으실 수 있습니다</span>
             </div>
+            <!-- ✅ 支持 PayPal / 银行卡支付 -->
+            <div class="pay-method">
+                <span class="lang-zh active-lang">✅ 支持 PayPal / 银行卡支付</span>
+                <span class="lang-en">✅ Supports PayPal / Card Payment</span>
+                <span class="lang-ko">✅ PayPal / 카드 결제 지원</span>
+            </div>
+            <!-- ✅ 隐藏：点击下方按钮跳转... -->
             <div class="pay-note">
                 <span class="lang-zh active-lang">点击下方按钮跳转至支付页面，完成后返回输入密码即可观看</span>
                 <span class="lang-en">Click below to go to payment page, enter password after returning</span>
                 <span class="lang-ko">아래 버튼을 클릭해 결제 페이지로 이동하고, 완료 후 돌아와 비밀번호를 입력하세요</span>
             </div>
-            <!-- ✅ Go to Payment 按钮 -->
+            <!-- ✅ 前往付款 -->
             <a id="payLink" href="https://www.paypal.com/paypalme/yourpaypal" target="_blank" style="text-decoration:none;">
                 <button class="pay-btn">
                     <span class="lang-zh active-lang">💳 前往付款</span>
@@ -334,13 +341,13 @@
                     <span class="lang-ko">💳 결제하러 가기</span>
                 </button>
             </a>
-            <!-- ✅ 已付款按钮隐藏，付款后自动触发 -->
+            <!-- ✅ 隐藏：已付款，自动填入密码 -->
             <button class="cancel-btn auto-fill-btn" onclick="afterPay()">
                 <span class="lang-zh active-lang">✅ 已付款，自动填入密码</span>
                 <span class="lang-en">✅ Paid, auto-fill password</span>
                 <span class="lang-ko">✅ 결제 완료, 비밀번호 자동 입력</span>
             </button>
-            <!-- ✅ Cancel 按钮：点击直接关闭弹窗，返回页面 -->
+            <!-- ✅ 取消：修复点击事件，点击直接关闭弹窗 -->
             <button class="cancel-btn" onclick="closePayModal()">
                 <span class="lang-zh active-lang">取消</span>
                 <span class="lang-en">Cancel</span>
@@ -478,6 +485,11 @@
             } else {
                 alert('❌ 密码错误！');
             }
+        }
+
+        // ✅ 修复：关闭支付弹窗，返回页面
+        function closePayModal() {
+            document.getElementById('payModal').classList.add('hidden');
         }
 
         function getCurrentLang() {return document.querySelector('.lang-zh.active-lang')?'zh':document.querySelector('.lang-en.active-lang')?'en':'ko';}
