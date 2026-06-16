@@ -494,14 +494,14 @@
             c.innerHTML='';
             videos.forEach((v,i)=>{
                 const d=document.createElement('div');d.className='video-item';
-                // ✅ 有密码显示锁图标，无密码显示解锁图标
-                const icon= v.password ? '<span class="lock-icon">🔒</span>' : '<span class="unlock-icon">🔓</span>';
+                // ✅ 无密码：不显示任何图标；有密码：显示🔒
+                const icon= v.password && v.password.trim() !== '' ? '<span class="lock-icon">🔒</span>' : '';
                 const t=lang==='zh'?v.title_zh:lang==='en'?v.title_en:v.title_ko;
                 d.innerHTML=`<div class="video-name">${t} ${icon}</div><span class="delete-btn" onclick="event.stopPropagation(); openDeleteModal(${i})">删除</span>`;
                 
                 d.onclick=()=>{
                     currentVideoIndex = i;
-                    // ✅ 核心逻辑：有密码 → 弹出支付；无密码 → 直接播放
+                    // ✅ 整个目录统一规则：有密码 → 弹出支付；无密码 → 直接播放
                     if(v.password && v.password.trim() !== '') {
                         document.getElementById('payModal').classList.remove('hidden');
                     } else {
