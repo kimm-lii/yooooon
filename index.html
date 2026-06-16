@@ -93,18 +93,33 @@
         .portfolio-content {flex:1;width:100%;background:#fff;padding:1.2rem;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid #f1f5f9;}
         @media (min-width: 768px) {.portfolio-layout {flex-wrap:nowrap;}.portfolio-sidebar {width:280px;}}
         
-        /* ✅ 标题栏 - 隐藏式+号 */
+        /* ✅ 标题栏 - +号：缩小、灰色 */
         .work-title-bar {display:flex;align-items:center;justify-content:flex-end;margin-bottom:1rem;}
-        /* ✅ 隐藏式+号：默认透明，hover显示；密码0803 */
-        .add-dir-btn {width:22px;height:22px;border-radius:50%;border:none;background:#165DFF;color:#fff;font-size:16px;cursor:pointer;opacity:0;transition:all 0.2s;display:flex;align-items:center;justify-content:center;line-height:1;}
-        .portfolio-sidebar:hover .add-dir-btn {opacity:0.8;}
-        .add-dir-btn:hover {opacity:1 !important;transform:scale(1.1);}
+        .add-dir-btn {
+            width:20px;
+            height:20px;
+            border-radius:50%;
+            border:none;
+            background:#94a3b8; /* ✅ 灰色 */
+            color:#fff;
+            font-size:14px; /* ✅ 缩小 */
+            cursor:pointer;
+            opacity:0.7;
+            transition:all 0.2s;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            line-height:1;
+        }
+        .portfolio-sidebar:hover .add-dir-btn {opacity:1;}
+        .add-dir-btn:hover {transform:scale(1.1);}
         
-        /* ✅ 目录分组样式 - ▼缩小变灰色 */
+        /* ✅ 目录分组样式 - ▼缩小：0.45rem，灰色 */
         .dir-group {margin-bottom:1rem;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;}
         .dir-header {padding:0.6rem 0.8rem;background:#f8fafc;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:space-between;}
         .dir-header:hover {background:#f1f5f9;}
-        .dir-toggle {font-size:0.55rem !important;color:#999 !important;opacity:0.6;}
+        .dir-name {flex:1;cursor:pointer;} /* ✅ 目录名可点击操作 */
+        .dir-toggle {font-size:0.45rem !important;color:#999 !important;opacity:0.6;}
         .dir-videos {padding:0.4rem 0.6rem;background:#fff;display:none;}
         .dir-group.open .dir-videos {display:block;}
 
@@ -198,6 +213,12 @@
 
         .banner-img {width:100%;height:auto;border-radius:8px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.1);object-fit:cover;}
         .home-title-spacing {padding-top: 1rem;padding-bottom: 1rem;}
+
+        /* ✅ 目录操作菜单 */
+        .dir-menu {position:absolute;background:#fff;border:1px solid #e2e8f0;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.1);padding:0.3rem 0;z-index:1000;min-width:100px;}
+        .dir-menu-item {padding:0.4rem 0.8rem;cursor:pointer;font-size:0.85rem;transition:background 0.2s;}
+        .dir-menu-item:hover {background:#f1f5f9;}
+        .dir-menu-item.danger {color:#dc3545;}
     </style>
 </head>
 <body>
@@ -205,7 +226,6 @@
         <div class="upload-container">
             <h3>📤 上传视频管理</h3>
             <input type="text" id="videoUrl" placeholder="🔗 YouTube链接 / Streamtape / 任意MP4链接">
-            <input type="text" id="videoCover" placeholder="🖼️ 封面图链接（选填）">
             <div class="file-input">
                 <input type="file" id="videoFile" accept="video/*">
             </div>
@@ -213,7 +233,6 @@
             <select id="videoDir">
                 <option value="">📁 选择保存目录（可选）</option>
             </select>
-            <!-- ✅ 已删除：输入视频标题 -->
             <!-- ✅ 集数（选填） -->
             <input type="text" id="videoEpisode" placeholder="📑 集数（选填，如：第1集 / EP01）">
             <!-- ✅ 输入密码（选填） -->
@@ -278,7 +297,6 @@
                 </h2>
                 <div class="portfolio-layout">
                     <div class="portfolio-sidebar">
-                        <!-- ✅ 已删除「我的作品」项，仅保留+号 -->
                         <div class="work-title-bar">
                             <button class="add-dir-btn" title="添加目录" onclick="openAddDirPwd()">+</button>
                         </div>
@@ -328,33 +346,33 @@
     <div id="addDirPwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="addDirPwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeAddDirPwd()">取消</button><button class="btn-confirm" onclick="verifyAddDirPwd()">确定</button></div></div></div>
     <!-- ✅ 目录名称输入弹窗 -->
     <div id="dirNameModal" class="modal hidden"><div class="modal-content"><input type="text" placeholder="输入目录名称" id="dirNameInput"><div class="btn-group"><button class="btn-cancel" onclick="closeDirNameModal()">取消</button><button class="btn-confirm" onclick="saveNewDir()">确定</button></div></div></div>
+    <!-- ✅ 修改目录弹窗 -->
+    <div id="editDirModal" class="modal hidden"><div class="modal-content"><input type="text" placeholder="输入新目录名称" id="editDirNameInput"><div class="btn-group"><button class="btn-cancel" onclick="closeEditDirModal()">取消</button><button class="btn-confirm" onclick="saveEditDir()">确定</button></div></div></div>
+    <!-- ✅ 删除目录确认弹窗 -->
+    <div id="deleteDirModal" class="modal hidden"><div class="modal-content"><p class="text-center mb-4"><span class="lang-zh active-lang">确定要删除此目录吗？目录内视频也会被移除</span><span class="lang-en">Confirm delete? Videos inside will be removed</span><span class="lang-ko">이 디렉토리를 삭제하시겠습니까? 내부 영상도 함께 삭제됩니다</span></p><div class="btn-group"><button class="btn-cancel" onclick="closeDeleteDirModal()">取消</button><button class="btn-confirm danger" onclick="confirmDeleteDir()">删除</button></div></div></div>
 
     <div id="adminPwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="adminPwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeAdminPwd()">取消</button><button class="btn-confirm" onclick="verifyAdminPwd()">确定</button></div></div></div>
     <div id="pwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入观看密码" id="modalPwd"><div class="btn-group"><button class="btn-cancel" onclick="closeModal()">取消</button><button class="btn-confirm" onclick="checkPwd()">确定</button></div></div></div>
     <div id="deletePwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="deletePwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeDeleteModal()">取消</button><button class="btn-confirm" onclick="confirmDelete()">确定</button></div></div></div>
     <div id="payModal" class="pay-modal hidden">
         <div class="pay-box">
-            <!-- ✅ 付费解锁内容 - 图标+文字 -->
             <div class="pay-title">
                 <span>🔒</span>
                 <span class="lang-zh active-lang">付费解锁内容</span>
                 <span class="lang-en">Premium Content</span>
                 <span class="lang-ko">유료 콘텐츠</span>
             </div>
-            <!-- ✅ 观看本集视频需支付 $0.99 USD -->
             <div class="pay-desc">
                 <span class="lang-zh active-lang">观看本集视频需支付 $0.99 USD</span>
                 <span class="lang-en">Pay $0.99 USD to watch this episode</span>
                 <span class="lang-ko">본 영상 시청에는 $0.99 USD 결제가 필요합니다</span>
             </div>
-            <!-- ✅ 支持 PayPal / 银行卡支付 - 图标+加粗文字 -->
             <div class="pay-method">
                 <span>✅</span>
                 <span class="lang-zh active-lang"><strong>支持 PayPal / 银行卡支付</strong></span>
                 <span class="lang-en"><strong>Supports PayPal / Card Payment</strong></span>
                 <span class="lang-ko"><strong>PayPal / 카드 결제 지원</strong></span>
             </div>
-            <!-- ✅ 前往付款 - 带图标，按钮缩小 -->
             <a id="payLink" href="https://www.paypal.com/paypalme/yourpaypal" target="_blank" style="text-decoration:none;">
                 <button class="pay-btn">
                     <span>💳</span>
@@ -363,7 +381,6 @@
                     <span class="lang-ko">결제하러 가기</span>
                 </button>
             </a>
-            <!-- ✅ 取消 - 按钮同步缩小 -->
             <button class="cancel-btn" onclick="closePayModal()">
                 <span class="lang-zh active-lang">取消</span>
                 <span class="lang-en">Cancel</span>
@@ -380,9 +397,10 @@
         let dirs=JSON.parse(localStorage.getItem('myDirs'))||[];
         let modalCallback=null;
         let currentVideoIndex = -1;
+        let currentDirId = null; // ✅ 当前操作的目录ID
         const SITE_DOMAIN = 'https://kimm-lii.github.io/yooooon';
         const DEFAULT_COVER = 'https://i.imgur.com/9Z7X7QH.jpg';
-        const ADD_DIR_PWD = '0803'; // ✅ 固定添加目录密码
+        const ADD_DIR_PWD = '0803';
 
         // ✅ 目录相关逻辑
         function openAddDirPwd() {document.getElementById('addDirPwdModal').classList.remove('hidden');document.getElementById('addDirPwdInput').value='';}
@@ -400,7 +418,62 @@
             localStorage.setItem('myDirs',JSON.stringify(dirs));
             closeDirNameModal();
             renderWorkGroups();
-            updateDirOptions(); // ✅ 新增目录后自动更新上传页选项
+            updateDirOptions();
+        }
+
+        // ✅ 修改目录
+        function openEditDirModal(id) {
+            currentDirId = id;
+            const dir = dirs.find(d=>d.id===id);
+            document.getElementById('editDirNameInput').value = dir.name;
+            document.getElementById('editDirModal').classList.remove('hidden');
+        }
+        function closeEditDirModal() {document.getElementById('editDirModal').classList.add('hidden');currentDirId=null;}
+        function saveEditDir() {
+            const newName=document.getElementById('editDirNameInput').value.trim();
+            if(!newName) return alert('请输入目录名称！');
+            const idx = dirs.findIndex(d=>d.id===currentDirId);
+            if(idx!==-1) {dirs[idx].name=newName;localStorage.setItem('myDirs',JSON.stringify(dirs));}
+            closeEditDirModal();
+            renderWorkGroups();
+            updateDirOptions();
+        }
+
+        // ✅ 删除目录
+        function openDeleteDirModal(id) {currentDirId=id;document.getElementById('deleteDirModal').classList.remove('hidden');}
+        function closeDeleteDirModal() {document.getElementById('deleteDirModal').classList.add('hidden');currentDirId=null;}
+        function confirmDeleteDir() {
+            // 删除目录
+            dirs = dirs.filter(d=>d.id!==currentDirId);
+            // 删除该目录下所有视频
+            videos = videos.filter(v=>v.dirId!=currentDirId);
+            localStorage.setItem('myDirs',JSON.stringify(dirs));
+            localStorage.setItem('myVideos',JSON.stringify(videos));
+            closeDeleteDirModal();
+            renderWorkGroups();
+            renderMyWorks();
+            updateDirOptions();
+        }
+
+        // ✅ 目录操作菜单
+        function showDirMenu(e, id) {
+            e.stopPropagation();
+            // 移除已有菜单
+            document.querySelectorAll('.dir-menu').forEach(m=>m.remove());
+            const menu = document.createElement('div');
+            menu.className = 'dir-menu';
+            menu.style.left = e.pageX + 'px';
+            menu.style.top = e.pageY + 'px';
+            menu.innerHTML = `
+                <div class="dir-menu-item" onclick="openEditDirModal(${id})">✏️ <span class="lang-zh active-lang">修改目录</span><span class="lang-en">Edit</span><span class="lang-ko">수정</span></div>
+                <div class="dir-menu-item danger" onclick="openDeleteDirModal(${id})">🗑️ <span class="lang-zh active-lang">删除目录</span><span class="lang-en">Delete</span><span class="lang-ko">삭제</span></div>
+            `;
+            document.body.appendChild(menu);
+            // 点击空白关闭
+            setTimeout(()=>{
+                const closeMenu = ()=>{menu.remove();document.removeEventListener('click',closeMenu);};
+                document.addEventListener('click',closeMenu);
+            },10);
         }
 
         // ✅ 更新上传页的目录下拉选项
@@ -449,18 +522,18 @@
         function addVideo() {
             const url=document.getElementById('videoUrl').value.trim();
             const file=document.getElementById('videoFile').files[0];
-            const cover=document.getElementById('videoCover').value.trim() || DEFAULT_COVER; // ✅ 封面图链接
-            const episode=document.getElementById('videoEpisode').value.trim(); // ✅ 集数
-            const dirId=document.getElementById('videoDir').value; // ✅ 选择的目录
+            const cover=document.getElementById('videoCover')?.value?.trim() || DEFAULT_COVER;
+            const episode=document.getElementById('videoEpisode').value.trim();
+            const dirId=document.getElementById('videoDir').value;
             const pwd=document.getElementById('videoPwd').value.trim();
-            // ✅ 自动生成标题：用链接/文件名+集数
+            // ✅ 自动生成标题
             let autoTitle = '';
             if(url) {
                 try {
                     const urlObj = new URL(url);
                     autoTitle = urlObj.pathname.split('/').pop() || url;
                 } catch {
-                    autoTitle = url.slice(-20); // 取后20位
+                    autoTitle = url.slice(-20);
                 }
             }
             if(file) autoTitle = file.name;
@@ -496,7 +569,7 @@
                 cover:cover
             });
             localStorage.setItem('myVideos',JSON.stringify(videos));
-            document.getElementById('videoUrl').value='';document.getElementById('videoCover').value='';document.getElementById('videoFile').value='';document.getElementById('videoEpisode').value='';document.getElementById('videoPwd').value='';
+            document.getElementById('videoUrl').value='';document.getElementById('videoFile').value='';document.getElementById('videoEpisode').value='';document.getElementById('videoPwd').value='';
             renderWorkGroups();closeUploadPage();renderMyWorks();
         }
 
@@ -545,10 +618,9 @@
             }
         }
 
-        // ✅ 彻底修复：关闭支付弹窗，返回页面
         function closePayModal() {
             document.getElementById('payModal').classList.add('hidden');
-            return false; // 阻止事件冒泡
+            return false;
         }
 
         function getCurrentLang() {return document.querySelector('.lang-zh.active-lang')?'zh':document.querySelector('.lang-en.active-lang')?'en':'ko';}
@@ -565,7 +637,7 @@
                 dirEl.className='dir-group';
                 dirEl.innerHTML=`
                 <div class="dir-header" onclick="this.parentElement.classList.toggle('open')">
-                    <span>${d.name}</span>
+                    <span class="dir-name" onclick="showDirMenu(event, ${d.id})">${d.name}</span>
                     <span class="dir-toggle">▼</span>
                 </div>
                 <div class="dir-videos" id="dir-${d.id}"></div>`;
