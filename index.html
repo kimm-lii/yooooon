@@ -205,17 +205,16 @@
         <div class="upload-container">
             <h3>📤 上传视频管理</h3>
             <input type="text" id="videoUrl" placeholder="🔗 YouTube链接 / Streamtape / 任意MP4链接">
-            <!-- ✅ 已删除封面图链接输入项 -->
+            <input type="text" id="videoCover" placeholder="🖼️ 封面图链接（选填）">
             <div class="file-input">
                 <input type="file" id="videoFile" accept="video/*">
             </div>
-            <!-- ✅ 选择目录 -->
+            <!-- ✅ 选择保存目录 -->
             <select id="videoDir">
-                <option value="">📂 选择保存目录（可选）</option>
+                <option value="">📁 选择保存目录（可选）</option>
             </select>
-            <!-- ✅ 视频标题 -->
-            <input type="text" id="videoTitle" placeholder="📝 输入视频标题" required>
-            <!-- ✅ 新增集数（选填） -->
+            <!-- ✅ 已删除：输入视频标题 -->
+            <!-- ✅ 集数（选填） -->
             <input type="text" id="videoEpisode" placeholder="📑 集数（选填，如：第1集 / EP01）">
             <!-- ✅ 输入密码（选填） -->
             <input type="text" id="videoPwd" placeholder="🔒 输入密码（选填）">
@@ -401,13 +400,13 @@
             localStorage.setItem('myDirs',JSON.stringify(dirs));
             closeDirNameModal();
             renderWorkGroups();
-            updateDirOptions(); // ✅ 更新上传页目录选项
+            updateDirOptions(); // ✅ 新增目录后自动更新上传页选项
         }
 
         // ✅ 更新上传页的目录下拉选项
         function updateDirOptions() {
             const sel = document.getElementById('videoDir');
-            sel.innerHTML = '<option value="">📂 选择保存目录（可选）</option>';
+            sel.innerHTML = '<option value="">📁 选择保存目录（可选）</option>';
             dirs.forEach(d=>{
                 const opt = document.createElement('option');
                 opt.value = d.id;
@@ -450,11 +449,24 @@
         function addVideo() {
             const url=document.getElementById('videoUrl').value.trim();
             const file=document.getElementById('videoFile').files[0];
-            const title=document.getElementById('videoTitle').value.trim();
+            const cover=document.getElementById('videoCover').value.trim() || DEFAULT_COVER; // ✅ 封面图链接
             const episode=document.getElementById('videoEpisode').value.trim(); // ✅ 集数
             const dirId=document.getElementById('videoDir').value; // ✅ 选择的目录
             const pwd=document.getElementById('videoPwd').value.trim();
-            if(!title){alert('请输入标题！');return;}
+            // ✅ 自动生成标题：用链接/文件名+集数
+            let autoTitle = '';
+            if(url) {
+                try {
+                    const urlObj = new URL(url);
+                    autoTitle = urlObj.pathname.split('/').pop() || url;
+                } catch {
+                    autoTitle = url.slice(-20); // 取后20位
+                }
+            }
+            if(file) autoTitle = file.name;
+            if(episode) autoTitle += ' ' + episode;
+            if(!autoTitle) autoTitle = '未命名视频';
+
             if(!url&&!file){alert('请粘贴链接或选择文件！');return;}
             let src=url;
             
@@ -475,16 +487,16 @@
             if(file) src=URL.createObjectURL(file);
             videos.push({
                 name:src,
-                title_zh:title,
-                title_en:title,
-                title_ko:title,
+                title_zh:autoTitle,
+                title_en:autoTitle,
+                title_ko:autoTitle,
                 episode:episode,
                 dirId:dirId,
                 password:pwd,
-                cover:DEFAULT_COVER // ✅ 封面使用默认图
+                cover:cover
             });
             localStorage.setItem('myVideos',JSON.stringify(videos));
-            document.getElementById('videoUrl').value='';document.getElementById('videoFile').value='';document.getElementById('videoTitle').value='';document.getElementById('videoEpisode').value='';document.getElementById('videoPwd').value='';
+            document.getElementById('videoUrl').value='';document.getElementById('videoCover').value='';document.getElementById('videoFile').value='';document.getElementById('videoEpisode').value='';document.getElementById('videoPwd').value='';
             renderWorkGroups();closeUploadPage();renderMyWorks();
         }
 
