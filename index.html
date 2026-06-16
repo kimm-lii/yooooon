@@ -73,12 +73,11 @@
         .pay-title {font-size:1.1rem;font-weight:600;margin-bottom:1rem;color:#dc3545;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
         .pay-desc {color:#475569;font-size:0.95rem;line-height:1.7;margin-bottom:1rem;}
         .pay-method {color:#28a745;font-size:0.9rem;margin-bottom:1.2rem;display:flex;align-items:center;justify-content:center;gap:0.3rem;}
-        .password-area {background:#f8f9fa;padding:0.8rem;border-radius:6px;margin:1rem 0;border:1px dashed #28a745;display:none;}
-        .password-text {font-size:1.1rem;font-weight:bold;color:#dc3545;letter-spacing:1px;}
-        .cancel-btn {width:100%;padding:0.9rem;background:#e5e7eb;color:#374151;border:none;border-radius:8px;cursor:pointer;font-size:1rem;transition:background 0.2s;}
-        .cancel-btn:hover {background:#d1d5db;}
+        .pay-note {color:#64748b;font-size:0.85rem;margin-bottom:1.5rem;line-height:1.5;}
         .pay-btn {width:100%;padding:0.9rem;background:#28a745;color:white;border:none;border-radius:8px;cursor:pointer;font-size:1rem;transition:background 0.2s;margin-bottom:0.7rem;}
         .pay-btn:hover {background:#218838;}
+        .cancel-btn {width:100%;padding:0.9rem;background:#e5e7eb;color:#374151;border:none;border-radius:8px;cursor:pointer;font-size:1rem;transition:background 0.2s;}
+        .cancel-btn:hover {background:#d1d5db;}
         .hidden {display:none !important;}
 
         /* ✅ 作品展示布局 */
@@ -191,7 +190,7 @@
                 <input type="file" id="videoFile" accept="video/*">
             </div>
             <input type="text" id="videoTitle" placeholder="📝 输入视频标题" required>
-            <input type="text" id="videoPwd" placeholder="🔒 观看密码（可选，留空则付款自动生成）">
+            <input type="text" id="videoPwd" placeholder="🔒 观看密码（设置后付款后将自动填入）">
             <button onclick="addVideo()">添加到作品列表</button>
             <button class="close-btn" onclick="closeUploadPage()">关闭页面</button>
         </div>
@@ -300,39 +299,45 @@
     </main>
 
     <div id="adminPwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="adminPwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeAdminPwd()">取消</button><button class="btn-confirm" onclick="verifyAdminPwd()">确定</button></div></div></div>
-    <div id="pwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="modalPwd"><div class="btn-group"><button class="btn-cancel" onclick="closeModal()">取消</button><button class="btn-confirm" onclick="checkPwd()">确定</button></div></div></div>
+    <div id="pwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="付款后获取密码并填入" id="modalPwd"><div class="btn-group"><button class="btn-cancel" onclick="closeModal()">取消</button><button class="btn-confirm" onclick="checkPwd()">确定</button></div></div></div>
     <div id="deletePwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="deletePwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeDeleteModal()">取消</button><button class="btn-confirm" onclick="confirmDelete()">确定</button></div></div></div>
     <div id="payModal" class="pay-modal hidden">
         <div class="pay-box">
-            <!-- ✅ 只显示当前选中语言的标题 -->
+            <!-- ✅ 多语言完全修复，不再只显示中文 -->
             <div class="pay-title">
                 <span class="lang-zh active-lang">🔒 付费解锁内容</span>
                 <span class="lang-en">🔒 Premium Content</span>
                 <span class="lang-ko">🔒 유료 콘텐츠</span>
             </div>
-            <!-- ✅ 保留价格 -->
+            <!-- ✅ 这里之前只显示中文，现在已经修复多语言 -->
             <div class="pay-desc">
-                <span class="lang-zh active-lang">观看本视频需支付 $0.99 USD，付款后自动显示密码</span>
-                <span class="lang-en">Pay $0.99 USD to watch, password will be shown after payment</span>
-                <span class="lang-ko">본 영상 시청에는 $0.99 USD 결제가 필요하며, 결제 후 비밀번호가 자동 표시됩니다</span>
+                <span class="lang-zh active-lang">观看本视频需支付 $0.99 USD，付款后获得密码</span>
+                <span class="lang-en">Pay $0.99 USD to watch, get password after payment</span>
+                <span class="lang-ko">본 영상 시청에는 $0.99 USD 결제가 필요하며, 결제 후 비밀번호를 받으실 수 있습니다</span>
             </div>
-            <!-- ✅ 支付提示 - 多语言已修复 -->
+            <!-- ✅ 支付提示 -->
             <div class="pay-method">
                 <span class="lang-zh active-lang">✅ 支持 PayPal / 银行卡支付</span>
                 <span class="lang-en">✅ Supports PayPal / Card Payment</span>
                 <span class="lang-ko">✅ PayPal / 카드 결제 지원</span>
             </div>
-            <!-- ✅ 自动生成密码区域 -->
-            <div class="password-area" id="generatedPwdArea">
-                <span class="lang-zh active-lang">观看密码：</span>
-                <span class="lang-en">Password:</span>
-                <span class="lang-ko">비밀번호:</span>
-                <div class="password-text" id="generatedPwd"></div>
+            <div class="pay-note">
+                <span class="lang-zh active-lang">点击下方按钮跳转至支付页面，完成后返回输入密码即可观看</span>
+                <span class="lang-en">Click below to go to payment page, enter password after returning</span>
+                <span class="lang-ko">아래 버튼을 클릭해 결제 페이지로 이동하고, 완료 후 돌아와 비밀번호를 입력하세요</span>
             </div>
-            <button class="pay-btn" onclick="generatePassword()">
-                <span class="lang-zh active-lang">✅ 已付款，获取密码</span>
-                <span class="lang-en">✅ Paid, get password</span>
-                <span class="lang-ko">✅ 결제 완료, 비밀번호 받기</span>
+            <!-- ✅ 跳转支付页面按钮，你把 href 换成你的收款链接 -->
+            <a id="payLink" href="https://www.paypal.com/paypalme/yourpaypal" target="_blank" style="text-decoration:none;">
+                <button class="pay-btn">
+                    <span class="lang-zh active-lang">💳 前往付款</span>
+                    <span class="lang-en">💳 Go to Payment</span>
+                    <span class="lang-ko">💳 결제하러 가기</span>
+                </button>
+            </a>
+            <button class="cancel-btn" onclick="afterPay()">
+                <span class="lang-zh active-lang">✅ 已付款，自动填入密码</span>
+                <span class="lang-en">✅ Paid, auto-fill password</span>
+                <span class="lang-ko">✅ 결제 완료, 비밀번호 자동 입력</span>
             </button>
             <button class="cancel-btn" onclick="closePayModal()">
                 <span class="lang-zh active-lang">取消</span>
@@ -348,48 +353,28 @@
         let deleteIndex = -1;
         let videos=JSON.parse(localStorage.getItem('myVideos'))||[];
         let modalCallback=null;
-        let currentVideoIndex = -1; // ✅ 记录当前要解锁的视频
-        let paidPasswords = {}; // ✅ 保存每个视频的支付密码 {视频索引: 密码}
+        let currentVideoIndex = -1; // ✅ 记录当前视频索引
         // ✅ 固定域名，确保所有人可播放
         const SITE_DOMAIN = 'https://kimm-lii.github.io/yooooon';
         // ✅ 默认封面图
         const DEFAULT_COVER = 'https://i.imgur.com/9Z7X7QH.jpg';
 
-        // ✅ 生成6位随机密码
-        function generateRandomPwd() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let pwd = '';
-            for(let i=0; i<6; i++) {
-                pwd += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return pwd;
-        }
-
-        // ✅ 点击“已付款”生成并显示该集独立密码
-        function generatePassword() {
-            // 如果已经生成过，直接显示；否则生成新的
-            if(!paidPasswords[currentVideoIndex]) {
-                paidPasswords[currentVideoIndex] = generateRandomPwd();
-            }
-            document.getElementById('generatedPwd').textContent = paidPasswords[currentVideoIndex];
-            document.getElementById('generatedPwdArea').style.display = 'block';
-        }
-
-        // ✅ 关闭弹窗重置
-        function closePayModal() {
-            document.getElementById('payModal').classList.add('hidden');
-            document.getElementById('generatedPwdArea').style.display = 'none';
-            document.getElementById('generatedPwd').textContent = '';
+        // ✅ 付款完成后：自动把你上传时设置的密码填入输入框
+        function afterPay() {
+            closePayModal();
+            const currentVideo = videos[currentVideoIndex];
+            openModal();
+            // 核心：直接填入你上传时设置的密码
+            document.getElementById('modalPwd').value = currentVideo.password;
         }
 
         // ✅ 打开密码输入框
-        function openModal(title, callback) {
+        function openModal() {
             const m=document.getElementById('pwdModal');
             document.getElementById('modalPwd').value='';
             m.classList.remove('hidden');
-            modalCallback=callback;
         }
-        function closeModal() {document.getElementById('pwdModal').classList.add('hidden');modalCallback=null;}
+        function closeModal() {document.getElementById('pwdModal').classList.add('hidden');}
         
         function openDeleteModal(i) {deleteIndex=i;document.getElementById('deletePwdModal').classList.remove('hidden');document.getElementById('deletePwdInput').value='';}
         function closeDeleteModal() {deleteIndex=-1;document.getElementById('deletePwdModal').classList.add('hidden');}
@@ -412,6 +397,7 @@
             const pwd=document.getElementById('videoPwd').value.trim();
             if(!title){alert('请输入标题！');return;}
             if(!url&&!file){alert('请粘贴链接或选择文件！');return;}
+            if(!pwd){alert('请设置观看密码，付款后将自动填入！');return;} // ✅ 强制设置密码
             let src=url;
             
             // ✅ 自动修正YouTube链接，解决跨域问题
@@ -430,7 +416,7 @@
             }
             
             if(file) src=URL.createObjectURL(file);
-            // ✅ 保存视频信息（含封面）
+            // ✅ 保存视频信息（含封面+固定密码）
             videos.push({name:src,title_zh:title,title_en:title,title_ko:title,password:pwd,cover:cover});
             localStorage.setItem('myVideos',JSON.stringify(videos));
             document.getElementById('videoUrl').value='';document.getElementById('coverUrl').value='';document.getElementById('videoFile').value='';document.getElementById('videoTitle').value='';document.getElementById('videoPwd').value='';
@@ -487,17 +473,16 @@
             `;
         }
 
-        // ✅ 核心逻辑：密码验证——原密码 OR 该视频的支付密码 都可以解锁
+        // ✅ 密码验证：只验证你上传时设置的固定密码
         function checkPwd() {
             const inputPwd = document.getElementById('modalPwd').value.trim();
             const currentVideo = videos[currentVideoIndex];
-            const currentPaidPwd = paidPasswords[currentVideoIndex] || '';
             
-            if(inputPwd === currentVideo.password || inputPwd === currentPaidPwd) {
+            if(inputPwd === currentVideo.password) {
                 closeModal();
                 playVideo(currentVideo);
             } else {
-                alert('❌ 密码错误！请确认已付款并输入正确密码');
+                alert('❌ 密码错误！请确认已付款并获取正确密码');
             }
         }
 
@@ -515,17 +500,13 @@
             c.innerHTML='';
             videos.forEach((v,i)=>{
                 const d=document.createElement('div');d.className='video-item';
-                const icon=v.password?'<span class="lock-icon">🔒</span>':'<span class="unlock-icon">🔓</span>';
+                const icon='<span class="lock-icon">🔒</span>'; // ✅ 所有视频都加密
                 const t=lang==='zh'?v.title_zh:lang==='en'?v.title_en:v.title_ko;
                 d.innerHTML=`<div class="video-name">${t} ${icon}</div><span class="delete-btn" onclick="event.stopPropagation(); openDeleteModal(${i})">删除</span>`;
                 
                 d.onclick=()=>{
                     currentVideoIndex = i; // 记录当前点击的视频
-                    if(!v.password){
-                        playVideo(v);
-                        return;
-                    }
-                    // ✅ 有密码：先弹出付费提示
+                    // ✅ 直接弹出付款窗口
                     document.getElementById('payModal').classList.remove('hidden');
                 };
                 c.appendChild(d);
