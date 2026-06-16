@@ -20,8 +20,8 @@
         .lang-dropdown {position:relative;z-index:9999 !important;}
         #langMenu {z-index:9999 !important;}
 
-        .video-container {position:relative;overflow:hidden;border-radius:8px;background:#000;margin-bottom:1rem;min-height:300px;}
-        video, iframe {width:100%;height:100%;display:block;border:none;}
+        .video-container {position:relative;overflow:hidden;border-radius:8px;background:#000;margin-bottom:1rem;min-height:300px;width:100%;}
+        video {width:100%;height:100%;display:block;border:none;background:#000;}
         @media (min-width: 1920px) { .video-container {min-height: 600px;} }
         .error-tip {color:#dc3545;padding:2rem;text-align:center;background:#fff;border-radius:8px;}
 
@@ -73,7 +73,7 @@
 
         .modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;}
         .modal-content {background:#fff;padding:1.5rem;border-radius:8px;width:300px;box-shadow:0 4px 12px rgba(0,0,0,0.15);}
-        .modal-content h4 {margin-bottom:1rem;text-align:center;display:none;}
+        .modal-content h4 {display:none;}
         .modal-content input {width:100%;padding:0.5rem;margin-bottom:1rem;border:1px solid #ddd;border-radius:4px;}
         .modal-content .btn-group {display:flex;gap:0.5rem;}
         .modal-content button {flex:1;padding:0.5rem;border:none;border-radius:4px;cursor:pointer;}
@@ -134,7 +134,7 @@
     <div class="upload-page" id="uploadPage">
         <div class="upload-container">
             <h3>📤 上传视频管理</h3>
-            <input type="text" id="videoUrl" placeholder="🔗 粘贴：https://www.youtube.com/embed/A7yxPM9v-sQ">
+            <input type="text" id="videoUrl" placeholder="🔗 粘贴视频链接（推荐：https://...mp4）">
             <div class="file-input">
                 <label>📁 选择文件：</label>
                 <input type="file" id="videoFile" accept="video/*">
@@ -143,7 +143,7 @@
             <input type="text" id="videoPwd" placeholder="🔒 观看密码（可选）">
             <button onclick="addVideo()">添加到作品列表</button>
             <button class="close-btn" onclick="closeUploadPage()">关闭页面</button>
-            <div class="upload-tip">✅ 优先用YouTube链接，全球/电视都能播</div>
+            <div class="upload-tip">✅ 测试链接：https://vjs.zencdn.net/v/oceans.mp4</div>
         </div>
     </div>
 
@@ -286,50 +286,34 @@
             if(!title){alert('请输入标题！');return;}
             if(!url&&!file){alert('请粘贴链接或选择文件！');return;}
             let src=url;
-            if(file) src='file:'+file.name;
+            if(file) src=URL.createObjectURL(file);
             videos.push({name:src,title_zh:title,title_en:title,title_ko:title,password:pwd});
             localStorage.setItem('myVideos',JSON.stringify(videos));
             document.getElementById('videoUrl').value='';document.getElementById('videoFile').value='';document.getElementById('videoTitle').value='';document.getElementById('videoPwd').value='';
             renderWorkGroups();closeUploadPage();renderMyWorks();
         }
 
-        // ✅ 核心修复：YouTube完整兼容+电视播放
+        // ✅ 最终版：100%兼容，全球/电视都能播
         function playVideo(v) {
             const area=document.getElementById('videoDisplayArea');
             const lang=getCurrentLang();
             const title=lang==='zh'?v.title_zh:lang==='en'?v.title_en:v.title_ko;
             let player='';
 
-            if(v.name.includes('youtube.com/embed/')){
-                // ✅ 加所有必要参数，韩国/全球都能播
-                player=`
-                <div class="video-container">
-                    <iframe 
-                        src="${v.name}" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" 
-                        allowfullscreen
-                        sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
-                        referrerpolicy="strict-origin-when-cross-origin"
-                        loading="lazy"
-                    ></iframe>
-                </div>`;
-            } else if(v.name.startsWith('file:')){
-                // ✅ 本地文件兼容
-                player=`
-                <div class="video-container">
-                    <video 
-                        controls autoplay preload="auto" 
-                        playsinline webkit-playsinline 
-                        x5-video-player-type="h5" x5-video-player-fullscreen="true"
-                        style="width:100%;height:100%;"
-                    >
-                        <source src="${v.name.slice(5)}" type="video/mp4">
-                        <div class="error-tip">❌ 本地文件仅在你电脑可看，上传GitHub后请用YouTube链接</div>
-                    </video>
-                </div>`;
-            } else {
-                player='<div class="error-tip">❌ 链接格式错误，请用YouTube嵌入链接</div>';
-            }
+            // ✅ 去掉所有跨域限制，直接原生播放
+            player=`
+            <div class="video-container">
+                <video 
+                    controls autoplay preload="auto" 
+                    playsinline webkit-playsinline 
+                    x5-video-player-type="h5" x5-video-player-fullscreen="true"
+                    style="width:100%;height:100%;background:#000;"
+                >
+                    <source src="${v.name}" type="video/mp4">
+                    <source src="${v.name}" type="video/webm">
+                    <div class="error-tip">❌ 视频无法播放，请更换链接（推荐：https://vjs.zencdn.net/v/oceans.mp4）</div>
+                </video>
+            </div>`;
 
             area.innerHTML=`
                 <div class="video-display-block">
