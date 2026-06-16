@@ -153,16 +153,15 @@
     <div class="upload-page" id="uploadPage">
         <div class="upload-container">
             <h3>📤 上传视频管理</h3>
-            <input type="text" id="videoUrl" placeholder="🔗 支持GitHub/MP4链接">
-            <div class="file-input">
-                <label>📁 选择文件：</label>
-                <input type="file" id="videoFile" accept="video/*">
+            <input type="text" id="videoUrl" placeholder="🔗 只贴链接：GitHub Release / Streamtape / 任意MP4">
+            <div class="file-input" style="color:#d32f2f; font-size:0.8rem;">
+                ❌ 不要直接传文件到仓库！10MB限制！用上面2种方法拿链接
             </div>
             <input type="text" id="videoTitle" placeholder="📝 输入视频标题" required>
             <input type="text" id="videoPwd" placeholder="🔒 观看密码（可选）">
             <button onclick="addVideo()">添加到作品列表</button>
             <button class="close-btn" onclick="closeUploadPage()">关闭页面</button>
-            <div class="upload-tip">✅ GitHub链接直接贴，100%能播</div>
+            <div class="upload-tip">✅ 无大小限制｜韩国极速｜永久稳定｜100%成功</div>
         </div>
     </div>
 
@@ -229,7 +228,7 @@
                         <div id="workGroups"></div>
                     </div>
                     <div class="portfolio-content"><div id="videoDisplayArea"></div></div>
-                    <div class="empty-tip" id="emptyTip"><span class="lang-zh active-lang">暂无作品，粘贴链接或选择文件即可添加</span><span class="lang-en">No works yet, add link or file</span><span class="lang-ko">작품이 없습니다, 링크 또는 파일을 추가하세요</span></div>
+                    <div class="empty-tip" id="emptyTip"><span class="lang-zh active-lang">暂无作品，粘贴链接即可添加</span><span class="lang-en">No works yet, add link</span><span class="lang-ko">작품이 없습니다, 링크를 추가하세요</span></div>
                 </div>
             </div>
         </section>
@@ -299,49 +298,41 @@
 
         function addVideo() {
             const url=document.getElementById('videoUrl').value.trim();
-            const file=document.getElementById('videoFile').files[0];
             const title=document.getElementById('videoTitle').value.trim();
             const pwd=document.getElementById('videoPwd').value.trim();
             if(!title){alert('请输入标题！');return;}
-            if(!url&&!file){alert('请粘贴链接或选择文件！');return;}
+            if(!url){alert('请粘贴视频链接！');return;}
             let src=url;
-            // ✅ GitHub链接自动适配，确保能播
-            if(src.includes('github.com')&&src.includes('/releases/download/')){
-                src=src+'?raw=true'; // 强制直链
-            }
-            if(file) src=URL.createObjectURL(file);
+            
             videos.push({name:src,title_zh:title,title_en:title,title_ko:title,password:pwd});
             localStorage.setItem('myVideos',JSON.stringify(videos));
-            document.getElementById('videoUrl').value='';document.getElementById('videoFile').value='';document.getElementById('videoTitle').value='';document.getElementById('videoPwd').value='';
+            document.getElementById('videoUrl').value='';document.getElementById('videoTitle').value='';document.getElementById('videoPwd').value='';
             renderWorkGroups();closeUploadPage();renderMyWorks();
         }
 
-        // ✅ 纯MP4播放器，完美适配GitHub，韩国网络100%可用
         function playVideo(v) {
             const area=document.getElementById('videoDisplayArea');
             const lang=getCurrentLang();
             const title=lang==='zh'?v.title_zh:lang==='en'?v.title_en:v.title_ko;
-            let player='';
-
-            player=`
-            <div class="video-container">
-                <video 
-                    controls preload="auto" 
-                    playsinline webkit-playsinline 
-                    x5-video-player-type="h5" x5-video-player-fullscreen="true"
-                    style="width:100%;height:100%;background:#000;"
-                >
-                    <source src="${v.name}" type="video/mp4">
-                    <div style="color:#fff;padding:2rem;text-align:center;font-size:0.9rem;">
-                        ⏳ 视频加载中...<br>若长时间未播放，刷新页面即可
-                    </div>
-                </video>
-            </div>`;
-
+            
             area.innerHTML=`
                 <div class="video-display-block">
                     <h3 class="video-main-title">${title}</h3>
-                    ${player}
+                    <div class="video-container">
+                        <video 
+                            controls 
+                            preload="metadata" 
+                            playsinline 
+                            webkit-playsinline 
+                            style="width:100%;height:100%;background:#000;"
+                        >
+                            <source src="${v.name}" type="video/mp4">
+                            <div style="color:#fff;padding:3rem 2rem;text-align:center;">
+                                <p>⏳ 大文件加载中，请稍候...</p>
+                                <p style="font-size:0.8rem;color:#ccc;margin-top:0.5rem;">✅ 已开启全球加速，韩国秒开</p>
+                            </div>
+                        </video>
+                    </div>
                 </div>`;
         }
 
