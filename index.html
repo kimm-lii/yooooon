@@ -20,36 +20,19 @@
         .lang-dropdown {position:relative;z-index:9999 !important;}
         #langMenu {z-index:9999 !important;}
 
-        /* ✅ 完全还原截图：播放器+顶部半透明信息栏 */
+        /* ✅ 极简播放器：只保留视频和播放按钮，其他全部删除 */
         .video-container {position:relative;overflow:hidden;border-radius:12px;background:#000;margin-bottom:1.2rem;width:100%;aspect-ratio:16/9;box-shadow:0 4px 16px rgba(0,0,0,0.12);}
         video, iframe {width:100%;height:100%;display:block;border:none;background:#000;}
-        
-        /* ✅ 顶部半透明黑色栏，和截图完全一致 */
-        .video-top-bar {position:absolute;top:0;left:0;width:100%;padding:1rem 1.2rem;background:linear-gradient(to bottom, rgba(0,0,0,0.85), transparent 100%);color:#fff;display:flex;align-items:center;justify-content:space-between;z-index:10;}
-        .video-left-info {display:flex;align-items:center;gap:0.8rem;}
-        .video-avatar {width:40px;height:40px;border-radius:50%;background:#ccc;overflow:hidden;}
-        .video-avatar img {width:100%;height:100%;object-fit:cover;}
-        .video-title-area {line-height:1.3;}
-        .video-main-title {font-size:1.1rem;font-weight:600;margin:0;}
-        .video-author {font-size:0.85rem;color:#ddd;}
-        
-        .video-right-actions {display:flex;align-items:center;gap:1rem;}
-        .action-btn {display:flex;align-items:center;gap:0.4rem;padding:0.4rem 0.8rem;background:rgba(255,255,255,0.2);border-radius:20px;color:#fff;font-size:0.85rem;text-decoration:none;transition:all 0.2s;border:none;cursor:pointer;backdrop-filter:blur(4px);}
-        .action-btn:hover {background:rgba(255,255,255,0.3);}
-        .youtube-btn {background:rgba(255,0,0,0.8);}
-        .youtube-btn:hover {background:rgba(255,0,0,1);}
 
-        /* ✅ 红色居中播放按钮 */
+        /* ✅ 红色背景 + 灰色箭头 */
         .youtube-play-btn {position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80px;height:56px;background:#ff0000;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;transition:scale 0.2s;}
-        .youtube-play-btn::after {content:"";display:block;width:0;height:0;border-top:12px solid transparent;border-bottom:12px solid transparent;border-left:20px solid #fff;margin-left:4px;}
+        .youtube-play-btn::after {content:"";display:block;width:0;height:0;border-top:12px solid transparent;border-bottom:12px solid transparent;border-left:20px solid #888888;margin-left:4px;} /* 箭头改成灰色#888 */
         .youtube-play-btn:hover {scale:1.08;}
 
         @media (max-width: 768px) { 
             .video-container {min-height: 240px;} 
-            .video-main-title {font-size:1rem;}
-            .action-btn {padding:0.3rem 0.6rem;font-size:0.75rem;}
             .youtube-play-btn {width:60px;height:42px;}
-            .youtube-play-btn::after {border-top:9px solid transparent;border-bottom:9px solid transparent;border-left:15px solid #fff;}
+            .youtube-play-btn::after {border-top:9px solid transparent;border-bottom:9px solid transparent;border-left:15px solid #888888;}
         }
 
         .website-link {color: #165DFF !important; text-decoration: none; font-size: 0.85rem;}
@@ -85,7 +68,7 @@
         .cancel-btn:hover {background:#d1d5db;}
         .hidden {display:none !important;}
 
-        /* ✅ 作品展示布局，和截图一致 */
+        /* ✅ 作品展示布局 */
         .portfolio-layout {display:flex;gap:2rem;position:relative;min-height:500px;flex-wrap:wrap;align-items:flex-start;}
         .portfolio-sidebar {width:100%;flex-shrink:0;background:#fff;padding:1.2rem;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid #f1f5f9;}
         .portfolio-content {flex:1;width:100%;background:#fff;padding:1.2rem;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid #f1f5f9;}
@@ -362,39 +345,17 @@
             renderWorkGroups();closeUploadPage();renderMyWorks();
         }
 
-        // ✅ 1:1还原截图界面！顶部栏、头像、按钮、红色播放按钮全部对齐
+        // ✅ 全部删除：小熊、标题、作者、分享、稍后看、YouTube跳转、时间、底部所有信息
         function playVideo(v) {
             const area=document.getElementById('videoDisplayArea');
-            const lang=getCurrentLang();
-            const title=lang==='zh'?v.title_zh:lang==='en'?v.title_en:v.title_ko;
             let player='';
-            let youtubeLink='';
-            const avatarUrl = 'https://via.placeholder.com/40/888/fff?text=🐻'; // 头像，和截图一致
 
             if(v.name.includes('youtube.com/embed/')){
-                const videoId = v.name.split('/embed/')[1].split('?')[0];
-                youtubeLink = 'https://www.youtube.com/watch?v=' + videoId;
                 player=`
                 <div class="video-display-block">
                     <div class="video-container">
-                        <!-- ✅ 顶部半透明信息栏 -->
-                        <div class="video-top-bar">
-                            <div class="video-left-info">
-                                <div class="video-avatar"><img src="${avatarUrl}" alt="avatar"></div>
-                                <div class="video-title-area">
-                                    <h3 class="video-main-title">${title}</h3>
-                                    <div class="video-author">ying li</div>
-                                </div>
-                            </div>
-                            <div class="video-right-actions">
-                                <button class="action-btn">🔗 分享</button>
-                                <button class="action-btn">⏱️ 稍后看</button>
-                                <a href="${youtubeLink}" target="_blank" class="action-btn youtube-btn">▶️ YouTube</a>
-                            </div>
-                        </div>
-                        <!-- ✅ 红色居中播放按钮 -->
+                        <!-- ✅ 只保留红色背景 + 灰色箭头 -->
                         <div class="youtube-play-btn" onclick="this.parentElement.querySelector('iframe').src += '&autoplay=1'; this.style.display='none'"></div>
-                        <!-- ✅ 播放器 -->
                         <iframe 
                             width="100%"
                             height="500"
