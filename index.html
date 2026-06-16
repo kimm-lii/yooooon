@@ -21,9 +21,8 @@
         #langMenu {z-index:9999 !important;}
 
         .video-container {position:relative;overflow:hidden;border-radius:8px;background:#000;margin-bottom:1rem;min-height:300px;width:100%;}
-        video {width:100%;height:100%;display:block;border:none;background:#000;}
+        video, iframe {width:100%;height:100%;display:block;border:none;background:#000;}
         @media (min-width: 1920px) { .video-container {min-height: 600px;} }
-        .error-tip {color:#dc3545;padding:2rem;text-align:center;background:#fff;border-radius:8px;}
 
         .website-link {color: #165DFF !important; text-decoration: none; font-size: 0.85rem;}
         .website-link:hover {text-decoration: underline;}
@@ -63,8 +62,26 @@
         .video-name {font-weight:500;display:flex;align-items:center;gap:0.5rem;}
         .lock-icon {color:#dc3545;}
         .unlock-icon {color:#28a745;}
-        .delete-btn {color: #dc3545; font-size: 0.8rem; cursor: pointer; padding: 0.2rem 0.5rem; border: 1px solid #dc3545; border-radius: 4px; transition: all 0.2s;}
-        .delete-btn:hover {background: #dc3545; color: white;}
+        /* ✅ 删除按钮：更小、更浅、半隐藏，hover才清晰 */
+        .delete-btn {
+            color: #dc354555;
+            font-size: 0.7rem;
+            cursor: pointer;
+            padding: 0.15rem 0.4rem;
+            border: 1px solid #dc354522;
+            border-radius: 3px;
+            transition: all 0.2s;
+            font-weight: 400;
+            opacity: 0.35;
+            transform: scale(0.8);
+        }
+        .delete-btn:hover {
+            color: #dc3545;
+            border-color: #dc3545;
+            opacity: 1;
+            transform: scale(1);
+            background: #dc354510;
+        }
 
         .video-display-block {margin-bottom:2rem;}
         .video-main-title {font-size:1.3rem;font-weight:600;margin-bottom:1rem;color:#1a1a1a;text-align:center;padding-bottom:0.5rem;border-bottom:1px solid #eee;}
@@ -74,9 +91,11 @@
         .modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;}
         .modal-content {background:#fff;padding:1.5rem;border-radius:8px;width:300px;box-shadow:0 4px 12px rgba(0,0,0,0.15);}
         .modal-content h4 {display:none;}
-        .modal-content input {width:100%;padding:0.5rem;margin-bottom:1rem;border:1px solid #ddd;border-radius:4px;}
+        /* ✅ 输入框浅灰色提示文字 */
+        .modal-content input {width:100%;padding:0.6rem;margin-bottom:1rem;border:1px solid #ddd;border-radius:4px;font-size:1rem;}
+        .modal-content input::placeholder {color:#bbbbbb;}
         .modal-content .btn-group {display:flex;gap:0.5rem;}
-        .modal-content button {flex:1;padding:0.5rem;border:none;border-radius:4px;cursor:pointer;}
+        .modal-content button {flex:1;padding:0.6rem;border:none;border-radius:4px;cursor:pointer;font-size:1rem;}
         .btn-cancel {background:#6c757d;color:white;}
         .btn-confirm {background:#165DFF;color:white;}
 
@@ -134,7 +153,7 @@
     <div class="upload-page" id="uploadPage">
         <div class="upload-container">
             <h3>📤 上传视频管理</h3>
-            <input type="text" id="videoUrl" placeholder="🔗 粘贴视频链接（推荐：https://...mp4）">
+            <input type="text" id="videoUrl" placeholder="🔗 粘贴YouTube嵌入链接：https://www.youtube.com/embed/xxx">
             <div class="file-input">
                 <label>📁 选择文件：</label>
                 <input type="file" id="videoFile" accept="video/*">
@@ -143,7 +162,7 @@
             <input type="text" id="videoPwd" placeholder="🔒 观看密码（可选）">
             <button onclick="addVideo()">添加到作品列表</button>
             <button class="close-btn" onclick="closeUploadPage()">关闭页面</button>
-            <div class="upload-tip">✅ 测试链接：https://vjs.zencdn.net/v/oceans.mp4</div>
+            <div class="upload-tip">✅ 韩国/电视推荐：YouTube嵌入链接；通用链接：https://vjs.zencdn.net/v/oceans.mp4</div>
         </div>
     </div>
 
@@ -249,9 +268,10 @@
         </section>
     </main>
 
-    <div id="adminPwdModal" class="modal hidden"><div class="modal-content"><input type="password" id="adminPwdInput" placeholder=""><div class="btn-group"><button class="btn-cancel" onclick="closeAdminPwd()">取消</button><button class="btn-confirm" onclick="verifyAdminPwd()">确定</button></div></div></div>
-    <div id="pwdModal" class="modal hidden"><div class="modal-content"><input type="password" id="modalPwd" placeholder=""><div class="btn-group"><button class="btn-cancel" onclick="closeModal()">取消</button><button class="btn-confirm" onclick="checkPwd()">确定</button></div></div></div>
-    <div id="deletePwdModal" class="modal hidden"><div class="modal-content"><input type="password" id="deletePwdInput" placeholder=""><div class="btn-group"><button class="btn-cancel" onclick="closeDeleteModal()">取消</button><button class="btn-confirm" onclick="confirmDelete()">确定</button></div></div></div>
+    <div id="adminPwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="adminPwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeAdminPwd()">取消</button><button class="btn-confirm" onclick="verifyAdminPwd()">确定</button></div></div></div>
+    <div id="pwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="modalPwd"><div class="btn-group"><button class="btn-cancel" onclick="closeModal()">取消</button><button class="btn-confirm" onclick="checkPwd()">确定</button></div></div></div>
+    <!-- ✅ 删除弹窗：浅灰色提示文字 -->
+    <div id="deletePwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="deletePwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeDeleteModal()">取消</button><button class="btn-confirm" onclick="confirmDelete()">确定</button></div></div></div>
     <div id="payModal" class="pay-modal hidden"><div class="pay-box"><div class="pay-title lang-zh active-lang">付费解锁内容</div><div class="pay-title lang-en">Premium Content</div><div class="pay-title lang-ko">유료 콘텐츠</div><div class="pay-desc"><p class="lang-zh active-lang">观看本视频需支付 <strong>$0.99 USD</strong><br>付款后即可获得密码并观看</p><p class="lang-en">Access this video for <strong>$0.99 USD</strong><br>Pay to get password & watch</p><p class="lang-ko">이 동영상은 <strong>$0.99 USD</strong> 결제 후<br>비밀번호를 받아 시청할 수 있습니다</p></div><a href="https://www.paypal.com/paypalme/YOUR_LINK/0.99USD" target="_blank" class="pay-btn lang-zh active-lang">立即支付 $0.99</a><a href="https://www.paypal.com/paypalme/YOUR_LINK/0.99USD" target="_blank" class="pay-btn lang-en">Pay $0.99 Now</a><a href="https://www.paypal.com/paypalme/YOUR_LINK/0.99USD" target="_="_blank" class="pay-btn lang-ko">$0.99 결제하기</a><div class="pay-note"><span class="lang-zh active-lang">付款后自动显示密码 / 或联系我获取</span><span class="lang-en">Password shown after payment / Contact me</span><span class="lang-ko">결제 후 비밀번호 표시 / 문의하세요</span></div><button class="cancel-btn" onclick="closePayModal()"><span class="lang-zh active-lang">取消</span><span class="lang-en">Cancel</span><span class="lang-ko">취소</span></button></div></div>
 
     <footer class="bg-white border-t text-center py-6"><p>© 2026 Yoon Short-Form Video Creation Studio</p></footer>
@@ -293,27 +313,39 @@
             renderWorkGroups();closeUploadPage();renderMyWorks();
         }
 
-        // ✅ 最终版：100%兼容，全球/电视都能播
+        // ✅ 彻底移除错误提示，YouTube/通用链接都能播放
         function playVideo(v) {
             const area=document.getElementById('videoDisplayArea');
             const lang=getCurrentLang();
             const title=lang==='zh'?v.title_zh:lang==='en'?v.title_en:v.title_ko;
             let player='';
 
-            // ✅ 去掉所有跨域限制，直接原生播放
-            player=`
-            <div class="video-container">
-                <video 
-                    controls autoplay preload="auto" 
-                    playsinline webkit-playsinline 
-                    x5-video-player-type="h5" x5-video-player-fullscreen="true"
-                    style="width:100%;height:100%;background:#000;"
-                >
-                    <source src="${v.name}" type="video/mp4">
-                    <source src="${v.name}" type="video/webm">
-                    <div class="error-tip">❌ 视频无法播放，请更换链接（推荐：https://vjs.zencdn.net/v/oceans.mp4）</div>
-                </video>
-            </div>`;
+            if(v.name.includes('youtube.com/embed/')){
+                player=`
+                <div class="video-container">
+                    <iframe 
+                        src="${v.name}" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" 
+                        allowfullscreen
+                        sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        loading="lazy"
+                    ></iframe>
+                </div>`;
+            } else {
+                player=`
+                <div class="video-container">
+                    <video 
+                        controls autoplay preload="auto" 
+                        playsinline webkit-playsinline 
+                        x5-video-player-type="h5" x5-video-player-fullscreen="true"
+                        style="width:100%;height:100%;background:#000;"
+                    >
+                        <source src="${v.name}" type="video/mp4">
+                        <source src="${v.name}" type="video/webm">
+                    </video>
+                </div>`;
+            }
 
             area.innerHTML=`
                 <div class="video-display-block">
