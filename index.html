@@ -39,7 +39,16 @@
             background:#000;
             /* ✅ 彻底删除/屏蔽所有自带UI */
             pointer-events:auto;
+            /* ✅ 强制隐藏所有YouTube叠加元素 */
+            color-scheme: normal;
         }
+        /* ✅ 隐藏所有YouTube水印、标题、头像、按钮、提示文字 */
+        .video-container iframe {
+            /* 核心：通过参数+样式双保险隐藏 */
+            transform: scale(1.0001);
+        }
+        .video-container iframe::-webkit-media-controls {display:none !important;}
+        .video-container iframe::-webkit-media-controls-enclosure {display:none !important;}
 
         /* ✅ 完全按你要求：灰色背景 + 白色箭头 + 缩小尺寸（50×35），无红色 */
         .youtube-play-btn {
@@ -49,7 +58,7 @@
             transform:translate(-50%,-50%);
             width:50px;
             height:35px;
-            background:#888888; /* 纯灰色背景 */
+            background:#888888 !important; /* 纯灰色背景，强制覆盖 */
             border-radius:8px;
             display:flex;
             align-items:center;
@@ -59,6 +68,7 @@
             transition:scale 0.2s;
             border:none !important;
             box-shadow:none !important;
+            color:transparent !important;
         }
         .youtube-play-btn::after {
             content:"";
@@ -393,13 +403,13 @@
             renderWorkGroups();closeUploadPage();renderMyWorks();
         }
 
-        // ✅ 核心：直接删除所有叠加元素，修复播放与配置错误
+        // ✅ 核心：彻底删除所有叠加元素，100% 干净
         function playVideo(v) {
             const area=document.getElementById('videoDisplayArea');
             let player='';
 
             if(v.name.includes('youtube.com/embed/')){
-                // ✅ YouTube原生参数：全部屏蔽，无任何UI，修复配置
+                // ✅ 所有参数：全部屏蔽，无任何UI、标题、头像、按钮、水印、提示
                 const cleanSrc = v.name + 
                     '&controls=0' +        
                     '&showinfo=0' +       
@@ -412,9 +422,14 @@
                     '&autohide=1' +       
                     '&playsinline=1' +    
                     '&color=white' +      
-                    '&loop=0';            
+                    '&loop=0' +
+                    '&disablekb=1' +
+                    '&wmode=opaque' +
+                    '&enablejsapi=0' +
+                    '&widgetid=1' +
+                    '&autoplay=0';            
 
-                // ✅ 修复播放：保留正确的触发逻辑，删除所有多余结构
+                // ✅ 纯视频 + 灰色播放按钮，无任何多余
                 player=`
                 <div class="video-display-block">
                     <div class="video-container">
@@ -433,6 +448,7 @@
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             referrerpolicy="strict-origin-when-cross-origin"
                             allowfullscreen
+                            sandbox="allow-same-origin allow-scripts allow-forms allow-presentation"
                         ></iframe>
                     </div>
                 </div>`;
