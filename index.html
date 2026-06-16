@@ -1,432 +1,336 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yoon 短视频创作工作室</title>
-    <style>
-        * {margin: 0; padding: 0; box-sizing: border-box;}
-        body {font-family: "Noto Sans SC", sans-serif; background: #f3f4f6; line-height: 1.6;}
-        .hidden {display: none !important;}
-        .active-lang {display: block !important;}
-        .page-section {display: none;}
-        .active-section {display: block; animation: fadeIn 0.5s;}
-        @keyframes fadeIn {from {opacity: 0; transform: translateY(10px);} to {opacity: 1; transform: translateY(0);}}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Yoon Short-Form Video Creation Studio</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Noto Sans SC','Noto Sans KR','Noto Sans',Arial,sans-serif;line-height:1.6;background:#f3f4f6;color:#1f2937;}
+    .hidden{display:none!important;}.lang-zh,.lang-en,.lang-ko{display:none}.active-lang{display:inline!important}.page-section{display:none}.active-section{display:block;animation:fadeIn .35s}@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .container{width:100%;max-width:1200px;margin:0 auto}.px-4{padding-left:1rem;padding-right:1rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-8{padding-top:2rem;padding-bottom:2rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.mt-2{margin-top:.5rem}.flex{display:flex}.items-center{align-items:center}.justify-between{justify-content:space-between}.gap-2{gap:.5rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.text-center{text-align:center}.text-sm{font-size:.875rem}.text-lg{font-size:1.125rem}.text-xl{font-size:1.25rem}.text-2xl{font-size:1.5rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.bg-white{background:#fff}.rounded-xl{border-radius:.75rem}.shadow-sm{box-shadow:0 1px 3px rgba(0,0,0,.08)}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-8{padding:2rem}.relative{position:relative}.sticky{position:sticky;top:0;z-index:50}.border-t{border-top:1px solid #e5e7eb}.text-gray-500{color:#6b7280}.text-gray-600{color:#4b5563}
+    header{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08)}.header-inner{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}.header-title{white-space:nowrap}.nav-btn{color:#0f48c9;text-decoration:none;transition:.2s;padding:.5rem .75rem;border-radius:7px}.nav-btn.active{color:#fff!important;background:#165dff;font-weight:600}nav{flex-wrap:wrap}.lang-dropdown{position:relative;z-index:9999}.lang-btn{border:none;background:#f3f4f6;border-radius:999px;padding:.45rem .8rem;cursor:pointer}.lang-menu{position:absolute;right:0;top:2.4rem;width:9rem;background:#fff;border-radius:.75rem;padding:.4rem;box-shadow:0 8px 24px rgba(0,0,0,.12);border:1px solid #e5e7eb}.lang-option{padding:.5rem .7rem;border-radius:.5rem;cursor:pointer}.lang-option:hover{background:#f3f4f6}.banner-img{width:100%;height:auto;border-radius:10px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.1);object-fit:cover}.website-link{color:#165dff;text-decoration:none;font-size:.9rem}.website-link:hover{text-decoration:underline}
 
-        /* 导航 */
-        header {background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 50;}
-        .header-container {max-width: 1200px; margin: 0 auto; padding: 1rem; display: flex; align-items: center; justify-content: space-between;}
-        .header-title {font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;}
-        nav {display: flex; gap: 0.5rem;}
-        .nav-btn {padding: 0.5rem 0.75rem; border-radius: 6px; text-decoration: none; color: #0F48C9;}
-        .nav-btn.active {background: #165DFF; color: #fff; font-weight: 600;}
-        .lang-dropdown {position: relative;}
-        #langBtn {padding: 0.5rem; border: none; background: none; cursor: pointer;}
-        #langMenu {position: absolute; right: 0; top: 30px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 100px;}
-        .lang-option {padding: 0.5rem 1rem; cursor: pointer;}
-        .lang-option:hover {background: #f1f5f9;}
+    .portfolio-layout{display:grid;grid-template-columns:260px minmax(0,1fr) 310px;gap:1.2rem;align-items:start;position:relative}.portfolio-sidebar,.portfolio-content,.portfolio-right{background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);border:1px solid #f1f5f9;padding:1.1rem}.work-title-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}.add-dir-btn{width:24px;height:24px;border-radius:50%;border:none;background:#94a3b8;color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;opacity:.85}.add-dir-btn:hover{opacity:1;transform:scale(1.06)}.plus-menu{position:absolute;top:48px;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:9px;box-shadow:0 8px 20px rgba(0,0,0,.12);padding:.4rem 0;z-index:1000;min-width:150px}.plus-menu-item{padding:.55rem 1rem;cursor:pointer;font-size:.9rem;display:flex;align-items:center;gap:.45rem}.plus-menu-item:hover{background:#f1f5f9}.plus-menu-item.danger{color:#dc3545}.dir-group{margin-bottom:.8rem;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden}.dir-header{padding:.65rem .8rem;background:#f8fafc;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center}.dir-header:hover{background:#f1f5f9}.dir-toggle{font-size:.55rem;color:#999}.dir-videos{padding:.45rem;background:#fff;display:none}.dir-group.open .dir-videos{display:block}.video-item{background:#f8fafc;border-radius:8px;padding:.75rem;margin-bottom:.55rem;display:flex;justify-content:space-between;align-items:center;gap:.6rem;cursor:pointer;transition:.2s;border:1px solid #e2e8f0}.video-item:hover{background:#f1f5f9;transform:translateY(-1px)}.video-name{font-weight:500;display:flex;align-items:center;gap:.45rem;font-size:.9rem;color:#334155;min-width:0}.video-name span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.delete-btn{color:#dc354599!important;font-size:.68rem!important;cursor:pointer;padding:.15rem .35rem!important;border:1px solid #dc354533!important;border-radius:4px;background:transparent!important;opacity:.55}.delete-btn:hover{opacity:1;color:#dc3545!important;border-color:#dc3545!important}.empty-inline{font-size:.85rem;color:#94a3b8;text-align:center;padding:.5rem}.notice-box{font-size:.85rem;color:#64748b;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:9px;padding:.8rem;margin-bottom:1rem}
 
-        /* 主容器 */
-        main {max-width: 1200px; margin: 0 auto; padding: 2rem 1rem;}
-        .banner-img {width: 100%; border-radius: 8px; margin-bottom: 20px;}
-        .card {background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #f1f5f9;}
-        h2 {text-align: center; margin-bottom: 1.5rem; font-size: 1.5rem;}
+    .hero-classic{margin-bottom:1rem}.hero-classic h3,.side-title{font-size:1rem;margin-bottom:.7rem;color:#111827}.classic-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.9rem}.classic-card{border:1px solid #e5e7eb;background:linear-gradient(135deg,#fff,#f8fafc);border-radius:12px;padding:1rem;min-height:126px;cursor:pointer;transition:.2s;display:flex;flex-direction:column;justify-content:space-between}.classic-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.08);border-color:#cbd5e1}.classic-tag{font-size:.72rem;color:#165dff;background:#eaf1ff;border-radius:999px;padding:.15rem .5rem;display:inline-block;width:max-content}.classic-title{font-weight:700;margin:.55rem 0 .25rem;color:#1f2937}.classic-desc{font-size:.82rem;color:#64748b;line-height:1.45}.classic-action{font-size:.82rem;color:#16a34a;font-weight:600;margin-top:.55rem}.classic-disabled .classic-action{color:#94a3b8}.video-container{position:relative;overflow:hidden;border-radius:12px;background:#000;margin-bottom:.8rem;width:100%;aspect-ratio:16/9;box-shadow:0 4px 16px rgba(0,0,0,.12)}.video-container iframe,.video-container video{width:100%;height:100%;display:block;border:0;background:#000}.video-notice{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:10px;padding:1rem}.video-help-link{color:#165dff;text-decoration:none}.video-help-link:hover{text-decoration:underline}.side-card{border:1px solid #e5e7eb;border-radius:10px;padding:.85rem;margin-bottom:.75rem;cursor:pointer;background:#fff;transition:.2s}.side-card:hover{background:#f8fafc;transform:translateY(-1px)}.side-card-title{font-weight:700;font-size:.92rem}.side-card-meta{font-size:.78rem;color:#64748b;margin-top:.25rem}.side-card.ready .side-card-meta{color:#16a34a;font-weight:600}
 
-        /* 作品展示布局 */
-        .portfolio-layout {display: flex; gap: 2rem; flex-wrap: wrap;}
-        .portfolio-sidebar {width: 100%;}
-        .portfolio-content {flex: 1; min-height: 400px; position: relative;}
-        @media (min-width: 768px) {.portfolio-layout {flex-wrap: nowrap;} .portfolio-sidebar {width: 280px;}}
+    .upload-page{position:fixed;inset:0;background:rgba(255,255,255,.98);z-index:9999;display:none;overflow-y:auto;padding:2rem 1rem}.upload-container{max-width:480px;margin:0 auto;background:#fff;padding:2rem;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.12)}.upload-container h3{text-align:center;margin-bottom:1.2rem;color:#111827;font-size:1.18rem}.upload-container input,.upload-container select{width:100%;padding:.75rem;margin-bottom:.8rem;border:1px solid #e2e8f0;border-radius:8px;font-size:.95rem}.upload-container input:focus,.upload-container select:focus{outline:none;border-color:#165dff;box-shadow:0 0 0 3px rgba(22,93,255,.1)}.upload-container button{width:100%;padding:.85rem;background:#165dff;color:white;border:none;border-radius:8px;cursor:pointer;font-size:.95rem;margin-bottom:.7rem}.upload-container button:hover{background:#0f48c9}.upload-container .close-btn{background:#64748b}.upload-note{font-size:.86rem;color:#b45309;background:#fffbeb;border:1px solid #fde68a;border-radius:9px;padding:.75rem;margin-bottom:1rem}.admin-entry{position:absolute;bottom:1rem;right:1rem;width:24px;height:24px;line-height:24px;text-align:center;font-size:12px;color:#999;cursor:pointer;z-index:30;border-radius:50%;background:#f1f5f9}.admin-entry:hover{color:#fff;background:#165dff}
 
-        /* 目录模块 */
-        .work-title-bar {display: flex; justify-content: flex-end; margin-bottom: 1rem;}
-        .add-dir-btn {width: 22px; height: 22px; border-radius: 50%; border: none; background: #94a3b8; color: #fff; font-size: 14px; cursor: pointer;}
-        .plus-menu {position: absolute; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 0.4rem 0; min-width: 130px; z-index: 100;}
-        .plus-menu-item {padding: 0.5rem 1rem; cursor: pointer;}
-        .plus-menu-item:hover {background: #f1f5f9;}
-        .dir-group {border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 1rem; overflow: hidden;}
-        .dir-header {padding: 0.6rem 0.8rem; background: #f8fafc; cursor: pointer; display: flex; justify-content: space-between; align-items: center;}
-        .dir-videos {padding: 0.4rem 0.6rem; display: none;}
-        .dir-group.open .dir-videos {display: block;}
-        .video-item {padding: 0.8rem; background: #f8fafc; border-radius: 8px; margin-bottom: 0.5rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border: 1px solid #e2e8f0;}
-        .video-item:hover {background: #f1f5f9;}
-        .lock-icon {color: #dc3545;}
-        .unlock-icon {color: #28a745;}
-        .delete-btn {font-size: 0.6rem; color: #dc3545; opacity: 0.3; cursor: pointer; padding: 0.1rem 0.3rem; border: 1px solid #dc354520; border-radius: 4px;}
-        .delete-btn:hover {opacity: 1;}
-        .empty-tip {position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: #94a3b8;}
+    .modal,.pay-modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:10000;padding:1rem}.modal-content{background:#fff;padding:1.6rem;border-radius:12px;width:100%;max-width:330px;box-shadow:0 8px 32px rgba(0,0,0,.15)}.modal-content input,.modal-content select{width:100%;padding:.75rem;margin-bottom:1.1rem;border:1px solid #e2e8f0;border-radius:8px;font-size:1rem}.modal-content h4{font-size:.95rem;margin-bottom:1rem;text-align:center}.btn-group{display:flex;gap:.8rem}.btn-group button{flex:1;padding:.72rem;border:none;border-radius:8px;cursor:pointer;font-size:.95rem}.btn-cancel{background:#e2e8f0;color:#374151}.btn-confirm{background:#165dff;color:white}.btn-confirm.danger{background:#dc3545}.pay-box{background:#fff;padding:1.35rem 1.55rem;border-radius:12px;width:100%;max-width:430px;min-height:230px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.18);display:flex;flex-direction:column;justify-content:center}.pay-title{font-size:1.08rem;font-weight:700;margin-bottom:.65rem;color:#dc3545;display:flex;align-items:center;justify-content:center;gap:.35rem}.pay-desc{font-size:.9rem;color:#6b7280;margin-bottom:.7rem;line-height:1.45}.pay-method{color:#16a34a;font-size:.9rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:.3rem}.pay-btn,.cancel-btn{width:100%;padding:.68rem .8rem;border:none;border-radius:8px;cursor:pointer;font-size:.9rem}.pay-btn{background:#28a745;color:#fff;margin-bottom:.55rem}.pay-btn:hover{background:#218838}.cancel-btn{background:#e5e7eb;color:#374151}.cancel-btn:hover{background:#d1d5db}
 
-        /* 视频播放 */
-        .video-container {width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; margin-bottom: 1.2rem;}
-        .video-cover {width: 100%; height: 100%; object-fit: cover; cursor: pointer;}
-        iframe, video {width: 100%; height: 100%; border: none;}
-
-        /* 上传弹窗 */
-        .upload-page {position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); z-index: 999; display: none; overflow-y: auto; padding: 2rem 1rem;}
-        .upload-container {max-width: 420px; margin: 0 auto; background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);}
-        .upload-container h3 {text-align: center; margin-bottom: 1.5rem;}
-        .upload-container input, .upload-container select {width: 100%; padding: 0.75rem; margin-bottom: 0.8rem; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem;}
-        .btn {width: 100%; padding: 0.85rem; border: none; border-radius: 8px; cursor: pointer; font-size: 0.95rem; margin-bottom: 0.7rem;}
-        .btn-primary {background: #165DFF; color: #fff;}
-        .btn-primary:hover {background: #0F48C9;}
-        .btn-secondary {background: #64748b; color: #fff;}
-        .btn-secondary:hover {background: #475569;}
-
-        /* 通用弹窗 */
-        .modal {position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); display: flex; align-items: center; justify-content: center; z-index: 999; padding: 1rem;}
-        .modal-content {background: #fff; padding: 1.8rem; border-radius: 12px; width: 100%; max-width: 320px;}
-        .modal-content h4 {text-align: center; margin-bottom: 1rem;}
-        .modal-content input {width: 100%; padding: 0.75rem; margin-bottom: 1.2rem; border: 1px solid #e2e8f0; border-radius: 8px;}
-        .btn-group {display: flex; gap: 0.8rem;}
-        .btn-group button {flex: 1; padding: 0.75rem; border: none; border-radius: 8px; cursor: pointer;}
-        .btn-cancel {background: #e2e8f0;}
-        .btn-confirm {background: #165DFF; color: #fff;}
-
-        /* 付费弹窗 */
-        .pay-modal {position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 1rem;}
-        .pay-box {background: #fff; padding: 1rem 1.2rem; border-radius: 8px; width: 100%; max-width: 260px; text-align: center;}
-        .pay-title {color: #dc3545; font-weight: 600; margin-bottom: 0.5rem;}
-        .pay-desc {font-size: 0.8rem; color: #6c757d; margin-bottom: 0.5rem;}
-        .pay-btn {width: 100%; padding: 0.5rem; background: #28a745; color: #fff; border: none; border-radius: 6px; cursor: pointer; margin-bottom: 0.4rem;}
-        .cancel-btn {width: 100%; padding: 0.5rem; background: #e5e7eb; border: none; border-radius: 6px; cursor: pointer;}
-
-        /* 技能页 */
-        .skills-grid {display: grid; grid-template-columns: 1fr; gap: 1.5rem;}
-        @media (min-width: 768px) {.skills-grid {grid-template-columns: repeat(3, 1fr);}}
-        .skill-item {padding: 1.5rem; border: 1px solid #e2e8f0; border-radius: 8px;}
-        .skill-item h3 {margin-bottom: 0.5rem;}
-
-        /* 关于页 */
-        .admin-entry {position: absolute; bottom: 1rem; right: 1rem; width: 24px; height: 24px; line-height: 24px; text-align: center; border-radius: 50%; background: #f1f5f9; cursor: pointer; display: none;}
-        #profile.active-section .admin-entry {display: block;}
-        .website-link {color: #165DFF; text-decoration: none;}
-        footer {text-align: center; padding: 1.5rem; background: #fff; margin-top: 2rem;}
-    </style>
+    .grid{display:grid}.skills-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:1.5rem}.skill-card{background:#f9fafb;border-radius:10px;padding:1.25rem}.footer{background:#fff;text-align:center;color:#6b7280}
+    @media (max-width:1000px){.portfolio-layout{grid-template-columns:1fr}.portfolio-right{order:3}.classic-grid{grid-template-columns:1fr}.skills-grid{grid-template-columns:1fr}.header-inner{align-items:flex-start}.nav-area{width:100%;justify-content:space-between}}
+  </style>
 </head>
 <body>
-    <!-- 上传弹窗 -->
-    <div class="upload-page" id="uploadPage">
-        <div class="upload-container">
-            <h3>📤 上传视频</h3>
-            <input type="text" id="videoUrl" placeholder="🔗 YouTube/MP4 链接">
-            <input type="file" id="videoFile" accept="video/*">
-            <select id="videoDir">
-                <option value="">📁 选择目录</option>
-            </select>
-            <input type="text" id="videoEpisode" placeholder="📑 标题/集数">
-            <input type="text" id="videoPwd" placeholder="🔒 访问密码（选填）">
-            <button class="btn btn-primary" onclick="addVideo()">添加</button>
-            <button class="btn btn-secondary" onclick="closeUploadPage()">关闭</button>
-        </div>
+  <div class="upload-page" id="uploadPage">
+    <div class="upload-container">
+      <h3>📤 上传视频管理</h3>
+      <div class="upload-note">⚠️ 这里添加的视频只会保存在当前浏览器。要让别人也看到，请把视频链接写入代码里的 PUBLIC_VIDEOS，或使用后端数据库。</div>
+      <input type="text" id="videoUrl" placeholder="🔗 YouTube链接 / 可外网访问的MP4链接">
+      <select id="videoDir"><option value="">📁 选择保存标题</option></select>
+      <input type="text" id="videoEpisode" placeholder="📑 集数（选填，如：第1集 / EP01）">
+      <input type="text" id="videoPwd" placeholder="🔒 输入观看密码（选填）">
+      <button onclick="addVideo()">添加到当前浏览器作品列表</button>
+      <button class="close-btn" onclick="closeUploadPage()">关闭页面</button>
     </div>
+  </div>
 
-    <!-- 通用弹窗 -->
-    <div class="modal hidden" id="commonModal">
-        <div class="modal-content">
-            <h4 id="modalTitle"></h4>
-            <input type="text" id="modalInput" placeholder="请输入">
-            <div class="btn-group">
-                <button class="btn-cancel" onclick="closeModal()">取消</button>
-                <button class="btn-confirm" id="modalConfirmBtn">确定</button>
-            </div>
+  <header class="sticky">
+    <div class="container px-4 py-4 header-inner">
+      <div class="font-bold text-xl flex items-center gap-2 header-title">🎥 <span class="lang-zh active-lang">小Yoon 的创作空间</span><span class="lang-en">Little Yoon's Studio</span><span class="lang-ko">리틀 윤의 창작 공간</span></div>
+      <div class="flex items-center gap-6 nav-area">
+        <nav class="flex gap-2">
+          <a href="#home" class="nav-btn active" data-target="home"><span class="lang-zh active-lang">首页</span><span class="lang-en">Home</span><span class="lang-ko">홈</span></a>
+          <a href="#portfolio" class="nav-btn" data-target="portfolio"><span class="lang-zh active-lang">作品展示</span><span class="lang-en">Portfolio</span><span class="lang-ko">포트폴리오</span></a>
+          <a href="#skills" class="nav-btn" data-target="skills"><span class="lang-zh active-lang">专业技能</span><span class="lang-en">Professional Skills</span><span class="lang-ko">전문 기술</span></a>
+          <a href="#profile" class="nav-btn" data-target="profile"><span class="lang-zh active-lang">关于我</span><span class="lang-en">About Me</span><span class="lang-ko">나에 대해</span></a>
+        </nav>
+        <div class="lang-dropdown">
+          <button id="langBtn" class="lang-btn">🌐 <span id="currentLang">中文</span></button>
+          <div id="langMenu" class="lang-menu hidden">
+            <div class="lang-option" data-lang="zh">中文</div>
+            <div class="lang-option" data-lang="en">English</div>
+            <div class="lang-option" data-lang="ko">한국어</div>
+          </div>
         </div>
+      </div>
     </div>
+  </header>
 
-    <!-- 付费弹窗 -->
-    <div class="pay-modal hidden" id="payModal">
-        <div class="pay-box">
-            <div class="pay-title">🔒 付费解锁</div>
-            <div class="pay-desc">观看需支付 $0.99 USD</div>
-            <div class="pay-desc">支持 PayPal/银行卡</div>
-            <button class="pay-btn" onclick="afterPay()">💳 立即支付</button>
-            <button class="cancel-btn" onclick="closePayModal()">取消</button>
+  <main class="container px-4 py-8">
+    <section id="home" class="page-section active-section mb-8">
+      <img class="banner-img" src="home.jpg" alt="欢迎页面">
+      <div class="bg-white p-6 rounded-xl shadow-sm">
+        <h2 class="text-2xl font-bold mb-4 text-center"><span class="lang-zh active-lang">以影为介，共赴视觉之约</span><span class="lang-en">Through Visuals, Beyond Imagination</span><span class="lang-ko">영상으로 만나는 미학의 세계</span></h2>
+        <p class="text-center"><span class="lang-zh active-lang">热爱融入每一次创作，用镜头与剪辑讲述故事，让每一个作品都有温度、有质感。</span><span class="lang-en">Passion in every creation, telling stories through lens and editing, making every work warm and textured.</span><span class="lang-ko">모든 창작에 열정을 담고, 카메라와 편집으로 이야기를 전하며, 모든 작품에 온기와 질감을 더합니다.</span></p>
+      </div>
+    </section>
+
+    <section id="portfolio" class="page-section mb-8">
+      <h2 class="text-2xl font-bold mb-6 text-center"><span class="lang-zh active-lang">作品展示</span><span class="lang-en">Portfolio</span><span class="lang-ko">포트폴리오</span></h2>
+      <div class="portfolio-layout">
+        <aside class="portfolio-sidebar relative">
+          <div class="work-title-bar"><strong><span class="lang-zh active-lang">作品目录</span><span class="lang-en">Categories</span><span class="lang-ko">작품 목록</span></strong><button class="add-dir-btn" title="管理" onclick="togglePlusMenu()">+</button></div>
+          <div id="plusMenu" class="plus-menu hidden">
+            <div class="plus-menu-item" onclick="openDirNameModalFromPlus()">➕ <span class="lang-zh active-lang">添加目录</span><span class="lang-en">Add</span><span class="lang-ko">추가</span></div>
+            <div class="plus-menu-item" onclick="openSelectEditModal()">✏️ <span class="lang-zh active-lang">修改目录</span><span class="lang-en">Edit</span><span class="lang-ko">수정</span></div>
+            <div class="plus-menu-item danger" onclick="openSelectDeleteModal()">🗑️ <span class="lang-zh active-lang">删除目录</span><span class="lang-en">Delete</span><span class="lang-ko">삭제</span></div>
+          </div>
+          <div id="workGroups"></div>
+        </aside>
+
+        <section class="portfolio-content">
+          <div id="videoDisplayArea"></div>
+          <div id="classicHome" class="hero-classic">
+            <h3><span class="lang-zh active-lang">经典作品</span><span class="lang-en">Classic Works</span><span class="lang-ko">대표 작품</span></h3>
+            <div class="classic-grid" id="classicGrid"></div>
+          </div>
+        </section>
+
+        <aside class="portfolio-right">
+          <div class="side-title"><span class="lang-zh active-lang">推荐观看</span><span class="lang-en">Recommended</span><span class="lang-ko">추천 영상</span></div>
+          <div id="rightClassicList"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="skills" class="page-section mb-8">
+      <div class="bg-white p-8 rounded-xl shadow-sm">
+        <h2 class="text-2xl font-bold mb-8 text-center"><span class="lang-zh active-lang">专业技能</span><span class="lang-en">Professional Skills</span><span class="lang-ko">전문 기술</span></h2>
+        <div class="grid skills-grid">
+          <div class="skill-card"><h3 class="font-semibold text-lg mb-4"><span class="lang-zh active-lang">视频剪辑</span><span class="lang-en">Video Editing</span><span class="lang-ko">영상 편집</span></h3><p class="text-gray-600 text-sm"><span class="lang-zh active-lang">熟练使用各类剪辑软件，擅长节奏把控与叙事表达。</span><span class="lang-en">Proficient in editing software, rhythm control and storytelling.</span><span class="lang-ko">편집 프로그램과 스토리텔링에 능숙합니다.</span></p></div>
+          <div class="skill-card"><h3 class="font-semibold text-lg mb-4"><span class="lang-zh active-lang">内容策划</span><span class="lang-en">Content Planning</span><span class="lang-ko">콘텐츠 기획</span></h3><p class="text-gray-600 text-sm"><span class="lang-zh active-lang">挖掘生活亮点，策划新颖选题，打造优质内容脚本。</span><span class="lang-en">Plan creative topics and build high-quality scripts.</span><span class="lang-ko">참신한 주제와 고품질 스크립트를 기획합니다.</span></p></div>
+          <div class="skill-card"><h3 class="font-semibold text-lg mb-4"><span class="lang-zh active-lang">后期特效</span><span class="lang-en">Post-production Effects</span><span class="lang-ko">후반 작업 특수 효과</span></h3><p class="text-gray-600 text-sm"><span class="lang-zh active-lang">视觉包装、字幕设计、调色配乐，提升作品质感。</span><span class="lang-en">Visual packaging, subtitles, color grading and music.</span><span class="lang-ko">시각 디자인, 자막, 색보정과 음악 작업을 합니다.</span></p></div>
         </div>
-    </div>
+      </div>
+    </section>
 
-    <!-- 顶部导航 -->
-    <header>
-        <div class="header-container">
-            <div class="header-title">🎥 小Yoon 的创作空间</div>
-            <nav>
-                <a href="#home" class="nav-btn active" data-target="home">首页</a>
-                <a href="#portfolio" class="nav-btn" data-target="portfolio">作品</a>
-                <a href="#skills" class="nav-btn" data-target="skills">技能</a>
-                <a href="#profile" class="nav-btn" data-target="profile">关于</a>
-                <div class="lang-dropdown">
-                    <button id="langBtn">🌐 <span id="currentLang">中文</span></button>
-                    <div id="langMenu" class="hidden">
-                        <div class="lang-option" data-lang="zh">中文</div>
-                        <div class="lang-option" data-lang="en">English</div>
-                        <div class="lang-option" data-lang="ko">한국어</div>
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </header>
+    <section id="profile" class="page-section mb-8 relative">
+      <div class="admin-entry" onclick="askAdminPwd()">⚙️</div>
+      <img class="banner-img" src="profile.jpg" alt="关于我页面">
+      <div class="bg-white p-8 rounded-xl shadow-sm">
+        <h3 class="font-semibold text-lg mb-2"><span class="lang-zh active-lang">网站</span><span class="lang-en">Website</span><span class="lang-ko">웹사이트</span></h3>
+        <a href="https://kimm-lii.github.io/yooooon/" class="website-link text-lg" target="_blank" rel="noopener">https://kimm-lii.github.io/yooooon/</a>
+      </div>
+    </section>
+  </main>
 
-    <!-- 主内容区 -->
-    <main>
-        <!-- 首页 -->
-        <section id="home" class="page-section active-section">
-            <img class="banner-img" src="home.jpg" alt="首页横幅">
-            <div class="card">
-                <h2>
-                    <span class="lang-zh active-lang">以影为介，共赴视觉之约</span>
-                    <span class="lang-en">Through Visuals, Beyond Imagination</span>
-                    <span class="lang-ko">영상으로 만나는 미학의 세계</span>
-                </h2>
-                <p style="text-align: center; max-width: 600px; margin: 0 auto;">
-                    <span class="lang-zh active-lang">把热爱注入每一次创作，用镜头与剪辑讲述故事，让作品有温度、有质感。</span>
-                    <span class="lang-en">Passion in every creation, stories told through lens and editing, works with heart and quality.</span>
-                    <span class="lang-ko">모든 창작에 열정을 담고, 카메라와 편집으로 이야기를 전하며, 작품에 온기와 품격을 더합니다.</span>
-                </p>
-            </div>
-        </section>
+  <div id="plusPwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="plusPwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closePlusPwd()">取消</button><button class="btn-confirm" onclick="verifyPlusPwd()">确定</button></div></div></div>
+  <div id="dirNameModal" class="modal hidden"><div class="modal-content"><input type="text" placeholder="输入目录名称" id="dirNameInput"><div class="btn-group"><button class="btn-cancel" onclick="closeDirNameModal()">取消</button><button class="btn-confirm" onclick="saveNewDir()">确定</button></div></div></div>
+  <div id="selectEditModal" class="modal hidden"><div class="modal-content"><h4>选择要修改的目录</h4><select id="editDirSelect"></select><div class="btn-group"><button class="btn-cancel" onclick="closeSelectEditModal()">取消</button><button class="btn-confirm" onclick="openEditDirModalFromSelect()">下一步</button></div></div></div>
+  <div id="editDirModal" class="modal hidden"><div class="modal-content"><input type="text" placeholder="输入新目录名称" id="editDirNameInput"><div class="btn-group"><button class="btn-cancel" onclick="closeEditDirModal()">取消</button><button class="btn-confirm" onclick="saveEditDir()">确定</button></div></div></div>
+  <div id="selectDeleteModal" class="modal hidden"><div class="modal-content"><h4>选择要删除的目录</h4><select id="deleteDirSelect"></select><div class="btn-group"><button class="btn-cancel" onclick="closeSelectDeleteModal()">取消</button><button class="btn-confirm danger" onclick="openDeleteDirModalFromSelect()">删除</button></div></div></div>
+  <div id="deleteDirModal" class="modal hidden"><div class="modal-content"><p class="text-center mb-4">确定要删除此目录吗？目录内本地视频也会被移除</p><div class="btn-group"><button class="btn-cancel" onclick="closeDeleteDirModal()">取消</button><button class="btn-confirm danger" onclick="confirmDeleteDir()">删除</button></div></div></div>
+  <div id="adminPwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="adminPwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeAdminPwd()">取消</button><button class="btn-confirm" onclick="verifyAdminPwd()">确定</button></div></div></div>
+  <div id="pwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入观看密码" id="modalPwd"><div class="btn-group"><button class="btn-cancel" onclick="closeModal()">取消</button><button class="btn-confirm" onclick="checkPwd()">确定</button></div></div></div>
+  <div id="deletePwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="deletePwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeDeleteModal()">取消</button><button class="btn-confirm" onclick="confirmDelete()">确定</button></div></div></div>
+  <div id="payModal" class="pay-modal hidden"><div class="pay-box"><div class="pay-title"><span>🔒</span><span class="lang-zh active-lang">付费解锁内容</span><span class="lang-en">Premium Content</span><span class="lang-ko">유료 콘텐츠</span></div><div class="pay-desc"><span class="lang-zh active-lang">观看本集视频需支付 $0.99 USD</span><span class="lang-en">Pay $0.99 USD to watch this episode</span><span class="lang-ko">본 영상 시청에는 $0.99 USD 결제가 필요합니다</span></div><div class="pay-method"><span>✅</span><span class="lang-zh active-lang">支持 PayPal / 银行卡支付</span><span class="lang-en">Supports PayPal / Card Payment</span><span class="lang-ko">PayPal / 카드 결제 지원</span></div><a id="payLink" href="https://www.paypal.com/paypalme/yourpaypal" target="_blank" rel="noopener" style="text-decoration:none"><button class="pay-btn">💳 <span class="lang-zh active-lang">前往付款</span><span class="lang-en">Go to Payment</span><span class="lang-ko">결제하러 가기</span></button></a><button class="cancel-btn" onclick="closePayModal()"><span class="lang-zh active-lang">取消</span><span class="lang-en">Cancel</span><span class="lang-ko">취소</span></button></div></div>
 
-        <!-- 作品展示 -->
-        <section id="portfolio" class="page-section">
-            <h2>
-                <span class="lang-zh active-lang">作品展示</span>
-                <span class="lang-en">Portfolio</span>
-                <span class="lang-ko">작품 전시</span>
-            </h2>
-            <div class="portfolio-layout">
-                <div class="portfolio-sidebar card">
-                    <div class="work-title-bar">
-                        <button class="add-dir-btn" onclick="togglePlusMenu()">+</button>
-                        <div id="plusMenu" class="plus-menu hidden">
-                            <div class="plus-menu-item" onclick="openAddDir()">➕ 新建目录</div>
-                            <div class="plus-menu-item" onclick="openEditDir()">✏️ 编辑目录</div>
-                            <div class="plus-menu-item" onclick="openDeleteDir()">🗑️ 删除目录</div>
-                        </div>
-                    </div>
-                    <div id="workGroups"></div>
-                </div>
-                <div class="portfolio-content card">
-                    <div id="videoDisplayArea"></div>
-                    <div class="empty-tip" id="portfolioEmptyTip">
-                        <span class="lang-zh active-lang">暂无作品，上传或选择视频播放</span>
-                        <span class="lang-en">No works yet, upload or select a video</span>
-                        <span class="lang-ko">작품이 없습니다. 업로드하거나 영상을 선택하세요</span>
-                    </div>
-                </div>
-            </div>
-        </section>
+  <footer class="footer border-t py-6"><p>© 2026 Yoon Short-Form Video Creation Studio</p></footer>
 
-        <!-- 技能页 -->
-        <section id="skills" class="page-section">
-            <h2>
-                <span class="lang-zh active-lang">专业技能</span>
-                <span class="lang-en">Skills</span>
-                <span class="lang-ko">전문 기술</span>
-            </h2>
-            <div class="skills-grid">
-                <div class="skill-item card">
-                    <h3>
-                        <span class="lang-zh active-lang">视频剪辑</span>
-                        <span class="lang-en">Video Editing</span>
-                        <span class="lang-ko">영상 편집</span>
-                    </h3>
-                    <p>
-                        <span class="lang-zh active-lang">熟练各类剪辑工具，擅长节奏把控与叙事表达。</span>
-                        <span class="lang-en">Proficient in editing tools, good at rhythm and storytelling.</span>
-                        <span class="lang-ko">다양한 편집 툴을 능숙하게 다루며, 리듬과 이야기 구성에 강점이 있습니다.</span>
-                    </p>
-                </div>
-                <div class="skill-item card">
-                    <h3>
-                        <span class="lang-zh active-lang">内容策划</span>
-                        <span class="lang-en">Content Planning</span>
-                        <span class="lang-ko">콘텐츠 기획</span>
-                    </h3>
-                    <p>
-                        <span class="lang-zh active-lang">挖掘亮点，策划选题，打造优质内容脚本。</span>
-                        <span class="lang-en">Find highlights, plan topics, create high-quality scripts.</span>
-                        <span class="lang-ko">매력 포인트를 발굴하고 주제를 기획하며, 완성도 높은 콘텐츠를 제작합니다.</span>
-                    </p>
-                </div>
-                <div class="skill-item card">
-                    <h3>
-                        <span class="lang-zh active-lang">后期特效</span>
-                        <span class="lang-en">Post-production</span>
-                        <span class="lang-ko">후반 작업 특수 효과</span>
-                    </h3>
-                    <p>
-                        <span class="lang-zh active-lang">视觉包装、字幕设计、调色配乐，提升作品质感。</span>
-                        <span class="lang-en">Visual design, subtitles, color grading, music to enhance quality.</span>
-                        <span class="lang-ko">시각 디자인, 자막, 색보정, 음악 작업으로 작품의 완성도를 높입니다.</span>
-                    </p>
-                </div>
-            </div>
-        </section>
+  <script>
+    const ADMIN_PASSWORD = '0803';
 
-        <!-- 关于页 -->
-        <section id="profile" class="page-section">
-            <div class="admin-entry" onclick="askAdminPwd()">⚙️</div>
-            <img class="banner-img" src="profile.jpg" alt="关于横幅">
-            <div class="card">
-                <h2>
-                    <span class="lang-zh active-lang">关于我</span>
-                    <span class="lang-en">About Me</span>
-                    <span class="lang-ko">나에 대해</span>
-                </h2>
-                <div class="mt-2">
-                    <h3>网站</h3>
-                    <a href="https://kimm-lii.github.io/yooooon/" class="website-link" target="_blank">https://kimm-lii.github.io/yooooon/</a>
-                </div>
-            </div>
-        </section>
-    </main>
+    /*
+      重要：这里是“公开作品”。写在这里的视频，别人打开网站也能看到。
+      把 name 里的空字符串改成你的 YouTube 链接或 MP4 外链即可。
+      示例：name: 'https://www.youtube.com/watch?v=你的视频ID'
+    */
+    const PUBLIC_DIRS = [
+      { id: 'classic', name: '经典作品' },
+      { id: 'new', name: '最新作品' }
+    ];
 
-    <!-- 页脚 -->
-    <footer>© 2026 Yoon Short-Form Video Creation Studio</footer>
+    const PUBLIC_VIDEOS = [
+      { id: 'pub1', name: '', dirId: 'classic', title_zh: '经典作品 01', title_en: 'Classic Work 01', title_ko: '대표 작품 01', episode: 'EP01', password: '', desc_zh: '请把这里替换成公开视频链接', desc_en: 'Replace this with a public video link', desc_ko: '공개 영상 링크로 교체하세요' },
+      { id: 'pub2', name: '', dirId: 'classic', title_zh: '经典作品 02', title_en: 'Classic Work 02', title_ko: '대표 작품 02', episode: 'EP02', password: '', desc_zh: '适合放置主打短剧', desc_en: 'Best for featured drama', desc_ko: '대표 숏드라마 배치' },
+      { id: 'pub3', name: '', dirId: 'new', title_zh: '最新作品 01', title_en: 'New Work 01', title_ko: '최신 작품 01', episode: 'NEW', password: '', desc_zh: '这里可放最新更新', desc_en: 'Use this for new updates', desc_ko: '최신 업데이트 배치' },
+      { id: 'pub4', name: '', dirId: 'classic', title_zh: '经典作品 03', title_en: 'Classic Work 03', title_ko: '대표 작품 03', episode: 'EP03', password: '', desc_zh: '可设置为付费集数', desc_en: 'Can be used as premium episode', desc_ko: '유료 회차 설정 가능' }
+    ];
 
-    <script>
-        // 全局数据
-        let videos = JSON.parse(localStorage.getItem('myVideos')) || [];
-        let dirs = JSON.parse(localStorage.getItem('myDirs')) || [];
-        let currentVideoIndex = null;
-        const ADD_DIR_PWD = '0803';
+    let localDirs = JSON.parse(localStorage.getItem('myDirs') || '[]');
+    let localVideos = JSON.parse(localStorage.getItem('myVideos') || '[]');
+    let dirs = mergeDirs();
+    let videos = mergeVideos();
+    let deleteIndex = -1;
+    let currentVideoIndex = -1;
+    let currentDirId = null;
 
-        // 页面切换
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', e => {
-                e.preventDefault();
-                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active-section'));
-                document.getElementById(btn.dataset.target).classList.add('active-section');
-            });
-        });
-
-        // 语言切换
-        document.getElementById('langBtn').addEventListener('click', () => {
-            document.getElementById('langMenu').classList.toggle('hidden');
-        });
-        document.querySelectorAll('.lang-option').forEach(opt => {
-            opt.addEventListener('click', () => {
-                const lang = opt.dataset.lang;
-                document.getElementById('currentLang').textContent = opt.textContent;
-                document.querySelectorAll('.lang-zh, .lang-en, .lang-ko').forEach(el => el.classList.remove('active-lang'));
-                document.querySelectorAll('.lang-' + lang).forEach(el => el.classList.add('active-lang'));
-                document.getElementById('langMenu').classList.add('hidden');
-            });
-        });
-
-        // 目录菜单
-        function togglePlusMenu() {document.getElementById('plusMenu').classList.toggle('hidden');}
-        function openAddDir() {
-            closePlusMenu();
-            openModal('输入目录名称', v => {
-                if (v.trim()) {
-                    dirs.push({id: Date.now(), name: v.trim()});
-                    saveData();
-                    renderWorkGroups();
-                    updateDirOptions();
-                }
-            });
+    function saveLocalDirs(){ localStorage.setItem('myDirs', JSON.stringify(localDirs)); }
+    function saveLocalVideos(){ localStorage.setItem('myVideos', JSON.stringify(localVideos)); }
+    function mergeDirs(){
+      const map = new Map();
+      PUBLIC_DIRS.forEach(d => map.set(String(d.id), Object.assign({ publicItem:true }, d)));
+      localDirs.forEach(d => map.set(String(d.id), d));
+      return Array.from(map.values());
+    }
+    function mergeVideos(){
+      const publicVideos = PUBLIC_VIDEOS.map(v => Object.assign({ publicItem:true }, v));
+      const privateVideos = localVideos.map(v => Object.assign({ localItem:true }, v));
+      return publicVideos.concat(privateVideos);
+    }
+    function refreshData(){ dirs = mergeDirs(); videos = mergeVideos(); }
+    function escapeHtml(value){ return String(value == null ? '' : value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
+    function getCurrentLang(){ const t = document.getElementById('currentLang') ? document.getElementById('currentLang').textContent : '中文'; if(t.includes('English')) return 'en'; if(t.includes('한국어')) return 'ko'; return 'zh'; }
+    function getVideoTitle(v){ const lang = getCurrentLang(); return v['title_' + lang] || v.title_zh || v.title_en || v.title_ko || v.episode || '未命名视频'; }
+    function getVideoDesc(v){ const lang = getCurrentLang(); return v['desc_' + lang] || v.desc_zh || v.desc_en || v.desc_ko || ''; }
+    function extractYouTubeId(input){
+      if(!input) return null;
+      const text = String(input).trim();
+      try{
+        const url = new URL(text);
+        const host = url.hostname.replace(/^www\./,'');
+        if(host === 'youtu.be') return url.pathname.split('/').filter(Boolean)[0] || null;
+        if(['youtube.com','m.youtube.com','music.youtube.com','youtube-nocookie.com'].includes(host)){
+          if(url.pathname === '/watch') return url.searchParams.get('v');
+          const parts = url.pathname.split('/').filter(Boolean);
+          if(['embed','shorts','live'].includes(parts[0]) && parts[1]) return parts[1];
         }
-        function openEditDir() {alert('请点击目录名称编辑'); closePlusMenu();}
-        function openDeleteDir() {alert('请点击目录删除'); closePlusMenu();}
-        function closePlusMenu() {document.getElementById('plusMenu').classList.add('hidden');}
+      }catch(e){}
+      const match = text.match(/(?:v=|\/embed\/|youtu\.be\/|\/shorts\/|\/live\/)([A-Za-z0-9_-]{6,})/);
+      return match ? match[1] : null;
+    }
+    function isYouTubeUrl(input){ return !!extractYouTubeId(input); }
+    function buildYouTubeEmbedUrl(input){ const id = extractYouTubeId(input); return id ? 'https://www.youtube.com/embed/' + encodeURIComponent(id) + '?autoplay=0&controls=1&rel=0&playsinline=1&fs=1&iv_load_policy=3' : input; }
+    function buildYouTubeWatchUrl(input){ const id = extractYouTubeId(input); return id ? 'https://www.youtube.com/watch?v=' + encodeURIComponent(id) : input; }
+    function normalizeVideoSource(input){ return isYouTubeUrl(input) ? buildYouTubeEmbedUrl(input) : input; }
+    function isPlayable(v){ return !!(v && v.name && String(v.name).trim()); }
 
-        // 弹窗控制
-        function openModal(title, callback) {
-            const modal = document.getElementById('commonModal');
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalInput').value = '';
-            modal.classList.remove('hidden');
-            document.getElementById('modalConfirmBtn').onclick = () => {
-                callback(document.getElementById('modalInput').value);
-                closeModal();
-            };
-        }
-        function closeModal() {document.getElementById('commonModal').classList.add('hidden');}
-        function openPayModal() {document.getElementById('payModal').classList.remove('hidden');}
-        function closePayModal() {document.getElementById('payModal').classList.add('hidden');}
-        function afterPay() {closePayModal(); playVideo(videos[currentVideoIndex]);}
+    function renderClassicHome(){
+      const grid = document.getElementById('classicGrid');
+      const right = document.getElementById('rightClassicList');
+      if(!grid || !right) return;
+      const classicVideos = videos.filter(v => String(v.dirId) === 'classic').slice(0,4);
+      grid.innerHTML = classicVideos.map(v => {
+        const index = videos.indexOf(v);
+        const disabledClass = isPlayable(v) ? '' : ' classic-disabled';
+        const action = isPlayable(v) ? '▶ 立即观看' : '准备中';
+        return '<div class="classic-card' + disabledClass + '" onclick="attemptOpenVideo(' + index + ')"><span class="classic-tag">' + escapeHtml(v.episode || 'Classic') + '</span><div><div class="classic-title">' + escapeHtml(getVideoTitle(v)) + '</div><div class="classic-desc">' + escapeHtml(getVideoDesc(v)) + '</div></div><div class="classic-action">' + action + '</div></div>';
+      }).join('');
+      right.innerHTML = classicVideos.slice(0,5).map(v => {
+        const index = videos.indexOf(v);
+        const cls = isPlayable(v) ? ' ready' : '';
+        const meta = isPlayable(v) ? '可播放' : '等待公开视频链接';
+        return '<div class="side-card' + cls + '" onclick="attemptOpenVideo(' + index + ')"><div class="side-card-title">' + escapeHtml(getVideoTitle(v)) + '</div><div class="side-card-meta">' + meta + '</div></div>';
+      }).join('');
+    }
 
-        // 上传相关
-        function askAdminPwd() {openModal('输入管理密码', p => p === ADD_DIR_PWD ? openUploadPage() : alert('密码错误'));}
-        function openUploadPage() {document.getElementById('uploadPage').style.display = 'block';}
-        function closeUploadPage() {document.getElementById('uploadPage').style.display = 'none';}
-        function updateDirOptions() {
-            const sel = document.getElementById('videoDir');
-            sel.innerHTML = '<option value="">📁 选择目录</option>';
-            dirs.forEach(d => {const opt = document.createElement('option'); opt.value = d.id; opt.textContent = d.name; sel.appendChild(opt);});
-        }
-        function addVideo() {
-            const url = document.getElementById('videoUrl').value.trim();
-            const file = document.getElementById('videoFile').files[0];
-            const dirId = document.getElementById('videoDir').value;
-            const title = document.getElementById('videoEpisode').value.trim() || '未命名';
-            const pwd = document.getElementById('videoPwd').value.trim();
-            let src = '';
-            if (url) src = url;
-            else if (file) src = URL.createObjectURL(file);
-            else return alert('请输入链接或选择文件');
-            videos.push({id: Date.now(), name: src, title: title, dirId: dirId, password: pwd, cover: 'https://i.imgur.com/9Z7X7QH.jpg'});
-            saveData();
-            closeUploadPage();
-            renderWorkGroups();
-        }
+    function renderWorkGroups(){
+      refreshData();
+      const box = document.getElementById('workGroups');
+      if(!box) return;
+      const knownDirIds = new Set(dirs.map(d => String(d.id)));
+      let html = '';
+      dirs.forEach((dir, idx) => { html += renderDirGroup(dir, getVideosByDir(dir.id), idx === 0); });
+      const ungrouped = videos.map((v,index)=>Object.assign({ index:index }, v)).filter(v => !v.dirId || !knownDirIds.has(String(v.dirId)));
+      if(ungrouped.length) html += renderDirGroup({id:'uncat', name:'未分类'}, ungrouped, dirs.length === 0);
+      box.innerHTML = html || '<div class="empty-inline">暂无作品</div>';
+      updateDirOptions();
+      renderClassicHome();
+    }
+    function getVideosByDir(dirId){ return videos.map((v,index)=>Object.assign({ index:index }, v)).filter(v => String(v.dirId || '') === String(dirId || '')); }
+    function renderDirGroup(dir, items, isOpen){
+      const videoHtml = items.length ? items.map(renderVideoItem).join('') : '<div class="empty-inline">暂无视频</div>';
+      return '<div class="dir-group ' + (isOpen ? 'open' : '') + '"><div class="dir-header" onclick="this.parentElement.classList.toggle(\'open\')"><span>' + escapeHtml(dir.name || '未命名目录') + '</span><span class="dir-toggle">▼</span></div><div class="dir-videos">' + videoHtml + '</div></div>';
+    }
+    function renderVideoItem(v){
+      const icon = isPlayable(v) ? (v.password ? '🔒' : '▶') : '⏳';
+      const del = v.localItem ? '<button class="delete-btn" onclick="event.stopPropagation();openDeleteModal(' + v.index + ')">删除</button>' : '';
+      return '<div class="video-item" onclick="attemptOpenVideo(' + v.index + ')"><div class="video-name"><span>' + icon + '</span><span>' + escapeHtml(getVideoTitle(v)) + '</span></div>' + del + '</div>';
+    }
 
-        // 播放逻辑
-        function checkPwd(index) {
-            currentVideoIndex = index;
-            const v = videos[index];
-            if (!v.password) playVideo(v);
-            else openModal('输入访问密码', p => p === v.password ? playVideo(v) : p === 'pay' ? openPayModal() : alert('密码错误'));
-        }
-        function playVideo(v) {
-            const area = document.getElementById('videoDisplayArea');
-            if (v.name.includes('youtube.com/embed')) {
-                area.innerHTML = `<div class="video-container"><iframe src="${v.name}" allowfullscreen></iframe></div>`;
-            } else {
-                area.innerHTML = `<div class="video-container"><video src="${v.name}" controls></video></div>`;
-            }
-            document.getElementById('portfolioEmptyTip').classList.add('hidden');
-        }
+    function attemptOpenVideo(index){
+      currentVideoIndex = index;
+      const v = videos[index];
+      if(!isPlayable(v)){ alert('这个作品位置已经创建，但还没有公开视频链接。请把 YouTube 或 MP4 外链写入代码里的 PUBLIC_VIDEOS。'); return; }
+      if(v.password){ openPayModal(index); return; }
+      playVideo(v);
+    }
+    function playVideo(v){
+      const area = document.getElementById('videoDisplayArea');
+      const home = document.getElementById('classicHome');
+      if(home) home.classList.add('hidden');
+      const title = escapeHtml(getVideoTitle(v));
+      const raw = v.name || '';
+      let html = '<h3 class="mb-4">' + title + '</h3>';
+      if(isYouTubeUrl(raw)){
+        const src = escapeHtml(buildYouTubeEmbedUrl(raw));
+        const watch = escapeHtml(buildYouTubeWatchUrl(raw));
+        html += '<div class="video-container"><iframe src="' + src + '" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div><p class="text-center text-sm text-gray-500 mt-2">如果无法播放，可 <a class="video-help-link" href="' + watch + '" target="_blank" rel="noopener">直接在 YouTube 打开</a></p>';
+      }else{
+        const src = escapeHtml(raw);
+        html += '<div class="video-container"><video controls preload="metadata" playsinline webkit-playsinline src="' + src + '">当前浏览器不支持视频播放。</video></div><p class="text-center text-sm text-gray-500 mt-2">MP4 链接必须能在无痕窗口直接打开，并允许外部网页访问。</p>';
+      }
+      area.innerHTML = html;
+      document.getElementById('portfolio').scrollIntoView({behavior:'smooth', block:'start'});
+    }
 
-        // 渲染目录与视频
-        function renderWorkGroups() {
-            const cont = document.getElementById('workGroups');
-            cont.innerHTML = '';
-            dirs.forEach(d => {
-                const g = document.createElement('div');
-                g.className = 'dir-group';
-                g.innerHTML = `
-                    <div class="dir-header" onclick="toggleDir(this.parentElement)">
-                        <span class="dir-name">${d.name}</span>
-                        <span>▼</span>
-                    </div>
-                    <div class="dir-videos" id="dir-${d.id}"></div>
-                `;
-                cont.appendChild(g);
-                const vCont = document.getElementById(`dir-${d.id}`);
-                const dirVideos = videos.filter(v => v.dirId == d.id);
-                if (dirVideos.length === 0) {vCont.innerHTML = '<div class="text-sm text-gray-400 p-2">暂无视频</div>';}
-                dirVideos.forEach((v, i) => {
-                    const item = document.createElement('div');
-                    item.className = 'video-item';
-                    item.innerHTML = `
-                        <span class="video-name" onclick="checkPwd(${videos.indexOf(v)})">
-                            ${v.password ? '<span class="lock-icon">🔒</span>' : '<span class="unlock-icon">🔓</span>'}
-                            ${v.title}
-                        </span>
-                        <span class="delete-btn" onclick="delVideo(${videos.indexOf(v)})">🗑️</span>
-                    `;
-                    vCont.appendChild(item);
-                });
-            });
-        }
-        function toggleDir(el) {el.classList.toggle('open');}
-        function delVideo(i) {if (confirm('确定删除？')) {videos.splice(i, 1); saveData(); renderWorkGroups();}}
-        function saveData() {localStorage.setItem('myVideos', JSON.stringify(videos)); localStorage.setItem('myDirs', JSON.stringify(dirs));}
+    function updateDirOptions(){
+      const sel = document.getElementById('videoDir');
+      if(!sel) return;
+      sel.innerHTML = '<option value="">📁 选择保存标题</option>';
+      dirs.forEach(d => { const opt = document.createElement('option'); opt.value = d.id; opt.textContent = d.name; sel.appendChild(opt); });
+    }
+    function addVideo(){
+      const url = document.getElementById('videoUrl').value.trim();
+      const episode = document.getElementById('videoEpisode').value.trim();
+      const dirId = document.getElementById('videoDir').value;
+      const pwd = document.getElementById('videoPwd').value.trim();
+      if(!url){ alert('请粘贴 YouTube 链接或可外网访问的 MP4 链接！'); return; }
+      const src = normalizeVideoSource(url);
+      let title = episode || '本地预览视频';
+      if(isYouTubeUrl(url)) title = episode ? episode : 'YouTube ' + extractYouTubeId(url);
+      localVideos.push({ id:'local' + Date.now(), name:src, dirId:dirId, title_zh:title, title_en:title, title_ko:title, episode:episode, password:pwd, desc_zh:'当前浏览器本地添加', desc_en:'Added locally in this browser', desc_ko:'현재 브라우저에 로컬 추가' });
+      saveLocalVideos();
+      document.getElementById('videoUrl').value=''; document.getElementById('videoEpisode').value=''; document.getElementById('videoPwd').value='';
+      closeUploadPage(); renderWorkGroups();
+      alert('已添加到当前浏览器。若要让别人也看到，请把链接写入 PUBLIC_VIDEOS。');
+    }
 
-        // 初始化
-        renderWorkGroups();
-        updateDirOptions();
-    </script>
+    function togglePlusMenu(){ document.getElementById('plusPwdModal').classList.remove('hidden'); document.getElementById('plusPwdInput').value=''; }
+    function closePlusPwd(){ document.getElementById('plusPwdModal').classList.add('hidden'); }
+    function verifyPlusPwd(){ if(document.getElementById('plusPwdInput').value.trim() === ADMIN_PASSWORD){ closePlusPwd(); showPlusMenu(); } else alert('密码错误！'); }
+    function showPlusMenu(){ const menu = document.getElementById('plusMenu'); menu.classList.remove('hidden'); setTimeout(()=>{ const close = e => { if(!e.target.closest('.add-dir-btn') && !e.target.closest('.plus-menu')){ menu.classList.add('hidden'); document.removeEventListener('click', close); } }; document.addEventListener('click', close); }, 10); }
+    function openDirNameModalFromPlus(){ document.getElementById('plusMenu').classList.add('hidden'); document.getElementById('dirNameModal').classList.remove('hidden'); document.getElementById('dirNameInput').value=''; }
+    function closeDirNameModal(){ document.getElementById('dirNameModal').classList.add('hidden'); }
+    function saveNewDir(){ const name = document.getElementById('dirNameInput').value.trim(); if(!name){ alert('请输入目录名称！'); return; } localDirs.push({id:'dir' + Date.now(), name:name}); saveLocalDirs(); closeDirNameModal(); renderWorkGroups(); }
+    function openSelectEditModal(){ document.getElementById('plusMenu').classList.add('hidden'); const sel = document.getElementById('editDirSelect'); sel.innerHTML=''; localDirs.forEach(d=>{ const opt=document.createElement('option'); opt.value=d.id; opt.textContent=d.name; sel.appendChild(opt); }); if(localDirs.length===0){ alert('暂无本地目录可修改。公开目录请直接修改代码里的 PUBLIC_DIRS。'); return; } document.getElementById('selectEditModal').classList.remove('hidden'); }
+    function closeSelectEditModal(){ document.getElementById('selectEditModal').classList.add('hidden'); }
+    function openEditDirModalFromSelect(){ currentDirId = document.getElementById('editDirSelect').value; closeSelectEditModal(); const dir = localDirs.find(d=>String(d.id)===String(currentDirId)); if(!dir) return; document.getElementById('editDirNameInput').value = dir.name; document.getElementById('editDirModal').classList.remove('hidden'); }
+    function closeEditDirModal(){ document.getElementById('editDirModal').classList.add('hidden'); currentDirId=null; }
+    function saveEditDir(){ const name = document.getElementById('editDirNameInput').value.trim(); if(!name){ alert('请输入目录名称！'); return; } const dir = localDirs.find(d=>String(d.id)===String(currentDirId)); if(dir) dir.name = name; saveLocalDirs(); closeEditDirModal(); renderWorkGroups(); }
+    function openSelectDeleteModal(){ document.getElementById('plusMenu').classList.add('hidden'); const sel = document.getElementById('deleteDirSelect'); sel.innerHTML=''; localDirs.forEach(d=>{ const opt=document.createElement('option'); opt.value=d.id; opt.textContent=d.name; sel.appendChild(opt); }); if(localDirs.length===0){ alert('暂无本地目录可删除。公开目录请直接修改代码里的 PUBLIC_DIRS。'); return; } document.getElementById('selectDeleteModal').classList.remove('hidden'); }
+    function closeSelectDeleteModal(){ document.getElementById('selectDeleteModal').classList.add('hidden'); }
+    function openDeleteDirModalFromSelect(){ currentDirId = document.getElementById('deleteDirSelect').value; closeSelectDeleteModal(); document.getElementById('deleteDirModal').classList.remove('hidden'); }
+    function closeDeleteDirModal(){ document.getElementById('deleteDirModal').classList.add('hidden'); currentDirId=null; }
+    function confirmDeleteDir(){ localDirs = localDirs.filter(d=>String(d.id)!==String(currentDirId)); localVideos = localVideos.filter(v=>String(v.dirId)!==String(currentDirId)); saveLocalDirs(); saveLocalVideos(); closeDeleteDirModal(); renderWorkGroups(); }
+
+    function askAdminPwd(){ document.getElementById('adminPwdModal').classList.remove('hidden'); document.getElementById('adminPwdInput').value=''; }
+    function closeAdminPwd(){ document.getElementById('adminPwdModal').classList.add('hidden'); }
+    function verifyAdminPwd(){ if(document.getElementById('adminPwdInput').value.trim() === ADMIN_PASSWORD){ closeAdminPwd(); document.getElementById('uploadPage').style.display='block'; updateDirOptions(); } else alert('密码错误！'); }
+    function closeUploadPage(){ document.getElementById('uploadPage').style.display='none'; }
+    function openDeleteModal(index){ const v = videos[index]; if(!v || !v.localItem){ alert('公开作品请在代码里删除。'); return; } deleteIndex = localVideos.findIndex(x => String(x.id) === String(v.id)); document.getElementById('deletePwdModal').classList.remove('hidden'); document.getElementById('deletePwdInput').value=''; }
+    function closeDeleteModal(){ document.getElementById('deletePwdModal').classList.add('hidden'); deleteIndex=-1; }
+    function confirmDelete(){ if(document.getElementById('deletePwdInput').value.trim() !== ADMIN_PASSWORD){ alert('密码错误！'); return; } if(deleteIndex >= 0){ localVideos.splice(deleteIndex,1); saveLocalVideos(); renderWorkGroups(); } closeDeleteModal(); }
+
+    function openPayModal(index){ currentVideoIndex = index; document.getElementById('payModal').classList.remove('hidden'); }
+    function closePayModal(){ document.getElementById('payModal').classList.add('hidden'); }
+    document.getElementById('payLink').addEventListener('click', function(){ setTimeout(function(){ closePayModal(); openModal(); const v = videos[currentVideoIndex]; if(v && v.password) document.getElementById('modalPwd').value = v.password; }, 700); });
+    function openModal(){ document.getElementById('pwdModal').classList.remove('hidden'); document.getElementById('modalPwd').value=''; }
+    function closeModal(){ document.getElementById('pwdModal').classList.add('hidden'); }
+    function checkPwd(){ const v = videos[currentVideoIndex]; if(v && document.getElementById('modalPwd').value.trim() === v.password){ closeModal(); playVideo(v); } else alert('密码错误！'); }
+
+    function applyLanguage(lang){ document.querySelectorAll('.lang-zh,.lang-en,.lang-ko').forEach(el=>el.classList.remove('active-lang')); document.querySelectorAll('.lang-' + lang).forEach(el=>el.classList.add('active-lang')); document.getElementById('currentLang').textContent = lang === 'zh' ? '中文' : (lang === 'en' ? 'English' : '한국어'); localStorage.setItem('siteLang', lang); renderWorkGroups(); }
+    function setupNavigation(){ document.querySelectorAll('.nav-btn').forEach(btn=>{ btn.addEventListener('click', function(e){ e.preventDefault(); const target=this.dataset.target; document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active'); document.querySelectorAll('.page-section').forEach(sec=>sec.classList.remove('active-section')); const section=document.getElementById(target); if(section) section.classList.add('active-section'); history.replaceState(null,'','#'+target); }); }); }
+    function setupLanguageMenu(){ const btn=document.getElementById('langBtn'); const menu=document.getElementById('langMenu'); btn.addEventListener('click', e=>{ e.stopPropagation(); menu.classList.toggle('hidden'); }); document.addEventListener('click', ()=>menu.classList.add('hidden')); document.querySelectorAll('.lang-option').forEach(opt=>{ opt.addEventListener('click', e=>{ e.stopPropagation(); applyLanguage(opt.dataset.lang); menu.classList.add('hidden'); }); }); }
+    function setupInitialHash(){ const hash = location.hash.replace('#',''); if(!hash) return; const btn = document.querySelector('.nav-btn[data-target="' + hash + '"]'); if(btn) btn.click(); }
+    document.addEventListener('DOMContentLoaded', function(){ setupNavigation(); setupLanguageMenu(); applyLanguage(localStorage.getItem('siteLang') || 'zh'); renderWorkGroups(); setupInitialHash(); });
+  </script>
 </body>
 </html>
