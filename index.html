@@ -66,7 +66,6 @@
         .upload-container button:hover {background:#0F48C9;}
         .upload-container .close-btn {background:#64748b;}
         .upload-container .close-btn:hover {background:#475569;}
-        .upload-tip {font-size:0.8rem;color:#64748b;text-align:center;margin-top:1rem;line-height:1.5;}
         .file-input {padding:0.5rem 0.75rem;}
 
         .pay-modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;z-index:10000;padding:1rem;}
@@ -187,17 +186,15 @@
         <div class="upload-container">
             <h3>📤 上传视频管理</h3>
             <input type="text" id="videoUrl" placeholder="🔗 YouTube链接 / Streamtape / 任意MP4链接">
-            <!-- ✅ 独立封面图输入框 -->
-            <input type="text" id="coverUrl" placeholder="🖼️ 封面图链接（选填，不填用默认）">
+            <!-- ✅ 封面图输入框 -->
+            <input type="text" id="coverUrl" placeholder="🖼️ 封面图链接（选填）">
             <div class="file-input">
-                <label>📁 本地视频（无大小限制）：</label>
                 <input type="file" id="videoFile" accept="video/*">
             </div>
             <input type="text" id="videoTitle" placeholder="📝 输入视频标题" required>
             <input type="text" id="videoPwd" placeholder="🔒 观看密码（可选）">
             <button onclick="addVideo()">添加到作品列表</button>
             <button class="close-btn" onclick="closeUploadPage()">关闭页面</button>
-            <div class="upload-tip">✅ YouTube 必须设为「不公开」｜已固定你的域名｜所有人可看</div>
         </div>
     </div>
 
@@ -314,9 +311,9 @@
         let deleteIndex = -1;
         let videos=JSON.parse(localStorage.getItem('myVideos'))||[];
         let modalCallback=null;
-        // ✅ 严格绑定你的完整域名，所有参数匹配，确保所有人访问都能播放
+        // ✅ 固定域名，确保所有人可播放
         const SITE_DOMAIN = 'https://kimm-lii.github.io/yooooon';
-        // ✅ 默认封面图（未单独设置时使用）
+        // ✅ 默认封面图
         const DEFAULT_COVER = 'https://i.imgur.com/9Z7X7QH.jpg';
 
         function closePayModal() {document.getElementById('payModal').classList.add('hidden');}
@@ -346,7 +343,7 @@
             if(!url&&!file){alert('请粘贴链接或选择文件！');return;}
             let src=url;
             
-            // ✅ 自动修正所有YouTube链接，补全域名参数，解决跨域无法播放问题
+            // ✅ 自动修正YouTube链接，解决跨域问题
             if(src.includes('youtube.com/watch?v=')){
                 const id=src.split('v=')[1].split('&')[0];
                 src=`https://www.youtube.com/embed/${id}?origin=${SITE_DOMAIN}&widget_referrer=${SITE_DOMAIN}&enablejsapi=1`;
@@ -362,14 +359,14 @@
             }
             
             if(file) src=URL.createObjectURL(file);
-            // ✅ 保存视频信息（含独立封面）
+            // ✅ 保存视频信息（含封面）
             videos.push({name:src,title_zh:title,title_en:title,title_ko:title,password:pwd,cover:cover});
             localStorage.setItem('myVideos',JSON.stringify(videos));
             document.getElementById('videoUrl').value='';document.getElementById('coverUrl').value='';document.getElementById('videoFile').value='';document.getElementById('videoTitle').value='';document.getElementById('videoPwd').value='';
             renderWorkGroups();closeUploadPage();renderMyWorks();
         }
 
-        // ✅ 播放器：使用独立封面，无遮挡，点击直接播放
+        // ✅ 播放器：封面直接显示，无遮挡
         function playVideo(v) {
             const area=document.getElementById('videoDisplayArea');
             let player='';
@@ -383,7 +380,6 @@
                     </div>
                 </div>`;
             } else {
-                // ✅ 普通视频/本地视频，所有人正常播放
                 player=`
                 <div class="video-display-block">
                     <div class="video-container">
@@ -404,7 +400,7 @@
             area.innerHTML=player;
         }
 
-        // ✅ 加载YouTube播放器，参数完整，跨域正常
+        // ✅ YouTube播放器加载，所有人可看
         function loadYoutubePlayer(container, src) {
             container.innerHTML = `
                 <iframe
