@@ -274,7 +274,6 @@
             <!-- ✅ 输入密码（选填） -->
             <input type="text" id="videoPwd" placeholder="🔒 输入密码（选填）">
             <button onclick="addVideo()">添加到作品列表</button>
-            <button onclick="repairSavedVideos()" style="background:#0f766e;">修复旧视频链接 / 清理失效视频</button>
             <button class="close-btn" onclick="closeUploadPage()">关闭页面</button>
         </div>
     </div>
@@ -386,7 +385,7 @@
     </main>
 
     <!-- ✅ +号管理密码弹窗（密码固定0803） -->
-    <div id="addDirPwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入管理密码 0803" id="addDirPwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeAddDirPwd()">取消</button><button class="btn-confirm" onclick="verifyAddDirPwd()">确定</button></div></div></div>
+    <div id="addDirPwdModal" class="modal hidden"><div class="modal-content"><input type="password" placeholder="输入密码" id="addDirPwdInput"><div class="btn-group"><button class="btn-cancel" onclick="closeAddDirPwd()">取消</button><button class="btn-confirm" onclick="verifyAddDirPwd()">确定</button></div></div></div>
     <!-- ✅ 目录名称输入弹窗 -->
     <div id="dirNameModal" class="modal hidden"><div class="modal-content"><input type="text" placeholder="输入目录名称" id="dirNameInput"><div class="btn-group"><button class="btn-cancel" onclick="closeDirNameModal()">取消</button><button class="btn-confirm" onclick="saveNewDir()">确定</button></div></div></div>
     <!-- ✅ 选择要修改的目录 -->
@@ -618,17 +617,6 @@
         function verifyAdminPwd() {const p=document.getElementById('adminPwdInput').value.trim();if(p === '0803'){closeAdminPwd();document.getElementById('uploadPage').style.display='block';updateDirOptions();}else alert('密码错误！');}
         function closeUploadPage() {document.getElementById('uploadPage').style.display='none';}
 
-        function repairSavedVideos() {
-            const before = videos.length;
-            migrateOldYouTubeUrls();
-            videos = videos.filter(v => v && v.name && !isTemporaryBlobUrl(v.name));
-            const removed = before - videos.length;
-            saveVideos();
-            renderWorkGroups();
-            updateDirOptions();
-            alert(removed > 0 ? `已修复 YouTube 链接，并清理 ${removed} 个旧本地临时视频。请用 YouTube 或 MP4 外链重新添加被清理的视频。` : '已重新修复 YouTube 链接，没有发现失效的本地临时视频。');
-        }
-
 
         /* =========================
            ✅ 修复后的上传/播放/渲染逻辑
@@ -636,7 +624,7 @@
            1) YouTube URL 统一转成 /embed/VIDEO_ID
            2) origin 使用纯域名，不带 /yooooon 路径，避免播放器配置错误
            3) iframe 增加 referrerpolicy，解决 Error 153 / ERR_BLOCKED_BY_RESPONSE 常见问题
-           4) 补全原文件末尾被截断的 JS、</script>、</body>、</html>
+           4) 补全原文件末尾被截断的 JS 和 HTML 结束结构
         ========================== */
 
         const SITE_ORIGIN = 'https://kimm-lii.github.io';
