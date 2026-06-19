@@ -2395,6 +2395,29 @@ input[type="email"], .payment-email, .email-field, #customerEmail, [name="custom
   display:none!important;
 }
 
+
+/* GitHub Issues comments (persistent) */
+.github-comments-box{
+  margin-top:.75rem;
+  min-height:220px;
+  border:1px solid rgba(214,179,106,.16);
+  border-radius:16px;
+  padding:.75rem;
+  background:#0f1217;
+  overflow:hidden;
+}
+.comment-help{
+  color:#aaa39a;
+  font-size:.84rem;
+  line-height:1.55;
+  margin:.35rem 0 .75rem;
+}
+.comment-modal-box .btns{margin-top:.85rem;}
+@media(max-width:640px){
+  .comment-modal-box{width:96vw!important;max-height:88vh;overflow:auto;}
+  .github-comments-box{padding:.55rem;min-height:260px;}
+}
+
 </style>
 <script src="https://js.tosspayments.com/v1/payment"></script>
 </head>
@@ -2568,9 +2591,13 @@ input[type="email"], .payment-email, .email-field, #customerEmail, [name="custom
 
 <div id="commentModal" class="modal hidden"><div class="modal-box comment-modal-box">
   <div class="comment-modal-title" id="commentModalTitle">评论</div>
-  <div id="commentModalList" class="comment-modal-list"></div>
-  <textarea id="commentInput" class="comment-input" maxlength="200" placeholder="请输入评论"></textarea>
-  <div class="btns"><button class="btn cancel" onclick="closeCommentModal()">取消</button><button class="btn ok" onclick="saveCommentFromModal()">发送</button></div>
+  <div class="comment-help">
+    <span class="lang-zh active-lang">评论会保存到 GitHub Issues，刷新后也不会消失。首次评论需要登录 GitHub。</span>
+    <span class="lang-en">Comments are saved in GitHub Issues and will remain after refresh. GitHub login is required for first-time comments.</span>
+    <span class="lang-ko">댓글은 GitHub Issues에 저장되어 새로고침 후에도 유지됩니다. 첫 댓글 작성 시 GitHub 로그인이 필요합니다.</span>
+  </div>
+  <div id="commentModalList" class="github-comments-box"></div>
+  <div class="btns"><button class="btn cancel" onclick="closeCommentModal()">关闭 / Close</button></div>
 </div></div>
 <div id="actionToast" class="action-toast"></div>
 
@@ -2920,56 +2947,46 @@ function shareVideo(id) {
   }
 }
 let activeCommentVideoId=null;
+function githubCommentTerm(v){
+  const base = (v ? (titleOf(v) + ' ' + (v.episode || '') + ' ' + v.id) : String(activeCommentVideoId || 'home'));
+  return 'Yoon Studio Comments - ' + base.replace(/\s+/g,' ').trim();
+}
 function openCommentModal(id) {
   activeCommentVideoId=id;
   const v=videos().find(x=>String(x.id)===String(id));
   document.getElementById('commentModalTitle').textContent = uiText('commentTitle') + (v ? ' - ' + titleOf(v) : '');
-  document.getElementById('commentInput').placeholder = uiText('commentPlaceholder');
-  document.getElementById('commentInput').value='';
-  renderCommentModalList();
   document.getElementById('commentModal').classList.remove('hidden');
-  setTimeout(()=>document.getElementById('commentInput').focus(),30);
+  renderGithubComments(v);
 }
 function closeCommentModal() {
   document.getElementById('commentModal').classList.add('hidden');
   activeCommentVideoId=null;
-}
-function renderCommentModalList() {
-  if(!activeCommentVideoId) return;
-  const comments=actionData(activeCommentVideoId).item.comments;
   const box=document.getElementById('commentModalList');
-  if(!comments.length){ box.innerHTML=`<div class="comment-modal-empty">${uiText('noComments')}</div>`; return; }
-  box.innerHTML=comments.slice().reverse().map((c,idx)=>{
-    const realIndex=comments.length-1-idx;
-    const text=typeof c==='string'?c:c.text;
-    const time=typeof c==='string'?'':(c.time||'');
-    return `<div class="comment-row"><div>💬 ${esc(text)}${time?`<small>${esc(time)}</small>`:''}</div><button class="comment-delete" onclick="deleteComment(${realIndex})">×</button></div>`;
-  }).join('');
+  if(box) box.innerHTML='';
 }
-function saveCommentFromModal() {
-  if(!activeCommentVideoId) return;
-  const input=document.getElementById('commentInput');
-  const text=input.value.trim();
-  if(!text) return;
-  const {data,item}=actionData(activeCommentVideoId);
-  const now=new Date();
-  item.comments.push({text:text.slice(0,200),time:now.toLocaleString()});
-  saveActionStore(data);
-  input.value='';
-  renderCommentModalList();
-  showToast(uiText('commentSaved'));
-  renderAll();
-  if(currentVideo && String(currentVideo.id)===String(activeCommentVideoId)) renderPlayer(currentVideo);
+function renderGithubComments(v){
+  const box=document.getElementById('commentModalList');
+  if(!box) return;
+  box.innerHTML='';
+  const script=document.createElement('script');
+  script.src='https://utteranc.es/client.js';
+  script.setAttribute('repo','kimm-lii/yooooon');
+  script.setAttribute('issue-term', githubCommentTerm(v));
+  script.setAttribute('label','comment');
+  script.setAttribute('theme','github-dark');
+  script.setAttribute('crossorigin','anonymous');
+  script.async=true;
+  box.appendChild(script);
 }
-function deleteComment(index) {
-  if(!activeCommentVideoId) return;
-  const {data,item}=actionData(activeCommentVideoId);
-  item.comments.splice(index,1);
-  saveActionStore(data);
-  renderCommentModalList();
-  showToast(uiText('commentDeleted'));
-  renderAll();
-  if(currentVideo && String(currentVideo.id)===String(activeCommentVideoId)) renderPlayer(currentVideo);
+function renderCommentModalList(){
+  const v=videos().find(x=>String(x.id)===String(activeCommentVideoId));
+  renderGithubComments(v);
+}
+function saveCommentFromModal(){
+  showToast(lang==='zh'?'请在 GitHub 评论框中发送':(lang==='ko'?'GitHub 댓글창에서 작성해 주세요':'Please use the GitHub comment box'));
+}
+function deleteComment(){
+  showToast(lang==='zh'?'请在 GitHub Issues 后台管理评论':(lang==='ko'?'GitHub Issues에서 댓글을 관리해 주세요':'Manage comments in GitHub Issues'));
 }
 function addComment(id) { openCommentModal(id); }
 function showToast(msg) {
