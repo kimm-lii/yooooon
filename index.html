@@ -1754,6 +1754,71 @@ header .lang-menu{
   }
 }
 
+
+
+/* Final request: keep Language text visible, placed after About on the left; home URL centered at bottom */
+.home-site-link{
+  text-align:center !important;
+  margin:1.2rem auto 0 !important;
+  padding:.8rem 0 0 !important;
+  font-size:1rem !important;
+}
+#profile .profile-link{display:none !important;}
+header .lang-wrap{
+  margin-left:0 !important;
+  margin-right:0 !important;
+  order:2 !important;
+}
+@media(max-width:640px){
+  header .lang-btn{
+    width:auto !important;
+    min-width:auto !important;
+    height:auto !important;
+    padding:.48rem .56rem !important;
+    font-size:.98rem !important;
+    line-height:1.1 !important;
+    border-radius:999px !important;
+    gap:.18rem !important;
+  }
+  header .lang-label,
+  header .lang-btn .lang-label{
+    display:inline !important;
+  }
+  .home-site-link{
+    font-size:.9rem !important;
+    margin:1rem auto 0 !important;
+    word-break:break-all !important;
+  }
+}
+
+
+
+/* Mobile brand larger font + one-line gap before nav */
+@media(max-width:640px){
+  header .brand{
+    font-size:1.22rem !important;
+    line-height:1.35 !important;
+    width:100% !important;
+    white-space:nowrap !important;
+    overflow:visible !important;
+    text-align:left !important;
+    margin-bottom:.9rem !important;
+  }
+  header .brand-icon{
+    width:32px !important;
+    height:32px !important;
+    font-size:1rem !important;
+    flex:0 0 auto !important;
+  }
+  header .topbar{
+    row-gap:.15rem !important;
+  }
+  header .nav-area{
+    width:100% !important;
+    justify-content:flex-start !important;
+  }
+}
+
 </style>
 <script src="https://js.tosspayments.com/v1/payment"></script>
 </head>
@@ -1794,6 +1859,7 @@ header .lang-menu{
       </p>
 
     </div>
+    <p class="home-site-link"><a class="website-link" href="https://kimm-lii.github.io/yooooon/" target="_blank" rel="noopener noreferrer">https://kimm-lii.github.io/yooooon/</a></p>
   </section>
 
   <section id="portfolio" class="page-section">
