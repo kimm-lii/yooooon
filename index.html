@@ -2597,7 +2597,7 @@ input[type="email"], .payment-email, .email-field, #customerEmail, [name="custom
     <span class="lang-ko">댓글은 GitHub Issues에 저장되어 새로고침 후에도 유지됩니다. 첫 댓글 작성 시 GitHub 로그인이 필요합니다.</span>
   </div>
   <div id="commentModalList" class="github-comments-box"></div>
-  <div class="btns"><button class="btn cancel" onclick="closeCommentModal()">关闭 / Close</button></div>
+  <div class="btns"><button class="btn cancel" onclick="closeCommentModal()"><span class="lang-zh active-lang">关闭</span><span class="lang-en">Close</span><span class="lang-ko">닫기</span></button></div>
 </div></div>
 <div id="actionToast" class="action-toast"></div>
 
@@ -2819,6 +2819,10 @@ function setLang(l) {
   document.getElementById('langMenu').classList.add('hidden');
   applyLanguageFont(l);
   renderAll();
+  if(currentVideo) renderPlayer(currentVideo);
+  if(activeCommentVideoId && !document.getElementById('commentModal').classList.contains('hidden')) {
+    updateCommentModalLanguage();
+  }
 }
 function toggleLangMenu(e) {
   if(e) e.stopPropagation();
@@ -2883,6 +2887,9 @@ function actionText(type) {
 function uiText(key) {
   const dict={
     commentTitle:{zh:'评论',en:'Comments',ko:'댓글'},
+    favoriteLabel:{zh:'收藏',en:'Favorite',ko:'찜하기'},
+    shareLabel:{zh:'分享',en:'Share',ko:'공유'},
+    followLabel:{zh:'关注',en:'Follow',ko:'팔로우'},
     commentPlaceholder:{zh:'写下你的评论...',en:'Write your comment...',ko:'댓글을 입력해 주세요...'},
     noComments:{zh:'还没有评论，成为第一个留言的人吧。',en:'No comments yet. Be the first to write one.',ko:'아직 댓글이 없습니다. 첫 댓글을 남겨보세요.'},
     favoriteOn:{zh:'已收藏',en:'Added to favorites',ko:'찜했습니다'},
@@ -2913,17 +2920,21 @@ function renderActionButtons(v) {
   const c=st.comments.length;
   const favOn=st.favorite;
   const folOn=st.follow;
+  const commentLabel=uiText('commentTitle');
+  const favoriteLabel=uiText('favoriteLabel');
+  const shareLabel=uiText('shareLabel');
+  const followLabel=uiText('followLabel');
   return `<div class="drama-actions mini-icon-actions" onclick="event.stopPropagation()">
-    <button class="drama-action-btn comment-action" title="Comments" aria-label="Comments" onclick="openCommentModal('${v.id}')">
+    <button class="drama-action-btn comment-action" title="${esc(commentLabel)}" aria-label="${esc(commentLabel)}" onclick="openCommentModal('${v.id}')">
       <span class="action-icon">💬</span>${c?`<span class="icon-count">${c}</span>`:''}
     </button>
-    <button class="drama-action-btn favorite-action ${favOn?'active':''}" title="Favorite" aria-label="Favorite" onclick="toggleFavorite('${v.id}')">
+    <button class="drama-action-btn favorite-action ${favOn?'active':''}" title="${esc(favoriteLabel)}" aria-label="${esc(favoriteLabel)}" onclick="toggleFavorite('${v.id}')">
       <span class="action-icon">${favOn?'★':'☆'}</span>
     </button>
-    <button class="drama-action-btn share-action" title="Share" aria-label="Share" onclick="shareVideo('${v.id}')">
+    <button class="drama-action-btn share-action" title="${esc(shareLabel)}" aria-label="${esc(shareLabel)}" onclick="shareVideo('${v.id}')">
       <span class="action-icon">↗</span>
     </button>
-    <button class="drama-action-btn follow-action ${folOn?'active':''}" title="Follow" aria-label="Follow" onclick="toggleFollow('${v.id}')">
+    <button class="drama-action-btn follow-action ${folOn?'active':''}" title="${esc(followLabel)}" aria-label="${esc(followLabel)}" onclick="toggleFollow('${v.id}')">
       <span class="action-icon">${folOn?'♥':'♡'}</span>
     </button>
   </div>`;
@@ -2972,9 +2983,21 @@ function shareVideo(id) {
   }
 }
 let activeCommentVideoId=null;
+function utterancesLang(){
+  if(lang==='ko') return 'ko';
+  if(lang==='en') return 'en';
+  return 'zh-CN';
+}
 function githubCommentTerm(v){
-  const base = (v ? (titleOf(v) + ' ' + episodeOf(v) + ' ' + v.id) : String(activeCommentVideoId || 'home'));
-  return 'Yoon Studio Comments - ' + base.replace(/\s+/g,' ').trim();
+  // Keep one stable GitHub Issue per video, regardless of selected language.
+  // This prevents comments from splitting or disappearing when users switch languages.
+  return 'Yoon Studio Comments - ' + (v && v.id ? String(v.id) : String(activeCommentVideoId || 'home'));
+}
+function updateCommentModalLanguage(){
+  const v=videos().find(x=>String(x.id)===String(activeCommentVideoId));
+  const titleEl=document.getElementById('commentModalTitle');
+  if(titleEl) titleEl.textContent = uiText('commentTitle') + (v ? ' - ' + titleOf(v) : '');
+  renderGithubComments(v);
 }
 function openCommentModal(id) {
   activeCommentVideoId=id;
@@ -2999,6 +3022,7 @@ function renderGithubComments(v){
   script.setAttribute('issue-term', githubCommentTerm(v));
   script.setAttribute('label','comment');
   script.setAttribute('theme','github-dark');
+  script.setAttribute('lang', utterancesLang());
   script.setAttribute('crossorigin','anonymous');
   script.async=true;
   box.appendChild(script);
