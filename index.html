@@ -2032,6 +2032,278 @@ header .lang-menu:not(.hidden){
     display:block !important;
   }
 }
+
+
+/* FINAL NAV + PAYMENT DESIGN UPDATE */
+@media(max-width:640px){
+  header .topbar{
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    gap:.7rem !important;
+  }
+  header .brand{
+    font-size:1.15rem !important;
+    margin-bottom:.08rem !important;
+  }
+  header .nav-area{
+    width:100% !important;
+    display:flex !important;
+    flex-direction:row !important;
+    flex-wrap:nowrap !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:.28rem !important;
+    overflow-x:auto !important;
+    overflow-y:visible !important;
+    -webkit-overflow-scrolling:touch !important;
+    padding-bottom:.18rem !important;
+  }
+  header nav{
+    width:auto !important;
+    flex:0 0 auto !important;
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    align-items:center !important;
+    gap:.28rem !important;
+    overflow:visible !important;
+    padding-bottom:0 !important;
+  }
+  header .nav-btn{
+    flex:0 0 auto !important;
+    font-size:1rem !important;
+    padding:.48rem .58rem !important;
+    white-space:nowrap !important;
+  }
+  header .lang-wrap{
+    width:auto !important;
+    flex:0 0 auto !important;
+    margin:0 !important;
+    display:flex !important;
+    justify-content:flex-start !important;
+    position:relative !important;
+    z-index:999999 !important;
+  }
+  header .lang-btn{
+    font-size:1rem !important;
+    padding:.48rem .6rem !important;
+    white-space:nowrap !important;
+  }
+}
+.pay-modal{
+  background:rgba(0,0,0,.72) !important;
+  backdrop-filter:blur(8px);
+}
+.premium-pay-box{
+  width:min(430px,92vw) !important;
+  min-height:auto !important;
+  padding:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+.pay-choice-card{
+  position:relative;
+  overflow:hidden;
+  padding:2rem 1.35rem 1.35rem;
+  border-radius:28px;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(214,179,106,.22),transparent 42%),
+    linear-gradient(145deg,#171b22,#0e1116 72%);
+  border:1px solid rgba(214,179,106,.32);
+  box-shadow:0 24px 60px rgba(0,0,0,.42);
+  text-align:center;
+  color:#fff8e8;
+}
+.pay-choice-card::before{
+  content:"";
+  position:absolute;
+  left:50%;top:0;
+  width:54%;height:1px;
+  transform:translateX(-50%);
+  background:linear-gradient(90deg,transparent,rgba(214,179,106,.9),transparent);
+}
+.pay-choice-badge{
+  width:54px;height:54px;
+  margin:0 auto .75rem;
+  border-radius:18px;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#d6b36a,#a77b37);
+  color:#111;
+  font-size:1.45rem;
+  box-shadow:0 14px 28px rgba(214,179,106,.18);
+}
+.pay-choice-title{
+  color:#fff8e8 !important;
+  font-size:1.55rem !important;
+  line-height:1.2;
+  margin:0 0 .35rem !important;
+  font-weight:950;
+}
+.pay-choice-intro{
+  color:#bdb6aa;
+  font-size:.96rem;
+  margin:0 0 1.2rem;
+  font-weight:750;
+}
+.pay-action-stack{
+  display:grid;
+  gap:.75rem;
+  margin-bottom:.9rem;
+}
+.pay-link-btn,.korea-pay-btn,.pay-password-btn,.pay-close-btn{
+  width:100% !important;
+  min-height:54px;
+  border:none;
+  border-radius:17px !important;
+  display:flex !important;
+  align-items:center;
+  justify-content:center;
+  gap:.55rem;
+  margin:0 !important;
+  padding:.86rem 1rem !important;
+  font-size:1rem !important;
+  font-weight:950 !important;
+  text-decoration:none !important;
+  cursor:pointer;
+  transition:transform .18s ease, filter .18s ease, box-shadow .18s ease;
+}
+.pay-link-btn:hover,.korea-pay-btn:hover,.pay-password-btn:hover,.pay-close-btn:hover{
+  transform:translateY(-1px);
+  filter:brightness(1.04);
+}
+.premium-paypal{
+  background:linear-gradient(135deg,#0b86d1,#005ea6) !important;
+  color:#fff !important;
+  box-shadow:0 12px 24px rgba(0,112,186,.22);
+}
+.premium-korea{
+  background:linear-gradient(135deg,#d6b36a,#a77b37) !important;
+  color:#111 !important;
+  box-shadow:0 12px 24px rgba(214,179,106,.18);
+}
+.pay-icon{
+  min-width:30px;height:30px;
+  border-radius:999px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(255,255,255,.18);
+  font-size:.82rem;
+  font-weight:950;
+}
+.premium-korea .pay-icon{background:rgba(0,0,0,.13);}
+.pay-password-btn{
+  background:rgba(255,255,255,.08) !important;
+  color:#fff8e8 !important;
+  border:1px solid rgba(214,179,106,.18) !important;
+  margin-top:.1rem !important;
+}
+.pay-close-btn{
+  min-height:48px;
+  margin-top:.62rem !important;
+  background:transparent !important;
+  color:#aaa39a !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+}
+.pay-section-label,.pay-choice-sub,.pay-choice-note{display:none !important;}
+@media(max-width:640px){
+  .pay-choice-card{border-radius:24px;padding:1.75rem 1rem 1rem;}
+  .pay-choice-title{font-size:1.38rem !important;}
+  .pay-link-btn,.korea-pay-btn,.pay-password-btn{min-height:52px;font-size:.96rem !important;}
+}
+
+
+
+/* === FINAL HEADER ROW + SIMPLE PAYMENT FIX === */
+@media(max-width:640px){
+  header .topbar{
+    gap:.56rem !important;
+    padding:.72rem 0 .8rem !important;
+  }
+  header .brand{
+    font-size:1.16rem !important;
+    margin-bottom:.18rem !important;
+  }
+  header .nav-area{
+    width:100% !important;
+    display:flex !important;
+    flex-direction:row !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    flex-wrap:nowrap !important;
+    gap:.26rem !important;
+    overflow-x:auto !important;
+    overflow-y:visible !important;
+    padding-bottom:.16rem !important;
+    -webkit-overflow-scrolling:touch !important;
+    scrollbar-width:none !important;
+  }
+  header .nav-area::-webkit-scrollbar{display:none !important;}
+  header nav{
+    width:auto !important;
+    flex:0 0 auto !important;
+    display:flex !important;
+    flex-direction:row !important;
+    flex-wrap:nowrap !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:.26rem !important;
+    overflow:visible !important;
+    padding:0 !important;
+  }
+  header .nav-btn{
+    flex:0 0 auto !important;
+    font-size:1rem !important;
+    font-weight:900 !important;
+    padding:.48rem .56rem !important;
+    border-radius:12px !important;
+    white-space:nowrap !important;
+  }
+  header .lang-wrap{
+    width:auto !important;
+    flex:0 0 auto !important;
+    margin:0 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    position:relative !important;
+    z-index:999999 !important;
+  }
+  header .lang-btn{
+    flex:0 0 auto !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:.22rem !important;
+    font-size:1rem !important;
+    font-weight:900 !important;
+    padding:.48rem .58rem !important;
+    border-radius:12px !important;
+    white-space:nowrap !important;
+    cursor:pointer !important;
+    pointer-events:auto !important;
+    touch-action:manipulation !important;
+  }
+  header .lang-btn .lang-label{display:inline !important;}
+  header .lang-menu{
+    position:absolute !important;
+    left:0 !important;
+    right:auto !important;
+    top:calc(100% + 8px) !important;
+    min-width:148px !important;
+    z-index:9999999 !important;
+  }
+}
+@media(min-width:641px){
+  header .nav-area{
+    justify-content:flex-start !important;
+    gap:.55rem !important;
+  }
+  header .lang-wrap{
+    margin-left:0 !important;
+  }
+}
+
 </style>
 <script src="https://js.tosspayments.com/v1/payment"></script>
 </head>
@@ -2041,9 +2313,9 @@ header .lang-menu:not(.hidden){
   <div class="nav-area">
     <nav>
       <a class="nav-btn active" data-page="home" href="#home"><span class="lang-zh active-lang">首页</span><span class="lang-en">Home</span><span class="lang-ko">홈</span></a>
-      <a class="nav-btn" data-page="portfolio" href="#portfolio"><span class="lang-zh active-lang">作品展示</span><span class="lang-en">Portfolio</span><span class="lang-ko">포트폴리오</span></a>
-      <a class="nav-btn" data-page="skills" href="#skills"><span class="lang-zh active-lang">专业技能</span><span class="lang-en">Skills</span><span class="lang-ko">전문 기술</span></a>
-      <a class="nav-btn" data-page="profile" href="#profile"><span class="lang-zh active-lang">关于我</span><span class="lang-en">About Me</span><span class="lang-ko">나에 대해</span></a>
+      <a class="nav-btn" data-page="portfolio" href="#portfolio"><span class="lang-zh active-lang">作品</span><span class="lang-en">Works</span><span class="lang-ko">작품</span></a>
+      <a class="nav-btn" data-page="skills" href="#skills"><span class="lang-zh active-lang">技能</span><span class="lang-en">Skills</span><span class="lang-ko">기술</span></a>
+      <a class="nav-btn" data-page="profile" href="#profile"><span class="lang-zh active-lang">关于</span><span class="lang-en">About</span><span class="lang-ko">소개</span></a>
     </nav>
     <div class="lang-wrap"><button class="lang-btn" onclick="toggleLangMenu(event)">🌐 <span class="lang-label">Language</span></button>
       <div id="langMenu" class="lang-menu hidden">
@@ -2175,32 +2447,24 @@ header .lang-menu:not(.hidden){
   <div class="btns"><button class="btn cancel" onclick="closeDirDelete()">取消</button><button class="btn danger" onclick="saveDirDelete()">删除</button></div>
 </div></div>
 
-<div id="payModal" class="pay-modal hidden"><div class="pay-box" style="width:min(420px,92vw);min-height:auto;padding:0;background:transparent;box-shadow:none;">
-  <div style="text-align:center; padding:40px 20px; background:#f8f9fa; border-radius:12px; margin:20px 0; box-shadow:0 16px 34px rgba(0,0,0,.22);">
-    <h2 class="pay-choice-title">🔒 <span class="lang-zh active-lang">付费解锁内容</span><span class="lang-en">Unlock Premium Episode</span><span class="lang-ko">유료 콘텐츠 잠금 해제</span></h2>
+<div id="payModal" class="pay-modal hidden"><div class="pay-box premium-pay-box">
+  <div class="pay-choice-card">
+    <div class="pay-choice-badge">🔐</div>
+    <h2 class="pay-choice-title"><span class="lang-zh active-lang">解锁本集</span><span class="lang-en">Unlock Episode</span><span class="lang-ko">에피소드 잠금 해제</span></h2>
+    <p class="pay-choice-intro"><span class="lang-zh active-lang">请选择付款方式</span><span class="lang-en">Choose a payment method</span><span class="lang-ko">결제 방법을 선택해 주세요</span></p>
 
-    <div class="pay-section-label"><span class="lang-zh active-lang">海外客户</span><span class="lang-en">International customers</span><span class="lang-ko">해외 고객</span></div>
-    <a id="payBtn" class="pay-link-btn" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=D4VNS6AG5J6X4&currency_code=USD&amount=0.99&item_name=Yoon_Studio_Premium_Episode&no_note=1&return=https%3A%2F%2Fkimm-lii.github.io%2Fyooooon%2F%3Fpayment%3Dsuccess%26video%3Dsnowtruth_ep03%23portfolio&cancel_return=https%3A%2F%2Fkimm-lii.github.io%2Fyooooon%2F%3Fpayment%3Dcancel%23portfolio&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted" target="_blank" rel="noopener noreferrer">
-      👉 <span class="lang-zh active-lang">前往 PayPal 付款</span><span class="lang-en">Pay with PayPal</span><span class="lang-ko">PayPal로 결제하기</span>
-    </a>
+    <div class="pay-action-stack">
+      <a id="payBtn" class="pay-link-btn premium-paypal" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=D4VNS6AG5J6X4&currency_code=USD&amount=0.99&item_name=Yoon_Studio_Premium_Episode&no_note=1&return=https%3A%2F%2Fkimm-lii.github.io%2Fyooooon%2F%3Fpayment%3Dsuccess%26video%3Dsnowtruth_ep03%23portfolio&cancel_return=https%3A%2F%2Fkimm-lii.github.io%2Fyooooon%2F%3Fpayment%3Dcancel%23portfolio&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted" target="_blank" rel="noopener noreferrer">
+        <span class="pay-icon">P</span><span class="lang-zh active-lang">PayPal</span><span class="lang-en">PayPal</span><span class="lang-ko">PayPal</span>
+      </a>
 
-    <div class="pay-section-label"><span class="lang-zh active-lang">韩国客户</span><span class="lang-en">Korean customers</span><span class="lang-ko">한국 고객</span></div>
-    <button id="koreaPaymentBtn" class="korea-pay-btn" onclick="startKoreaPayment()">
-      🇰🇷 <span class="lang-zh active-lang">韩国客户直接付款</span><span class="lang-en">Korean Direct Payment</span><span class="lang-ko">한국 고객 바로 결제</span>
-    </button>
+      <button id="koreaPaymentBtn" class="korea-pay-btn premium-korea" onclick="startKoreaPayment()">
+        <span class="pay-icon">💳</span><span class="lang-zh active-lang">银行卡付款</span><span class="lang-en">Card Payment</span><span class="lang-ko">카드 결제</span>
+      </button>
+    </div>
 
-    <p class="pay-choice-sub">
-      <span class="lang-zh active-lang">韩国客户可直接使用韩国卡付款。</span>
-      <span class="lang-en">Korean customers can pay directly by Korean card.</span>
-      <span class="lang-ko">한국 고객은 계좌이체 또는 카카오페이로 결제할 수 있습니다. 결제 정보는 관리자에게 문의해 주세요 ❤️</span>
-    </p>
-    <p class="pay-choice-note">
-      <span class="lang-zh active-lang">付款后，管理员会提供观看密码。收到密码后点击“我已有密码”。</span>
-      <span class="lang-en">After payment, the administrator will provide the watch password. Then click “I already have a password.”</span>
-      <span class="lang-ko">결제 후 관리자가 시청 비밀번호를 안내합니다. 비밀번호를 받은 뒤 “이미 비밀번호가 있습니다”를 눌러주세요.</span>
-    </p>
-    <button class="pay-cancel" onclick="openWatchPwdFromPay()" style="width:82%;border:none;border-radius:14px;padding:.82rem .8rem;cursor:pointer;font-weight:900;font-size:.96rem;margin:.6rem auto .58rem;display:block;background:#eef0f3;color:#444;"><span class="lang-zh active-lang">我已有密码</span><span class="lang-en">I already have a password</span><span class="lang-ko">이미 비밀번호가 있습니다</span></button>
-    <button class="pay-cancel" onclick="closePay()" style="width:82%;border:none;border-radius:14px;padding:.82rem .8rem;cursor:pointer;font-weight:900;font-size:.96rem;margin:0 auto;display:block;background:#eef0f3;color:#444;"><span class="lang-zh active-lang">取消</span><span class="lang-en">Cancel</span><span class="lang-ko">취소</span></button>
+    <button class="pay-password-btn" onclick="openWatchPwdFromPay()"><span class="lang-zh active-lang">我已有密码</span><span class="lang-en">I already have a password</span><span class="lang-ko">이미 비밀번호가 있습니다</span></button>
+    <button class="pay-close-btn" onclick="closePay()"><span class="lang-zh active-lang">取消</span><span class="lang-en">Cancel</span><span class="lang-ko">취소</span></button>
   </div>
 </div></div>
 
@@ -2382,8 +2646,8 @@ function startKoreaPayment() {
     tossPayments.requestPayment('카드', {
       amount: KOREA_PAYMENT_AMOUNT,
       orderId: orderId,
-      orderName: 'Yoon Studio Premium Episode',
-      customerName: 'Customer',
+      orderName: localizedPaymentName(),
+      customerName: localizedCustomerName(),
       successUrl: successUrl,
       failUrl: failUrl
     });
