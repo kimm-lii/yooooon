@@ -2396,6 +2396,10 @@ input[type="email"], .payment-email, .email-field, #customerEmail, [name="custom
 }
 
 
+
+/* Site comments powered by Google Sheets / Apps Script */
+.site-comments-box{border:1px solid rgba(214,179,106,.18);border-radius:18px;padding:.8rem;background:#0f1217;min-height:150px;margin-top:.85rem}.comment-input-wrap{border:1px solid rgba(214,179,106,.18);border-radius:18px;padding:.85rem;background:linear-gradient(135deg,rgba(255,255,255,.035),rgba(214,179,106,.025));margin-top:.75rem}.comment-name-input{width:100%;border:1px solid var(--line);border-radius:12px;background:#0f1217;color:#f5f5f4;padding:.72rem .8rem;margin-bottom:.65rem;font-family:inherit}.site-comment-row{border:1px solid rgba(214,179,106,.13);border-radius:14px;padding:.72rem .78rem;background:linear-gradient(135deg,rgba(255,255,255,.035),rgba(214,179,106,.018));margin-bottom:.55rem}.site-comment-row:last-child{margin-bottom:0}.site-comment-top{display:flex;justify-content:space-between;gap:.65rem;align-items:flex-start;margin-bottom:.36rem}.site-comment-name{font-weight:900;color:#fff8e8}.site-comment-time{font-size:.72rem;color:#9ca3af;margin-top:.12rem}.site-comment-text{white-space:pre-wrap;color:#ded7ca;line-height:1.55;font-size:.93rem}.site-comment-delete{border:1px solid rgba(214,179,106,.24);background:rgba(214,179,106,.08);color:#d6b36a;border-radius:999px;padding:.22rem .52rem;cursor:pointer;font-size:.75rem;font-weight:900;white-space:nowrap}.site-comment-delete:hover{background:rgba(214,179,106,.16)}.comment-loading,.comment-empty,.comment-error{color:#a1a1aa;text-align:center;padding:1.2rem .5rem}.comment-error{color:#fca5a5}@media(max-width:640px){.site-comment-top{gap:.4rem}.site-comment-text{font-size:.86rem}.site-comment-delete{font-size:.7rem;padding:.2rem .44rem}}
+
 /* GitHub Issues comments (persistent) */
 .github-comments-box{
   margin-top:.75rem;
@@ -2419,41 +2423,61 @@ input[type="email"], .payment-email, .email-field, #customerEmail, [name="custom
 }
 
 
-
-/* Localized GitHub comment panel */
-.localized-github-panel{
-  border:1px solid rgba(214,179,106,.22);
-  border-radius:18px;
-  padding:1.15rem;
-  background:linear-gradient(135deg,rgba(255,255,255,.035),rgba(214,179,106,.025));
-  color:#ded7ca;
+/* Payment email optional note */
+.pay-email-optional{
+  margin:-.28rem auto .85rem;
+  color:#b8b0a3;
+  font-size:.86rem;
+  font-weight:750;
+  line-height:1.45;
 }
-.localized-github-panel h4{
-  color:#fff8e8;
-  font-size:1.05rem;
-  margin-bottom:.55rem;
-}
-.localized-github-panel p{
-  color:#b9b2a7;
-  font-size:.92rem;
-  line-height:1.75;
-  margin-bottom:.85rem;
-}
-.localized-github-actions{
-  display:flex;
-  gap:.58rem;
-  flex-wrap:wrap;
-}
-.localized-github-actions .btn{
-  flex:0 0 auto;
-  min-width:120px;
-}
-@media(max-width:640px){
-  .localized-github-actions .btn{width:100%;}
-}
+.pay-email-optional strong{color:#d6b36a;}
+@media(max-width:640px){.pay-email-optional{font-size:.78rem;margin:-.18rem auto .75rem;}}
 
 </style>
 <script src="https://js.tosspayments.com/v1/payment"></script>
+
+<style>
+/* PayPal success password modal */
+.success-password-box{
+  width:min(440px,92vw);
+  background:linear-gradient(145deg,rgba(21,24,29,.98),rgba(10,12,16,.98));
+  border:1px solid rgba(214,179,106,.28);
+  border-radius:24px;
+  padding:1.35rem;
+  color:#f5f5f4;
+  box-shadow:0 22px 60px rgba(0,0,0,.38);
+  text-align:center;
+}
+.success-icon{font-size:2.1rem;margin-bottom:.35rem}
+.success-title{font-size:1.35rem;font-weight:950;color:#fff8e8;margin-bottom:.35rem}
+.success-desc{color:#c9c9c9;font-size:.94rem;line-height:1.65;margin-bottom:1rem}
+.success-video-title{color:#d6b36a;font-weight:850;margin-bottom:.85rem;line-height:1.45}
+.password-display{
+  border:1px solid rgba(214,179,106,.32);
+  background:#0f1217;
+  border-radius:18px;
+  padding:1rem;
+  margin:.8rem 0 1rem;
+}
+.password-label{font-size:.78rem;color:#a1a1aa;margin-bottom:.35rem;font-weight:800}
+.password-value{font-size:1.55rem;font-weight:950;letter-spacing:.08em;color:#fff8e8;user-select:all}
+.success-actions{display:grid;gap:.65rem;margin-top:.8rem}
+.success-btn{
+  width:100%;
+  border:none;
+  border-radius:14px;
+  padding:.82rem .9rem;
+  font-weight:900;
+  cursor:pointer;
+  font-size:.96rem;
+}
+.success-btn.primary{background:linear-gradient(135deg,#d6b36a,#a77b37);color:#111}
+.success-btn.secondary{background:#2a2f37;color:#f4f4f5}
+.success-btn.ghost{background:transparent;color:#d6b36a;border:1px solid rgba(214,179,106,.25)}
+@media(max-width:640px){.success-password-box{padding:1.15rem}.password-value{font-size:1.34rem}}
+</style>
+
 </head>
 <body>
 <header><div class="container"><div class="topbar">
@@ -2600,6 +2624,7 @@ input[type="email"], .payment-email, .email-field, #customerEmail, [name="custom
     <div class="pay-choice-badge">🔐</div>
     <h2 class="pay-choice-title"><span class="lang-zh active-lang">解锁本集</span><span class="lang-en">Unlock Episode</span><span class="lang-ko">에피소드 잠금 해제</span></h2>
     <p class="pay-choice-intro"><span class="lang-zh active-lang">请选择付款方式</span><span class="lang-en">Choose payment</span><span class="lang-ko">결제 방법 선택</span></p>
+    <p class="pay-email-optional"><span class="lang-zh active-lang">邮箱 <strong>（可选）</strong></span><span class="lang-en">Email <strong>(Optional)</strong></span><span class="lang-ko">이메일 <strong>(선택)</strong></span></p>
 
     <div class="pay-action-stack">
       <a id="payBtn" class="pay-link-btn premium-paypal" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=D4VNS6AG5J6X4&currency_code=USD&amount=0.99&item_name=Yoon_Studio_Premium_Episode&no_note=1&return=https%3A%2F%2Fkimm-lii.github.io%2Fyooooon%2F%3Fpayment%3Dsuccess%26video%3Dsnowtruth_ep03%23portfolio&cancel_return=https%3A%2F%2Fkimm-lii.github.io%2Fyooooon%2F%3Fpayment%3Dcancel%23portfolio&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted" target="_blank" rel="noopener noreferrer">
@@ -2623,17 +2648,34 @@ input[type="email"], .payment-email, .email-field, #customerEmail, [name="custom
 </div></div>
 
 
+
+<div id="paymentSuccessModal" class="modal hidden"><div class="success-password-box">
+  <div class="success-icon">✅</div>
+  <div class="success-title"><span class="lang-zh active-lang">付款成功</span><span class="lang-en">Payment Successful</span><span class="lang-ko">결제가 완료되었습니다</span></div>
+  <div class="success-desc"><span class="lang-zh active-lang">这是你的观看密码，请保存好。之后可点击“我已有密码”输入观看。</span><span class="lang-en">Here is your watch password. Please keep it. You can enter it later through “I already have a password.”</span><span class="lang-ko">시청 비밀번호입니다. 잘 보관해 주세요. 이후 “이미 비밀번호가 있습니다”를 눌러 입력하면 시청할 수 있습니다.</span></div>
+  <div id="successVideoTitle" class="success-video-title"></div>
+  <div class="password-display">
+    <div class="password-label"><span class="lang-zh active-lang">观看密码</span><span class="lang-en">Watch Password</span><span class="lang-ko">시청 비밀번호</span></div>
+    <div id="successPasswordValue" class="password-value">YOON000</div>
+  </div>
+  <div class="success-actions">
+    <button class="success-btn primary" onclick="copySuccessPassword()"><span class="lang-zh active-lang">复制密码</span><span class="lang-en">Copy Password</span><span class="lang-ko">비밀번호 복사</span></button>
+    <button class="success-btn secondary" onclick="watchPaidVideoNow()"><span class="lang-zh active-lang">立即观看本集</span><span class="lang-en">Watch This Episode</span><span class="lang-ko">지금 시청하기</span></button>
+    <button class="success-btn ghost" onclick="closePaymentSuccess()"><span class="lang-zh active-lang">关闭</span><span class="lang-en">Close</span><span class="lang-ko">닫기</span></button>
+  </div>
+</div></div>
+
 <div id="commentModal" class="modal hidden"><div class="modal-box comment-modal-box">
   <div class="comment-modal-title" id="commentModalTitle">评论</div>
-  <div class="comment-help">
-    <span class="lang-zh active-lang">自己发布的评论可登录后自行删除；管理员可点击“删除/管理”并输入密码删除其他评论。</span>
-    <span class="lang-en">Users can delete their own comments after logging in. Admins can click “Delete / Manage” and enter the password to delete others’ comments.</span>
-    <span class="lang-ko">본인이 작성한 댓글은 로그인 후 직접 삭제할 수 있습니다. 관리자는 “삭제/관리”를 누르고 비밀번호를 입력해 다른 댓글을 관리할 수 있습니다.</span>
+  <div class="comment-help" id="commentModalHelp"></div>
+  <div class="comment-input-wrap">
+    <input id="commentName" class="comment-name-input" maxlength="24" autocomplete="nickname">
+    <textarea id="commentText" class="comment-input" maxlength="500"></textarea>
+    <button class="wide-btn blue" onclick="submitSiteComment()" id="commentSubmitBtn">发表评论</button>
   </div>
-  <div id="commentModalList" class="github-comments-box"></div>
+  <div id="commentModalList" class="site-comments-box"></div>
   <div class="btns">
-    <button class="btn danger" onclick="manageGithubComments()"><span class="lang-zh active-lang">删除/管理</span><span class="lang-en">Delete / Manage</span><span class="lang-ko">삭제/관리</span></button>
-    <button class="btn cancel" onclick="closeCommentModal()"><span class="lang-zh active-lang">关闭</span><span class="lang-en">Close</span><span class="lang-ko">닫기</span></button>
+    <button class="btn cancel" onclick="closeCommentModal()" id="commentCloseBtn">关闭</button>
   </div>
 </div></div>
 <div id="actionToast" class="action-toast"></div>
@@ -2642,6 +2684,7 @@ input[type="email"], .payment-email, .email-field, #customerEmail, [name="custom
 
 <script>
 const ADMIN_PASSWORD='0803';
+const COMMENT_API_URL='';
 const PAYPAL_LINK='https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=D4VNS6AG5J6X4&currency_code=USD&amount=0.99&item_name=Yoon_Studio_Premium_Episode&no_note=1&return=https%3A%2F%2Fkimm-lii.github.io%2Fyooooon%2F%3Fpayment%3Dsuccess%26video%3Dsnowtruth_ep03%23portfolio&cancel_return=https%3A%2F%2Fkimm-lii.github.io%2Fyooooon%2F%3Fpayment%3Dcancel%23portfolio&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted';
 const TOSS_CLIENT_KEY='test_ck_LlDJaYngro1K6KqdMdnG3ezGdRpX'; // 실제 결제는 live_ck_... 로 교체
 const KOREA_PAYMENT_AMOUNT=1300;
@@ -2848,7 +2891,6 @@ function getPaymentReturnUrl(fileName) {
 function setLang(l) {
   lang=l;
   localStorage.setItem('yoon_lang',l);
-  document.documentElement.lang = l==='zh' ? 'zh-CN' : (l==='ko' ? 'ko' : 'en');
   document.querySelectorAll('.lang-zh,.lang-en,.lang-ko').forEach(x=>x.classList.remove('active-lang'));
   document.querySelectorAll('.lang-'+l).forEach(x=>x.classList.add('active-lang'));
   document.querySelectorAll('.lang-option').forEach(o=>o.classList.toggle('active-option',o.dataset.lang===l));
@@ -2940,11 +2982,7 @@ function uiText(key) {
     commentDeleted:{zh:'评论已删除',en:'Comment deleted',ko:'댓글이 삭제되었습니다'},
     adminPasswordPrompt:{zh:'请输入管理员密码',en:'Enter admin password',ko:'관리자 비밀번호를 입력해 주세요'},
     adminPasswordWrong:{zh:'密码错误',en:'Wrong password',ko:'비밀번호가 올바르지 않습니다'},
-    openGithubManage:{zh:'已打开评论管理页面',en:'Comment management page opened',ko:'댓글 관리 페이지를 열었습니다'},
-    githubCommentHead:{zh:'评论区',en:'Comments',ko:'댓글'},
-    githubCommentBody:{zh:'点击下方按钮打开评论页面，登录后可以发表评论，也可以删除自己发布的评论。',en:'Click the button below to open the comment page. After logging in, you can post comments and delete your own comments.',ko:'아래 버튼을 눌러 댓글 페이지를 열어 주세요. 로그인 후 댓글을 작성하거나 본인이 작성한 댓글을 삭제할 수 있습니다.'},
-    githubCommentOpen:{zh:'打开评论页面',en:'Open Comment Page',ko:'댓글 페이지 열기'},
-    githubCommentNotice:{zh:'为保证语言一致，评论输入界面将通过当前语言的评论页面打开。',en:'To keep the language consistent, the comment page will open using the current language setting.',ko:'언어 표시를 통일하기 위해 현재 선택한 언어 기준으로 댓글 페이지를 엽니다.'}
+    openGithubManage:{zh:'已打开 GitHub 评论管理页面',en:'GitHub comment management page opened',ko:'GitHub 댓글 관리 페이지를 열었습니다'}
   };
   return (dict[key] && dict[key][lang]) || dict[key].zh;
 }
@@ -3028,73 +3066,20 @@ function shareVideo(id) {
   }
 }
 let activeCommentVideoId=null;
-function utterancesLang(){
-  if(lang==='ko') return 'ko';
-  if(lang==='en') return 'en';
-  return 'zh-CN';
-}
-function githubCommentTerm(v){
-  // Keep one stable GitHub Issue per video, regardless of selected language.
-  // This prevents comments from splitting or disappearing when users switch languages.
-  return 'Yoon Studio Comments - ' + (v && v.id ? String(v.id) : String(activeCommentVideoId || 'home'));
-}
-function updateCommentModalLanguage(){
-  const v=videos().find(x=>String(x.id)===String(activeCommentVideoId));
-  const titleEl=document.getElementById('commentModalTitle');
-  if(titleEl) titleEl.textContent = uiText('commentTitle') + (v ? ' - ' + titleOf(v) : '');
-  renderGithubComments(v);
-}
-function openCommentModal(id) {
-  activeCommentVideoId=id;
-  const v=videos().find(x=>String(x.id)===String(id));
-  document.getElementById('commentModalTitle').textContent = uiText('commentTitle') + (v ? ' - ' + titleOf(v) : '');
-  document.getElementById('commentModal').classList.remove('hidden');
-  renderGithubComments(v);
-}
-function closeCommentModal() {
-  document.getElementById('commentModal').classList.add('hidden');
-  activeCommentVideoId=null;
-  const box=document.getElementById('commentModalList');
-  if(box) box.innerHTML='';
-}
-function renderGithubComments(v){
-  const box=document.getElementById('commentModalList');
-  if(!box) return;
-  const url=currentGithubIssueSearchUrl();
-  box.innerHTML=`<div class="localized-github-panel">
-    <h4>${esc(uiText('githubCommentHead'))}</h4>
-    <p>${esc(uiText('githubCommentBody'))}</p>
-    <p style="font-size:.82rem;color:#9ca3af;">${esc(uiText('githubCommentNotice'))}</p>
-    <div class="localized-github-actions">
-      <button class="btn ok" onclick="window.open('${esc(url)}','_blank')">${esc(uiText('githubCommentOpen'))}</button>
-    </div>
-  </div>`;
-}
-function renderCommentModalList(){
-  const v=videos().find(x=>String(x.id)===String(activeCommentVideoId));
-  renderGithubComments(v);
-}
-function saveCommentFromModal(){
-  showToast(lang==='zh'?'请在 GitHub 评论框中发送':(lang==='ko'?'GitHub 댓글창에서 작성해 주세요':'Please use the GitHub comment box'));
-}
-function currentGithubIssueSearchUrl(){
-  const v=videos().find(x=>String(x.id)===String(activeCommentVideoId));
-  const term=githubCommentTerm(v);
-  return 'https://github.com/kimm-lii/yooooon/issues?q=' + encodeURIComponent(term);
-}
-function manageGithubComments(){
-  const pwd=prompt(uiText('adminPasswordPrompt'));
-  if(pwd===null) return;
-  if(String(pwd).trim()!==ADMIN_PASSWORD){
-    showToast(uiText('adminPasswordWrong'));
-    return;
-  }
-  window.open(currentGithubIssueSearchUrl(), '_blank');
-  showToast(uiText('openGithubManage'));
-}
-function deleteComment(){
-  manageGithubComments();
-}
+function commentUserId(){let id=localStorage.getItem('yoon_comment_user_id');if(!id){id='u_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,10);localStorage.setItem('yoon_comment_user_id',id)}return id}
+function commentTexts(){return{help:{zh:'可以直接在网站里发表评论。无需跳转，也无需连接外部服务。评论会保存在当前浏览器中。',en:'You can comment directly on this website. No redirect and no external service required. Comments are saved in this browser.',ko:'웹사이트에서 바로 댓글을 작성할 수 있습니다. 외부 서비스 연결이나 이동 없이, 댓글은 현재 브라우저에 저장됩니다.'},name:{zh:'昵称',en:'Nickname',ko:'닉네임'},placeholder:{zh:'写下你的评论...',en:'Write your comment...',ko:'댓글을 입력해 주세요...'},submit:{zh:'发表评论',en:'Post Comment',ko:'댓글 작성'},close:{zh:'关闭',en:'Close',ko:'닫기'},empty:{zh:'还没有评论，成为第一个留言的人吧。',en:'No comments yet. Be the first to write one.',ko:'아직 댓글이 없습니다. 첫 댓글을 남겨보세요.'},deleteBtn:{zh:'删除',en:'Delete',ko:'삭제'},deleted:{zh:'评论已删除',en:'Comment deleted',ko:'댓글이 삭제되었습니다'},adminPwd:{zh:'请输入管理员密码',en:'Enter admin password',ko:'관리자 비밀번호를 입력해 주세요'},wrongPwd:{zh:'密码错误',en:'Wrong password',ko:'비밀번호가 올바르지 않습니다'},needText:{zh:'请先输入评论内容',en:'Please write a comment first',ko:'댓글 내용을 먼저 입력해 주세요'},sendOk:{zh:'评论已发送',en:'Comment posted',ko:'댓글이 등록되었습니다'},localOnly:{zh:'提示：这个免设置版本的评论只保存在当前浏览器中，其他设备看不到。',en:'Note: This no-setup version stores comments only in the current browser. Other devices cannot see them.',ko:'알림: 이 무설정 버전은 댓글을 현재 브라우저에만 저장합니다. 다른 기기에서는 보이지 않습니다.'}}}
+function ct(key){const d=commentTexts();return(d[key]&&d[key][lang])||(d[key]&&d[key].zh)||key}
+function updateCommentModalLanguage(){const v=videos().find(x=>String(x.id)===String(activeCommentVideoId));const titleEl=document.getElementById('commentModalTitle');if(titleEl)titleEl.textContent=uiText('commentTitle')+(v?' - '+titleOf(v):'');const help=document.getElementById('commentModalHelp');if(help)help.textContent=ct('help');const name=document.getElementById('commentName');if(name)name.placeholder=ct('name');const text=document.getElementById('commentText');if(text)text.placeholder=ct('placeholder');const submit=document.getElementById('commentSubmitBtn');if(submit)submit.textContent=ct('submit');const close=document.getElementById('commentCloseBtn');if(close)close.textContent=ct('close');if(activeCommentVideoId)loadSiteComments()}
+function openCommentModal(id){activeCommentVideoId=id;const nameEl=document.getElementById('commentName');const textEl=document.getElementById('commentText');if(nameEl)nameEl.value=localStorage.getItem('yoon_comment_name')||'';if(textEl)textEl.value='';document.getElementById('commentModal').classList.remove('hidden');updateCommentModalLanguage()}
+function closeCommentModal(){document.getElementById('commentModal').classList.add('hidden');activeCommentVideoId=null}
+function loadSiteComments(){const comments=actionData(activeCommentVideoId).item.comments||[];renderSiteComments(comments)}
+function renderSiteComments(comments){const box=document.getElementById('commentModalList');if(!box)return;if(!comments.length){box.innerHTML=`<div class="comment-empty">${esc(ct('empty'))}</div>`;return}const uid=commentUserId();box.innerHTML=comments.slice().reverse().map(c=>{const isMine=String(c.ownerId||'')===String(uid);const time=c.createdAt?new Date(c.createdAt).toLocaleString():'';return`<div class="site-comment-row"><div class="site-comment-top"><div><div class="site-comment-name">${esc(c.name||'Guest')}</div><div class="site-comment-time">${esc(time)}</div></div><button class="site-comment-delete" onclick="deleteSiteComment('${esc(c.id)}',${isMine?'true':'false'})">${esc(ct('deleteBtn'))}</button></div><div class="site-comment-text">${esc(c.text||'')}</div></div>`}).join('')}
+function submitSiteComment(){const name=(document.getElementById('commentName').value||'').trim()||'Guest';const text=(document.getElementById('commentText').value||'').trim();if(!text){showToast(ct('needText'));return}localStorage.setItem('yoon_comment_name',name);const {data,item}=actionData(activeCommentVideoId);item.comments.push({id:'c_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8),name:name,text:text,ownerId:commentUserId(),createdAt:new Date().toISOString(),lang:lang});saveActionStore(data);document.getElementById('commentText').value='';showToast(ct('sendOk'));loadSiteComments();renderAll();if(currentVideo&&String(currentVideo.id)===String(activeCommentVideoId))renderPlayer(currentVideo)}
+function deleteSiteComment(id,isMine){let allow=isMine;if(!allow){const pwd=prompt(ct('adminPwd'))||'';if(String(pwd).trim()!==ADMIN_PASSWORD){showToast(ct('wrongPwd'));return}allow=true}if(!allow)return;const {data,item}=actionData(activeCommentVideoId);item.comments=(item.comments||[]).filter(c=>String(c.id)!==String(id));saveActionStore(data);showToast(ct('deleted'));loadSiteComments();renderAll();if(currentVideo&&String(currentVideo.id)===String(activeCommentVideoId))renderPlayer(currentVideo)}
+function renderCommentModalList(){loadSiteComments()}
+function saveCommentFromModal(){submitSiteComment()}
+function manageGithubComments(){showToast(ct('adminPwd'))}
+function deleteComment(){manageGithubComments()}
 function addComment(id) { openCommentModal(id); }
 function showToast(msg) {
   const t=document.getElementById('actionToast');
@@ -3295,9 +3280,67 @@ function verifyWatchPwd() {
   playVideo(v);
 }
 document.getElementById('watchPwd').addEventListener('keydown',e=>{ if(e.key==='Enter') verifyWatchPwd(); });
+
+let successPaidVideo=null;
+function paymentTexts(key){
+  const t={
+    copied:{zh:'密码已复制',en:'Password copied',ko:'비밀번호가 복사되었습니다'},
+    copyFail:{zh:'请手动复制密码',en:'Please copy the password manually',ko:'비밀번호를 직접 복사해 주세요'},
+    cancel:{zh:'付款已取消',en:'Payment canceled',ko:'결제가 취소되었습니다'}
+  };
+  return (t[key]&&t[key][lang]) || (t[key]&&t[key].zh) || key;
+}
+function openPaymentSuccess(videoId){
+  const v=videos().find(x=>String(x.id)===String(videoId)) || videos().find(x=>x.password);
+  if(!v) return;
+  successPaidVideo=v;
+  pendingVideo=v;
+  const title=document.getElementById('successVideoTitle');
+  const pwd=document.getElementById('successPasswordValue');
+  if(title) title.textContent=titleOf(v)+' '+episodeOf(v);
+  if(pwd) pwd.textContent=String(v.password||'');
+  document.getElementById('paymentSuccessModal').classList.remove('hidden');
+  try{localStorage.setItem('yoon_last_paid_video',String(v.id));localStorage.setItem('yoon_last_watch_password',String(v.password||''));}catch(e){}
+  setLang(lang);
+}
+function closePaymentSuccess(){
+  const m=document.getElementById('paymentSuccessModal');
+  if(m) m.classList.add('hidden');
+}
+function copySuccessPassword(){
+  const text=(document.getElementById('successPasswordValue')||{}).textContent||'';
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>showToast(paymentTexts('copied'))).catch(()=>showToast(paymentTexts('copyFail')));
+  }else{
+    const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');showToast(paymentTexts('copied'))}catch(e){showToast(paymentTexts('copyFail'))}
+    document.body.removeChild(ta);
+  }
+}
+function watchPaidVideoNow(){
+  if(!successPaidVideo) return;
+  const v=successPaidVideo;
+  closePaymentSuccess();
+  pendingVideo=null;
+  playVideo(v);
+}
+function handlePaymentReturn(){
+  const params=new URLSearchParams(window.location.search||'');
+  const payment=params.get('payment');
+  if(payment==='success'){
+    const id=params.get('video') || localStorage.getItem('yoon_last_paid_video') || 'snowtruth_ep03';
+    setTimeout(()=>openPaymentSuccess(id),120);
+    return;
+  }
+  if(payment==='cancel'){
+    setTimeout(()=>showToast(paymentTexts('cancel')),180);
+  }
+}
+
 setLang(lang);
 renderAll();
 if(location.hash && document.getElementById(location.hash.slice(1))) showPage(location.hash.slice(1));
+handlePaymentReturn();
 </script>
 
 
@@ -3454,6 +3497,166 @@ if(location.hash && document.getElementById(location.hash.slice(1))) showPage(lo
     window.addEventListener('scroll', hideMenu, true);
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', bindFinalLang); else bindFinalLang();
+})();
+</script>
+
+
+
+<style>
+/* === Hidden private message board === */
+.hidden-message-fab{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  width:48px;
+  height:48px;
+  border-radius:999px;
+  border:1px solid rgba(214,179,106,.36);
+  background:linear-gradient(135deg,#d6b36a,#a77b37);
+  color:#111;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  font-weight:950;
+  cursor:pointer;
+  z-index:2147483000;
+  box-shadow:0 16px 34px rgba(0,0,0,.34);
+}
+.hidden-message-fab:hover{filter:brightness(1.05);transform:translateY(-1px)}
+.hidden-message-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.58);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:2147483001;
+  padding:1rem;
+}
+.hidden-message-backdrop.show{display:flex}
+.hidden-message-box{
+  width:min(430px,94vw);
+  border-radius:24px;
+  border:1px solid rgba(214,179,106,.28);
+  background:linear-gradient(145deg,rgba(21,24,29,.98),rgba(10,12,16,.98));
+  color:#f5f5f4;
+  box-shadow:0 22px 60px rgba(0,0,0,.42);
+  padding:1.2rem;
+}
+.hidden-message-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.8rem;
+  margin-bottom:.8rem;
+}
+.hidden-message-title{font-size:1.05rem;font-weight:950;color:#fff8e8}
+.hidden-message-close{
+  width:30px;height:30px;border:none;border-radius:999px;
+  background:#2a2f37;color:#f5f5f4;cursor:pointer;font-size:18px;line-height:1;
+}
+.hidden-message-desc{color:#b8b0a3;font-size:.86rem;line-height:1.6;margin-bottom:.85rem}
+.hidden-message-box input,.hidden-message-box textarea{
+  width:100%;
+  border:1px solid rgba(214,179,106,.20);
+  border-radius:14px;
+  background:#0f1217;
+  color:#f5f5f4;
+  padding:.78rem .85rem;
+  margin-bottom:.72rem;
+  font-family:inherit;
+  font-size:.92rem;
+}
+.hidden-message-box textarea{min-height:110px;resize:vertical}
+.hidden-message-box input:focus,.hidden-message-box textarea:focus{
+  outline:none;border-color:rgba(214,179,106,.58);box-shadow:0 0 0 3px rgba(214,179,106,.10)
+}
+.hidden-message-actions{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-top:.1rem}
+.hidden-message-send,.hidden-message-copy{
+  border:none;border-radius:14px;padding:.78rem .7rem;font-weight:950;cursor:pointer;font-family:inherit
+}
+.hidden-message-send{background:linear-gradient(135deg,#d6b36a,#a77b37);color:#111}
+.hidden-message-copy{background:#2a2f37;color:#f5f5f4}
+.hidden-message-note{font-size:.75rem;color:#8f96a3;line-height:1.5;margin-top:.72rem;text-align:center}
+@media(max-width:640px){.hidden-message-fab{right:14px;bottom:14px;width:44px;height:44px;font-size:20px}.hidden-message-actions{grid-template-columns:1fr}}
+</style>
+
+<button class="hidden-message-fab" id="hiddenMessageFab" type="button" aria-label="Private message">✉</button>
+<div class="hidden-message-backdrop" id="hiddenMessageBackdrop">
+  <div class="hidden-message-box" role="dialog" aria-modal="true">
+    <div class="hidden-message-head">
+      <div class="hidden-message-title" id="hiddenMessageTitle">留言板</div>
+      <button class="hidden-message-close" id="hiddenMessageClose" type="button">×</button>
+    </div>
+    <div class="hidden-message-desc" id="hiddenMessageDesc">如果你想咨询作品、付款或合作，可以在这里给我留言。</div>
+    <input id="hiddenMsgName" type="text" placeholder="昵称">
+    <input id="hiddenMsgEmail" type="email" placeholder="邮箱（可选）">
+    <textarea id="hiddenMsgText" placeholder="请输入留言内容"></textarea>
+    <div class="hidden-message-actions">
+      <button class="hidden-message-send" id="hiddenMsgSend" type="button">发送留言</button>
+      <button class="hidden-message-copy" id="hiddenMsgCopy" type="button">复制邮箱</button>
+    </div>
+    <div class="hidden-message-note" id="hiddenMessageNote">点击发送后，会打开你的邮箱应用发送私信。</div>
+  </div>
+</div>
+
+<script>
+/* === Hidden private message board: no server setup, sends by email app === */
+(function(){
+  var CONTACT_EMAIL='yooon_kimm@naver.com';
+  var T={
+    zh:{title:'留言板',desc:'如果你想咨询作品、付款或合作，可以在这里给我留言。',name:'昵称',email:'邮箱（可选）',text:'请输入留言内容',send:'发送留言',copy:'复制邮箱',note:'点击发送后，会打开你的邮箱应用发送私信。',empty:'请先输入留言内容。',copied:'邮箱已复制。'},
+    en:{title:'Message Board',desc:'For questions about dramas, payment, or collaboration, you can message me here.',name:'Name',email:'Email (Optional)',text:'Write your message',send:'Send Message',copy:'Copy Email',note:'After clicking send, your email app will open to send a private message.',empty:'Please write a message first.',copied:'Email copied.'},
+    ko:{title:'메시지 보드',desc:'작품, 결제 또는 협업 문의가 있으면 여기에 메시지를 남겨주세요.',name:'닉네임',email:'이메일(선택)',text:'메시지를 입력하세요',send:'메시지 보내기',copy:'이메일 복사',note:'보내기를 누르면 이메일 앱이 열려 개인 메시지를 보낼 수 있습니다.',empty:'먼저 메시지를 입력해 주세요.',copied:'이메일이 복사되었습니다.'}
+  };
+  function curLang(){return window.currentLang || localStorage.getItem('siteLang') || document.documentElement.lang?.slice(0,2) || 'zh'}
+  function tr(){return T[curLang()] || T.zh}
+  function applyLang(){
+    var t=tr();
+    var by=function(id){return document.getElementById(id)};
+    if(by('hiddenMessageTitle')) by('hiddenMessageTitle').textContent=t.title;
+    if(by('hiddenMessageDesc')) by('hiddenMessageDesc').textContent=t.desc;
+    if(by('hiddenMsgName')) by('hiddenMsgName').placeholder=t.name;
+    if(by('hiddenMsgEmail')) by('hiddenMsgEmail').placeholder=t.email;
+    if(by('hiddenMsgText')) by('hiddenMsgText').placeholder=t.text;
+    if(by('hiddenMsgSend')) by('hiddenMsgSend').textContent=t.send;
+    if(by('hiddenMsgCopy')) by('hiddenMsgCopy').textContent=t.copy;
+    if(by('hiddenMessageNote')) by('hiddenMessageNote').textContent=t.note;
+  }
+  function open(){applyLang();document.getElementById('hiddenMessageBackdrop')?.classList.add('show')}
+  function close(){document.getElementById('hiddenMessageBackdrop')?.classList.remove('show')}
+  function toast(msg){ if(typeof showToast==='function') showToast(msg); else alert(msg); }
+  function send(){
+    var t=tr();
+    var name=document.getElementById('hiddenMsgName').value.trim();
+    var email=document.getElementById('hiddenMsgEmail').value.trim();
+    var text=document.getElementById('hiddenMsgText').value.trim();
+    if(!text){toast(t.empty);return;}
+    var subject='Yoon Studio Private Message';
+    var body='Name: '+(name||'-')+'\nEmail: '+(email||'-')+'\nLanguage: '+curLang()+'\n\nMessage:\n'+text;
+    window.location.href='mailto:'+CONTACT_EMAIL+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+  }
+  function copyEmail(){
+    var t=tr();
+    if(navigator.clipboard){navigator.clipboard.writeText(CONTACT_EMAIL).then(function(){toast(t.copied);});}
+    else{prompt(t.copied, CONTACT_EMAIL);}
+  }
+  function bind(){
+    applyLang();
+    document.getElementById('hiddenMessageFab')?.addEventListener('click',open);
+    document.getElementById('hiddenMessageClose')?.addEventListener('click',close);
+    document.getElementById('hiddenMessageBackdrop')?.addEventListener('click',function(e){if(e.target.id==='hiddenMessageBackdrop') close();});
+    document.getElementById('hiddenMsgSend')?.addEventListener('click',send);
+    document.getElementById('hiddenMsgCopy')?.addEventListener('click',copyEmail);
+    document.addEventListener('keydown',function(e){if(e.key==='Escape') close();});
+    var oldSetLang=window.setLang;
+    if(typeof oldSetLang==='function' && !oldSetLang.__hiddenMsgWrapped){
+      window.setLang=function(lang){var r=oldSetLang.apply(this,arguments); setTimeout(applyLang,0); return r;};
+      window.setLang.__hiddenMsgWrapped=true;
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bind); else bind();
 })();
 </script>
 
