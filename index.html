@@ -1136,6 +1136,280 @@ header nav{
   }
 }
 
+
+
+/* === Navigation placement redesign preview === */
+header .topbar{
+  display:grid !important;
+  grid-template-columns:auto 1fr auto !important;
+  align-items:center !important;
+  gap:1rem !important;
+  min-height:68px !important;
+  flex-wrap:nowrap !important;
+}
+header .brand{
+  min-width:max-content !important;
+  white-space:nowrap !important;
+}
+header .nav-area{
+  width:auto !important;
+  flex:unset !important;
+  display:contents !important;
+}
+header nav{
+  justify-self:center !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  flex-wrap:nowrap !important;
+  gap:.45rem !important;
+  min-width:0 !important;
+}
+header .nav-btn{
+  white-space:nowrap !important;
+  writing-mode:horizontal-tb !important;
+  text-orientation:mixed !important;
+  padding:.56rem .82rem !important;
+  border-radius:999px !important;
+}
+header .lang-wrap{
+  justify-self:end !important;
+  margin-left:0 !important;
+  position:relative !important;
+}
+header .lang-btn{
+  white-space:nowrap !important;
+  writing-mode:horizontal-tb !important;
+  text-orientation:mixed !important;
+  min-width:104px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:.25rem !important;
+}
+
+@media(max-width:760px){
+  header .topbar{
+    display:grid !important;
+    grid-template-columns:1fr auto !important;
+    grid-template-areas:
+      "brand lang"
+      "nav nav" !important;
+    gap:.52rem !important;
+    padding:.62rem 0 .66rem !important;
+    min-height:auto !important;
+  }
+  header .brand{
+    grid-area:brand !important;
+    min-width:0 !important;
+    overflow:hidden !important;
+    font-size:.96rem !important;
+  }
+  header .brand > span:last-child,
+  header .brand .active-lang{
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+    white-space:nowrap !important;
+  }
+  header .nav-area{display:contents !important;}
+  header nav{
+    grid-area:nav !important;
+    justify-self:stretch !important;
+    justify-content:flex-start !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    flex-wrap:nowrap !important;
+    gap:.42rem !important;
+    padding:.18rem .06rem .24rem !important;
+    scrollbar-width:none !important;
+    -webkit-overflow-scrolling:touch !important;
+  }
+  header nav::-webkit-scrollbar{display:none !important;}
+  header .nav-btn{
+    flex:0 0 auto !important;
+    white-space:nowrap !important;
+    writing-mode:horizontal-tb !important;
+    text-orientation:mixed !important;
+    font-size:.82rem !important;
+    line-height:1 !important;
+    padding:.58rem .78rem !important;
+    border-radius:999px !important;
+    border:1px solid rgba(214,179,106,.18) !important;
+    background:rgba(255,255,255,.035) !important;
+  }
+  header .nav-btn.active{
+    background:linear-gradient(135deg,#d6b36a,#a77b37) !important;
+    color:#111 !important;
+  }
+  header .lang-wrap{
+    grid-area:lang !important;
+    justify-self:end !important;
+    align-self:center !important;
+  }
+  header .lang-btn{
+    min-width:auto !important;
+    height:36px !important;
+    padding:0 .72rem !important;
+    font-size:.78rem !important;
+    border-radius:999px !important;
+  }
+  header .lang-label{
+    max-width:52px !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+    white-space:nowrap !important;
+  }
+  .lang-menu{
+    right:0 !important;
+    top:calc(100% + 8px) !important;
+    min-width:132px !important;
+  }
+  main.container{padding-top:.75rem !important;}
+}
+
+@media(max-width:380px){
+  header .brand{font-size:.88rem !important;}
+  header .brand-icon{width:27px;height:27px;border-radius:9px;font-size:.74rem;}
+  header .nav-btn{font-size:.78rem !important;padding:.54rem .68rem !important;}
+  header .lang-btn{height:34px !important;padding:0 .58rem !important;}
+}
+
+
+
+/* === One-line horizontal header redesign: logo + menu + language on the same row === */
+header .topbar{
+  min-height:64px !important;
+  display:grid !important;
+  grid-template-columns:auto minmax(0,1fr) auto !important;
+  align-items:center !important;
+  gap:.9rem !important;
+  flex-wrap:nowrap !important;
+  padding:.62rem 0 !important;
+}
+header .brand{
+  grid-column:1 !important;
+  min-width:0 !important;
+  flex:0 0 auto !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+header .nav-area{
+  grid-column:2 / 4 !important;
+  width:100% !important;
+  min-width:0 !important;
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) auto !important;
+  align-items:center !important;
+  gap:.65rem !important;
+  justify-content:stretch !important;
+  flex:initial !important;
+}
+header nav{
+  min-width:0 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:.38rem !important;
+  flex-wrap:nowrap !important;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  scrollbar-width:none !important;
+  -webkit-overflow-scrolling:touch !important;
+  padding:.12rem .08rem !important;
+}
+header nav::-webkit-scrollbar{display:none !important;}
+header .nav-btn{
+  flex:0 0 auto !important;
+  white-space:nowrap !important;
+  writing-mode:horizontal-tb !important;
+  text-orientation:mixed !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  min-height:36px !important;
+  line-height:1 !important;
+  padding:.54rem .78rem !important;
+  border-radius:999px !important;
+  font-size:.9rem !important;
+}
+header .lang-wrap{
+  justify-self:end !important;
+  margin-left:0 !important;
+  position:relative !important;
+  flex:0 0 auto !important;
+}
+header .lang-btn{
+  white-space:nowrap !important;
+  writing-mode:horizontal-tb !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:.25rem !important;
+  min-height:36px !important;
+  line-height:1 !important;
+  padding:.54rem .78rem !important;
+}
+
+@media(max-width:760px){
+  header .topbar{
+    grid-template-columns:auto minmax(0,1fr) auto !important;
+    gap:.45rem !important;
+    min-height:58px !important;
+    padding:.5rem 0 !important;
+  }
+  header .brand{
+    max-width:112px !important;
+    font-size:.82rem !important;
+    gap:.35rem !important;
+  }
+  header .brand-icon{
+    width:26px !important;
+    height:26px !important;
+    border-radius:8px !important;
+    font-size:.72rem !important;
+    flex:0 0 auto !important;
+  }
+  header .nav-area{
+    grid-column:2 / 4 !important;
+    gap:.35rem !important;
+  }
+  header nav{
+    justify-content:flex-start !important;
+    gap:.24rem !important;
+    padding:.08rem 0 !important;
+  }
+  header .nav-btn{
+    min-height:32px !important;
+    padding:.46rem .56rem !important;
+    font-size:.75rem !important;
+    letter-spacing:0 !important;
+  }
+  header .lang-btn{
+    min-height:32px !important;
+    padding:.46rem .52rem !important;
+    font-size:.75rem !important;
+  }
+  header .lang-label{
+    max-width:54px !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+    white-space:nowrap !important;
+    display:inline-block !important;
+  }
+  header .lang-menu{
+    right:0 !important;
+    min-width:132px !important;
+  }
+}
+
+@media(max-width:420px){
+  header .brand{max-width:84px !important;}
+  header .nav-btn{font-size:.72rem !important;padding:.43rem .48rem !important;}
+  header .lang-label{display:none !important;}
+  header .lang-btn{padding:.43rem .5rem !important;}
+}
+
 </style>
 <script src="https://js.tosspayments.com/v1/payment"></script>
 </head>
