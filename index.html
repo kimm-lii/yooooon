@@ -2478,6 +2478,64 @@ input[type="email"], .payment-email, .email-field, #customerEmail, [name="custom
 @media(max-width:640px){.success-password-box{padding:1.15rem}.password-value{font-size:1.34rem}}
 </style>
 
+
+<style>
+/* === FINAL PAYMENT SIZE + EMAIL OPTIONAL REMOVAL FIX === */
+.pay-email-optional{display:none!important;}
+.pay-modal{padding:.75rem!important;}
+.premium-pay-box{
+  width:min(380px,88vw)!important;
+}
+.pay-choice-card{
+  padding:1.45rem 1rem 1rem!important;
+  border-radius:24px!important;
+}
+.pay-choice-badge{
+  width:46px!important;
+  height:46px!important;
+  border-radius:15px!important;
+  margin:0 auto .6rem!important;
+  font-size:1.22rem!important;
+}
+.pay-choice-title{
+  font-size:1.34rem!important;
+  margin-bottom:.28rem!important;
+}
+.pay-choice-intro{
+  font-size:.88rem!important;
+  margin-bottom:.85rem!important;
+}
+.pay-action-stack{
+  gap:.55rem!important;
+  margin-bottom:.65rem!important;
+}
+.pay-link-btn,.korea-pay-btn,.pay-password-btn{
+  min-height:46px!important;
+  border-radius:15px!important;
+  padding:.68rem .86rem!important;
+  font-size:.9rem!important;
+}
+.pay-close-btn{
+  min-height:42px!important;
+  border-radius:15px!important;
+  padding:.62rem .86rem!important;
+  font-size:.9rem!important;
+  margin-top:.48rem!important;
+}
+.pay-icon{
+  min-width:25px!important;
+  height:25px!important;
+  font-size:.74rem!important;
+}
+@media(max-width:640px){
+  .premium-pay-box{width:min(360px,92vw)!important;}
+  .pay-choice-card{padding:1.35rem .9rem .95rem!important;border-radius:22px!important;}
+  .pay-choice-title{font-size:1.26rem!important;}
+  .pay-link-btn,.korea-pay-btn,.pay-password-btn{min-height:44px!important;font-size:.88rem!important;}
+  .pay-close-btn{min-height:40px!important;font-size:.88rem!important;}
+}
+</style>
+
 </head>
 <body>
 <header><div class="container"><div class="topbar">
@@ -2627,9 +2685,7 @@ input[type="email"], .payment-email, .email-field, #customerEmail, [name="custom
     <div class="pay-choice-badge">🔐</div>
     <h2 class="pay-choice-title"><span class="lang-zh active-lang">解锁本集</span><span class="lang-en">Unlock Episode</span><span class="lang-ko">에피소드 잠금 해제</span></h2>
     <p class="pay-choice-intro"><span class="lang-zh active-lang">请选择付款方式</span><span class="lang-en">Choose payment</span><span class="lang-ko">결제 방법 선택</span></p>
-    <p class="pay-email-optional"><span class="lang-zh active-lang">邮箱 <strong>（可选）</strong></span><span class="lang-en">Email <strong>(Optional)</strong></span><span class="lang-ko">이메일 <strong>(선택)</strong></span></p>
-
-    <div class="pay-action-stack">
+<div class="pay-action-stack">
       <a id="payBtn" class="pay-link-btn premium-paypal" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=D4VNS6AG5J6X4&currency_code=USD&amount=0.99&item_name=Yoon_Studio_Premium_Episode&no_note=1&return=https%3A%2F%2Fkimm-lii.github.io%2Fyooooon%2F%3Fpayment%3Dsuccess%26video%3Dsnowtruth_ep03%23portfolio&cancel_return=https%3A%2F%2Fkimm-lii.github.io%2Fyooooon%2F%3Fpayment%3Dcancel%23portfolio&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted" target="_blank" rel="noopener noreferrer">
         <span class="pay-icon">🌍</span><span class="lang-zh active-lang">海外付款</span><span class="lang-en">Overseas Payment</span><span class="lang-ko">해외 결제</span>
       </a>
@@ -2726,6 +2782,8 @@ const RECOMMEND_VIDEO_URLS=[
 customVideos=customVideos.filter(v=>!REMOVED_DEFAULT_VIDEO_IDS.has(String(v.id||'')) && !REMOVED_DEFAULT_VIDEO_URLS.has(String(v.url||'')));
 localStorage.setItem('yoon_videos',JSON.stringify(customVideos));
 let lang=localStorage.getItem('yoon_lang')||'zh';
+window.currentLang=lang;
+document.documentElement.lang = lang==='zh' ? 'zh-CN' : (lang==='ko' ? 'ko-KR' : 'en');
 let subtitle=localStorage.getItem('yoon_subtitle')||'zh-Hans';
 let currentVideo=null,pendingVideo=null,waitingPay=false;
 
@@ -2893,7 +2951,10 @@ function getPaymentReturnUrl(fileName) {
 
 function setLang(l) {
   lang=l;
+  window.currentLang=l;
+  document.documentElement.lang = l==='zh' ? 'zh-CN' : (l==='ko' ? 'ko-KR' : 'en');
   localStorage.setItem('yoon_lang',l);
+  window.dispatchEvent(new CustomEvent('yoon-language-change',{detail:{lang:l}}));
   document.querySelectorAll('.lang-zh,.lang-en,.lang-ko').forEach(x=>x.classList.remove('active-lang'));
   document.querySelectorAll('.lang-'+l).forEach(x=>x.classList.add('active-lang'));
   document.querySelectorAll('.lang-option').forEach(o=>o.classList.toggle('active-option',o.dataset.lang===l));
@@ -3628,7 +3689,10 @@ handlePaymentReturn();
     en:{title:'Message Board',desc:'For questions about dramas, payment, or collaboration, you can message me here.',name:'Name',email:'Email (Optional)',text:'Write your message',send:'Send Message',copy:'Copy Email',note:'After clicking send, your email app will open to send a private message.',empty:'Please write a message first.',copied:'Email copied.'},
     ko:{title:'메시지 보드',desc:'작품, 결제 또는 협업 문의가 있으면 여기에 메시지를 남겨주세요.',name:'닉네임',email:'이메일(선택)',text:'메시지를 입력하세요',send:'메시지 보내기',copy:'이메일 복사',note:'보내기를 누르면 이메일 앱이 열려 개인 메시지를 보낼 수 있습니다.',empty:'먼저 메시지를 입력해 주세요.',copied:'이메일이 복사되었습니다.'}
   };
-  function curLang(){return window.currentLang || localStorage.getItem('siteLang') || document.documentElement.lang?.slice(0,2) || 'zh'}
+  function curLang(){
+    try{ if(typeof lang!=='undefined' && lang) return lang; }catch(e){}
+    return window.currentLang || localStorage.getItem('yoon_lang') || localStorage.getItem('siteLang') || (document.documentElement.lang||'zh').slice(0,2) || 'zh';
+  }
   function tr(){return T[curLang()] || T.zh}
   function applyLang(){
     var t=tr();
@@ -3669,6 +3733,9 @@ handlePaymentReturn();
     document.getElementById('hiddenMsgSend')?.addEventListener('click',send);
     document.getElementById('hiddenMsgCopy')?.addEventListener('click',copyEmail);
     document.addEventListener('keydown',function(e){if(e.key==='Escape') close();});
+    window.addEventListener('yoon-language-change',applyLang);
+    window.addEventListener('storage',function(e){ if(e.key==='yoon_lang') applyLang(); });
+    setTimeout(applyLang,0);
     var oldSetLang=window.setLang;
     if(typeof oldSetLang==='function' && !oldSetLang.__hiddenMsgWrapped){
       window.setLang=function(lang){var r=oldSetLang.apply(this,arguments); setTimeout(applyLang,0); return r;};
