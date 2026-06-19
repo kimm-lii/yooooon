@@ -1178,6 +1178,144 @@ footer{
   }
 }
 
+
+
+/* === FINAL MOBILE HEADER FIX: brand row + left horizontal menu + language after About === */
+html,body{
+  min-height:100%;
+  background:
+    radial-gradient(circle at top left, rgba(201,166,107,.16), transparent 34%),
+    linear-gradient(180deg,#090b0e 0%,#0f1217 45%,#090b0e 100%) !important;
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  background:
+    radial-gradient(circle at top left, rgba(201,166,107,.16), transparent 34%),
+    linear-gradient(180deg,#090b0e 0%,#0f1217 45%,#090b0e 100%);
+}
+main.container{min-height:calc(100vh - 155px);}
+#skills,.page-section,.skill,.panel,.work-card,.image-card,.player-top,.player-actions-wrap{
+  background-color:transparent;
+}
+.skill,.panel,.work-card,.image-card,.player-top,.player-actions-wrap{
+  background:rgba(21,24,29,.92) !important;
+  border-color:#2a2f37 !important;
+  color:#f5f5f4 !important;
+}
+@media(max-width:640px){
+  header .topbar{
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:stretch !important;
+    justify-content:flex-start !important;
+    gap:.42rem !important;
+    min-height:auto !important;
+    padding:.58rem 0 .62rem !important;
+  }
+  header .brand{
+    width:100% !important;
+    flex:0 0 auto !important;
+    min-width:0 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:.48rem !important;
+    white-space:nowrap !important;
+    font-size:.96rem !important;
+    line-height:1.2 !important;
+    overflow:hidden !important;
+    text-align:left !important;
+  }
+  header .brand-icon{
+    flex:0 0 auto !important;
+    width:27px !important;
+    height:27px !important;
+    border-radius:9px !important;
+  }
+  header .brand span:not(.brand-icon){
+    white-space:nowrap !important;
+    writing-mode:horizontal-tb !important;
+    text-orientation:mixed !important;
+  }
+  header .nav-area{
+    width:100% !important;
+    display:flex !important;
+    flex-direction:row !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:.28rem !important;
+    flex-wrap:nowrap !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    -webkit-overflow-scrolling:touch !important;
+    padding-bottom:.05rem !important;
+  }
+  header nav{
+    display:flex !important;
+    flex-direction:row !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:.24rem !important;
+    flex:0 0 auto !important;
+    width:auto !important;
+    min-width:max-content !important;
+    overflow:visible !important;
+    flex-wrap:nowrap !important;
+    padding-bottom:0 !important;
+  }
+  header .nav-btn{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    flex:0 0 auto !important;
+    width:auto !important;
+    min-width:auto !important;
+    white-space:nowrap !important;
+    writing-mode:horizontal-tb !important;
+    text-orientation:mixed !important;
+    padding:.42rem .53rem !important;
+    font-size:.78rem !important;
+    line-height:1 !important;
+    border-radius:999px !important;
+  }
+  header .nav-btn span{
+    white-space:nowrap !important;
+    writing-mode:horizontal-tb !important;
+    text-orientation:mixed !important;
+  }
+  header .lang-wrap{
+    order:2 !important;
+    flex:0 0 auto !important;
+    width:auto !important;
+    justify-self:auto !important;
+    margin-left:.12rem !important;
+    margin-right:0 !important;
+    position:relative !important;
+  }
+  header .lang-btn{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    white-space:nowrap !important;
+    writing-mode:horizontal-tb !important;
+    text-orientation:mixed !important;
+    padding:.42rem .52rem !important;
+    font-size:.76rem !important;
+    line-height:1 !important;
+    border-radius:999px !important;
+  }
+  header .lang-menu{
+    right:0 !important;
+    left:auto !important;
+    top:calc(100% + 8px) !important;
+    min-width:138px !important;
+    z-index:99999 !important;
+  }
+}
+
 </style>
 <script src="https://js.tosspayments.com/v1/payment"></script>
 </head>
