@@ -623,7 +623,23 @@ const PUBLIC_VIDEOS=[
 let customDirs=JSON.parse(localStorage.getItem('yoon_dirs')||'[]');
 let customVideos=JSON.parse(localStorage.getItem('yoon_videos')||'[]');
 const REMOVED_DEFAULT_VIDEO_IDS=new Set(['coldcity_ep01','netlove_ep01','beauty_ep01']);
-customVideos=customVideos.filter(v=>!REMOVED_DEFAULT_VIDEO_IDS.has(String(v.id||'')));
+const REMOVED_DEFAULT_VIDEO_URLS=new Set(['https://youtu.be/A7yxPM9v-sQ','https://youtu.be/fPHwIkXnhN0','https://youtube.com/shorts/6HH5p9PpaOY?feature=share']);
+const CLASSIC_VIDEO_URLS=[
+  'https://youtu.be/x6glzNltJfg',
+  'https://youtu.be/jL7pIrXe1sA',
+  'https://youtu.be/jKKpNxDNCbM',
+  'https://youtu.be/YSbtSnuh0q4',
+  'https://youtu.be/A2IxJgkn0zg',
+  'https://youtu.be/mhCjF4yhK_E',
+  'https://youtu.be/42VjfJ8wEjA',
+  'https://youtu.be/0qNitaOdl4U',
+  'https://youtu.be/1EgVUXrzL5E'
+];
+const RECOMMEND_VIDEO_URLS=[
+  'https://youtu.be/jL7pIrXe1sA',
+  'https://youtu.be/0qNitaOdl4U'
+];
+customVideos=customVideos.filter(v=>!REMOVED_DEFAULT_VIDEO_IDS.has(String(v.id||'')) && !REMOVED_DEFAULT_VIDEO_URLS.has(String(v.url||'')));
 localStorage.setItem('yoon_videos',JSON.stringify(customVideos));
 let lang=localStorage.getItem('yoon_lang')||'zh';
 let subtitle=localStorage.getItem('yoon_subtitle')||'zh-Hans';
@@ -648,6 +664,11 @@ function videos() {
     poster:v.poster||''
   }));
 }
+function selectedVideos(urls) {
+  const all=videos();
+  const byUrl=new Map(all.map(v=>[String(v.url),v]));
+  return urls.map(url=>byUrl.get(url)).filter(Boolean);
+}
 function esc(s) {
   return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
 }
@@ -670,6 +691,15 @@ function posterOf(v) {
   if(v.poster) return v.poster;
   const id=ytId(v.url);
   return id ? 'https://img.youtube.com/vi/'+id+'/maxresdefault.jpg' : '';
+}
+function posterFallbackOf(v) {
+  const id=ytId(v.url);
+  return id ? 'https://img.youtube.com/vi/'+id+'/hqdefault.jpg' : '';
+}
+function posterImg(v) {
+  const src=esc(posterOf(v));
+  const fallback=esc(posterFallbackOf(v));
+  return `<img src="${src}" alt="${esc(titleOf(v))}" loading="lazy" onerror="this.onerror=null;this.src='${fallback}'">`;
 }
 function isYT(url) {
   return /youtu\.be|youtube\.com/.test(String(url));
@@ -731,17 +761,19 @@ function renderDirs() {
 function renderCards() {
   const area=document.getElementById('displayArea');
   if(currentVideo) { renderPlayer(currentVideo); return; }
-  area.innerHTML = '<div class="cards">' + videos().map(v=>`
+  const classicList=selectedVideos(CLASSIC_VIDEO_URLS);
+  area.innerHTML = '<div class="cards">' + classicList.map(v=>`
     <article class="work-card" onclick="openVideo('${v.id}')">
-      <div class="thumb"><img src="${posterOf(v)}" alt="${esc(titleOf(v))}" loading="lazy"><div class="play">▶</div></div>
+      <div class="thumb">${posterImg(v)}<div class="play">▶</div></div>
       <div class="card-body"><div class="card-title">${esc(titleOf(v))}</div><div class="meta"><span>${esc(v.episode||'第1集')}</span><span>${v.password?'🔒 视频密钥':'公开'}</span></div></div>
     </article>`).join('') + '</div>';
 }
 
 function renderRec() {
-  document.getElementById('recommendList').innerHTML = videos().map(v=>`
+  const recommendList=selectedVideos(RECOMMEND_VIDEO_URLS);
+  document.getElementById('recommendList').innerHTML = recommendList.map(v=>`
     <div class="rec-card" onclick="openVideo('${v.id}')">
-      <div class="rec-thumb"><img src="${posterOf(v)}" alt="${esc(titleOf(v))}" loading="lazy"><div class="play" style="width:24px;height:24px;font-size:10px">▶</div></div>
+      <div class="rec-thumb">${posterImg(v)}<div class="play" style="width:24px;height:24px;font-size:10px">▶</div></div>
       <div><div class="rec-title">${esc(titleOf(v))}</div><div class="rec-meta">${esc(v.episode||'第1集')}</div></div>
     </div>`).join('');
 }
