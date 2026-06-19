@@ -917,6 +917,225 @@ body.lang-zh-font .pay-choice-title,body.lang-ko-font .pay-choice-title,body.lan
   .mini-icon-actions .icon-count{min-width:13px;height:13px;font-size:9px;right:-5px;top:-5px;}
 }
 
+
+
+/* Mobile menu + share action update */
+.mobile-menu-btn{
+  display:none;
+  border:1px solid rgba(214,179,106,.25);
+  background:linear-gradient(135deg,rgba(214,179,106,.18),rgba(255,255,255,.05));
+  color:#f5f5f4;
+  border-radius:999px;
+  padding:.48rem .72rem;
+  cursor:pointer;
+  font-weight:900;
+  line-height:1;
+}
+.mobile-menu-btn span{font-size:1.05rem;vertical-align:middle;}
+@media(max-width:640px){
+  header .nav-area{
+    display:grid !important;
+    grid-template-columns:auto 1fr !important;
+    gap:.45rem !important;
+    width:100% !important;
+  }
+  .mobile-menu-btn{display:inline-flex;align-items:center;justify-content:center;gap:.35rem;justify-self:start;}
+  header .lang-wrap{justify-self:end;grid-column:2;grid-row:1;}
+  header nav{
+    grid-column:1 / -1;
+    grid-row:2;
+    display:none !important;
+    width:100%;
+    overflow:visible !important;
+    padding:.55rem 0 0 !important;
+    gap:.42rem !important;
+    flex-direction:column;
+    flex-wrap:nowrap !important;
+  }
+  header.nav-open nav{display:flex !important;}
+  header nav .nav-btn{
+    width:100%;
+    padding:.72rem .85rem !important;
+    border:1px solid rgba(214,179,106,.14);
+    border-radius:14px;
+    background:rgba(255,255,255,.035);
+    font-size:.92rem !important;
+  }
+  header nav .nav-btn.active{background:linear-gradient(135deg,#d6b36a,#a77b37);color:#111;}
+  .lang-menu{position:absolute;right:0;top:calc(100% + 8px);min-width:156px;}
+}
+.mini-icon-actions .share-action .action-icon{font-size:15px !important;color:#7dd3fc !important;}
+.mini-icon-actions .share-action.active{background:rgba(125,211,252,.10) !important;border-color:rgba(125,211,252,.34) !important;}
+@media(max-width:640px){
+  .mini-icon-actions .share-action .action-icon{font-size:14px !important;}
+}
+
+
+
+/* === Final header/navigation redesign: horizontal mobile menu, no vertical text === */
+header .topbar{
+  gap:.75rem !important;
+}
+header .brand{
+  color:#fff8e8;
+  letter-spacing:-.01em;
+}
+header .nav-area{
+  flex:1 1 auto !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
+  gap:.55rem !important;
+  min-width:0 !important;
+}
+header nav{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
+  gap:.38rem !important;
+  flex-wrap:nowrap !important;
+  min-width:0 !important;
+}
+.nav-btn{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  white-space:nowrap !important;
+  word-break:keep-all !important;
+  writing-mode:horizontal-tb !important;
+  line-height:1 !important;
+  min-height:38px !important;
+  padding:.58rem .82rem !important;
+  border:1px solid rgba(214,179,106,.16);
+  background:rgba(255,255,255,.035);
+  box-shadow:0 8px 20px rgba(0,0,0,.10);
+}
+.nav-btn.active{
+  box-shadow:0 10px 24px rgba(214,179,106,.16);
+}
+.lang-wrap{
+  flex:0 0 auto !important;
+  margin-left:0 !important;
+}
+.lang-btn{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:.28rem !important;
+  white-space:nowrap !important;
+  word-break:keep-all !important;
+  writing-mode:horizontal-tb !important;
+  line-height:1 !important;
+  min-height:38px !important;
+}
+.lang-label{
+  display:inline-block !important;
+  white-space:nowrap !important;
+  word-break:keep-all !important;
+}
+.lang-menu{
+  z-index:99999 !important;
+}
+
+@media(max-width:760px){
+  header{
+    position:sticky !important;
+  }
+  header .topbar{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    align-items:center !important;
+    padding:.66rem 0 .72rem !important;
+  }
+  header .brand{
+    width:100% !important;
+    justify-content:center !important;
+    font-size:1rem !important;
+    min-width:0 !important;
+  }
+  header .nav-area{
+    width:100% !important;
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) auto !important;
+    gap:.46rem !important;
+    align-items:center !important;
+    justify-content:stretch !important;
+    padding:.28rem .35rem .08rem !important;
+    border:1px solid rgba(214,179,106,.16);
+    border-radius:18px;
+    background:linear-gradient(135deg,rgba(255,255,255,.035),rgba(214,179,106,.04));
+  }
+  header nav{
+    width:100% !important;
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    justify-content:flex-start !important;
+    gap:.34rem !important;
+    padding:.08rem .02rem .18rem !important;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  header nav::-webkit-scrollbar{display:none;}
+  .nav-btn{
+    flex:0 0 auto !important;
+    min-width:auto !important;
+    min-height:34px !important;
+    padding:.52rem .68rem !important;
+    font-size:.82rem !important;
+    border-radius:999px !important;
+    letter-spacing:0 !important;
+  }
+  .lang-wrap{
+    justify-self:end !important;
+    align-self:center !important;
+    position:relative !important;
+  }
+  .lang-btn{
+    min-height:34px !important;
+    padding:.52rem .62rem !important;
+    font-size:.8rem !important;
+    border-radius:999px !important;
+  }
+  .lang-menu{
+    right:0 !important;
+    top:calc(100% + 8px) !important;
+    min-width:132px !important;
+    border-radius:14px !important;
+  }
+  .lang-option{
+    padding:.62rem .7rem !important;
+    font-size:.84rem !important;
+    white-space:nowrap !important;
+  }
+  main.container{
+    padding-top:1rem !important;
+  }
+}
+
+@media(max-width:390px){
+  header .nav-area{
+    grid-template-columns:minmax(0,1fr) 76px !important;
+    gap:.32rem !important;
+    padding:.24rem .28rem .06rem !important;
+  }
+  .nav-btn{
+    font-size:.78rem !important;
+    padding:.48rem .56rem !important;
+  }
+  .lang-btn{
+    width:76px !important;
+    padding:.48rem .35rem !important;
+    font-size:.76rem !important;
+  }
+  .lang-label{
+    max-width:48px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+}
+
 </style>
 <script src="https://js.tosspayments.com/v1/payment"></script>
 </head>
@@ -924,6 +1143,7 @@ body.lang-zh-font .pay-choice-title,body.lang-ko-font .pay-choice-title,body.lan
 <header><div class="container"><div class="topbar">
   <div class="brand"><span class="brand-icon">🎬</span><span class="lang-zh active-lang">小Yoon 的创作空间</span><span class="lang-en">Little Yoon's Studio</span><span class="lang-ko">리틀 윤의 창작 공간</span></div>
   <div class="nav-area">
+    <button class="mobile-menu-btn" type="button" onclick="toggleMobileNav(event)" aria-label="Open menu"><span>☰</span></button>
     <nav>
       <a class="nav-btn active" data-page="home" href="#home"><span class="lang-zh active-lang">首页</span><span class="lang-en">Home</span><span class="lang-ko">홈</span></a>
       <a class="nav-btn" data-page="portfolio" href="#portfolio"><span class="lang-zh active-lang">作品展示</span><span class="lang-en">Portfolio</span><span class="lang-ko">포트폴리오</span></a>
@@ -932,9 +1152,9 @@ body.lang-zh-font .pay-choice-title,body.lang-ko-font .pay-choice-title,body.lan
     </nav>
     <div class="lang-wrap"><button class="lang-btn" onclick="toggleLangMenu()">🌐 <span class="lang-label">Language</span></button>
       <div id="langMenu" class="lang-menu hidden">
-        <div class="lang-option" data-lang="zh">中文</div>
-        <div class="lang-option" data-lang="en">English</div>
-        <div class="lang-option" data-lang="ko">한국어</div>
+        <div class="lang-option" data-lang="zh">🇨🇳 中文</div>
+        <div class="lang-option" data-lang="ko">🇰🇷 한국어</div>
+        <div class="lang-option" data-lang="en">🇺🇸 English</div>
       </div>
     </div>
   </div>
@@ -1301,8 +1521,9 @@ function setLang(l) {
 }
 function toggleLangMenu() { document.getElementById('langMenu').classList.toggle('hidden'); }
 document.querySelectorAll('.lang-option').forEach(o=>o.onclick=()=>setLang(o.dataset.lang));
-document.addEventListener('click',e=>{ if(!e.target.closest('.lang-wrap')) document.getElementById('langMenu').classList.add('hidden'); });
-document.querySelectorAll('.nav-btn').forEach(a=>a.onclick=e=>{ e.preventDefault(); showPage(a.dataset.page); });
+document.addEventListener('click',e=>{ if(!e.target.closest('.lang-wrap')) document.getElementById('langMenu').classList.add('hidden'); if(!e.target.closest('header')) document.querySelector('header').classList.remove('nav-open'); });
+document.querySelectorAll('.nav-btn').forEach(a=>a.onclick=e=>{ e.preventDefault(); showPage(a.dataset.page); document.querySelector('header').classList.remove('nav-open'); });
+function toggleMobileNav(e){ if(e) e.stopPropagation(); document.querySelector('header').classList.toggle('nav-open'); }
 
 function showPage(id) {
   document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));
@@ -1336,7 +1557,8 @@ function actionText(type) {
     comment:{zh:'评论',en:'Comment',ko:'댓글'},
     favorite:{zh:'收藏',en:'Favorite',ko:'찜'},
     favorited:{zh:'已收藏',en:'Favorited',ko:'찜 완료'},
-    follow:{zh:'关注',en:'Follow',ko:'팔로우'},
+    share:{zh:'分享',en:'Share',ko:'공유'},
+    follow:{zh:'喜欢',en:'Like',ko:'좋아요'},
     followed:{zh:'已关注',en:'Following',ko:'팔로잉'},
     commentsCount:{zh:'条评论',en:'comments',ko:'개 댓글'},
     on:{zh:'已开启',en:'ON',ko:'ON'},
@@ -1351,8 +1573,10 @@ function uiText(key) {
     noComments:{zh:'还没有评论，成为第一个留言的人吧。',en:'No comments yet. Be the first to write one.',ko:'아직 댓글이 없습니다. 첫 댓글을 남겨보세요.'},
     favoriteOn:{zh:'已收藏',en:'Added to favorites',ko:'찜했습니다'},
     favoriteOff:{zh:'已取消收藏',en:'Removed from favorites',ko:'찜을 취소했습니다'},
-    followOn:{zh:'已关注',en:'Followed',ko:'팔로우했습니다'},
-    followOff:{zh:'已取消关注',en:'Unfollowed',ko:'팔로우를 취소했습니다'},
+    followOn:{zh:'已喜欢',en:'Liked',ko:'좋아요를 눌렀습니다'},
+    followOff:{zh:'已取消喜欢',en:'Unliked',ko:'좋아요를 취소했습니다'},
+    shareDone:{zh:'分享链接已复制',en:'Share link copied',ko:'공유 링크를 복사했습니다'},
+    shareFail:{zh:'无法分享，请稍后再试',en:'Unable to share now',ko:'지금 공유할 수 없습니다'},
     commentSaved:{zh:'评论已发送',en:'Comment posted',ko:'댓글이 등록되었습니다'},
     commentDeleted:{zh:'评论已删除',en:'Comment deleted',ko:'댓글이 삭제되었습니다'}
   };
@@ -1382,11 +1606,15 @@ function renderActionButtons(v) {
     <button class="drama-action-btn favorite-action ${favOn?'active':''}" title="Favorite" aria-label="Favorite" onclick="toggleFavorite('${v.id}')">
       <span class="action-icon">${favOn?'★':'☆'}</span>
     </button>
-    <button class="drama-action-btn follow-action ${folOn?'active':''}" title="Follow" aria-label="Follow" onclick="toggleFollow('${v.id}')">
+    <button class="drama-action-btn share-action" title="Share" aria-label="Share" onclick="shareVideo('${v.id}')">
+      <span class="action-icon">↗</span>
+    </button>
+    <button class="drama-action-btn follow-action ${folOn?'active':''}" title="Like" aria-label="Like" onclick="toggleFollow('${v.id}')">
       <span class="action-icon">${folOn?'♥':'♡'}</span>
     </button>
   </div>`;
 }
+
 function renderComments(v) {
   const comments=actionData(v.id).item.comments.slice(-3).reverse();
   if(!comments.length) return '';
@@ -1408,6 +1636,31 @@ function toggleFollow(id) {
   renderAll();
   if(currentVideo && String(currentVideo.id)===String(id)) renderPlayer(currentVideo);
 }
+async function shareVideo(id) {
+  const v=videos().find(x=>String(x.id)===String(id));
+  const title=v ? titleOf(v) : document.title;
+  const url=location.origin + location.pathname + '#portfolio';
+  try{
+    if(navigator.share){
+      await navigator.share({title:title, text:title, url:url});
+    }else if(navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(url);
+      showToast(uiText('shareDone'));
+    }else{
+      const temp=document.createElement('input');
+      temp.value=url;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      temp.remove();
+      showToast(uiText('shareDone'));
+    }
+  }catch(e){
+    if(e && e.name === 'AbortError') return;
+    showToast(uiText('shareFail'));
+  }
+}
+
 let activeCommentVideoId=null;
 function openCommentModal(id) {
   activeCommentVideoId=id;
