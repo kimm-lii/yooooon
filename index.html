@@ -449,6 +449,67 @@ header{
   transform:translateZ(0);
 }
 
+
+
+/* Mobile portfolio layout fix: keep directory visible and prevent Classic Works from covering it */
+@media(max-width:980px){
+  #portfolio .portfolio-layout{
+    display:flex !important;
+    flex-direction:column !important;
+    gap:1rem !important;
+    align-items:stretch !important;
+  }
+  #portfolio .portfolio-layout > .sidebar{
+    order:1 !important;
+    position:relative !important;
+    top:auto !important;
+    z-index:20 !important;
+    width:100% !important;
+  }
+  #portfolio .portfolio-layout > .panel:not(.sidebar):not(.recommend){
+    order:2 !important;
+    position:relative !important;
+    z-index:1 !important;
+    width:100% !important;
+  }
+  #portfolio .portfolio-layout > .recommend{
+    order:3 !important;
+    position:relative !important;
+    top:auto !important;
+    z-index:1 !important;
+    width:100% !important;
+  }
+  #portfolio .panel{
+    overflow:visible !important;
+  }
+  #portfolio .cards{
+    grid-template-columns:1fr !important;
+  }
+  #portfolio .dir-list{
+    position:static !important;
+    max-height:none !important;
+    overflow:visible !important;
+  }
+}
+
+@media(max-width:640px){
+  #portfolio .section-title{
+    margin-bottom:1rem;
+  }
+  #portfolio .panel{
+    padding:.9rem;
+    border-radius:16px;
+  }
+  #portfolio .work-card,
+  #portfolio .rec-card{
+    width:100%;
+    max-width:100%;
+  }
+  #portfolio .dir-head{
+    padding:.72rem .78rem;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -542,7 +603,7 @@ header{
           <small><span class="lang-zh active-lang">让创意更快成片</span><span class="lang-en">Ideas into films faster</span><span class="lang-ko">아이디어를 더 빠르게 영상으로</span></small>
         </div>
       </div>
-      <p class="profile-link"><span class="lang-zh active-lang">网站：</span><span class="lang-en">Website: </span><span class="lang-ko">웹사이트: </span><a class="website-link" href="https://kimm-lii.github.io/yooooon/" target="_blank" rel="noopener">https://kimm-lii.github.io/yooooon/</a></p>
+      <p class="profile-link"><span class="lang-zh active-lang">网站：</span><span class="lang-en">Website: </span><span class="lang-ko">웹사이트: </span><a class="website-link" href="https://kimm-lii.github.io/yooooon/" target="_blank" rel="noopener noreferrer">https://kimm-lii.github.io/yooooon/</a></p>
     </div>
   </section>
 </main>
@@ -589,21 +650,36 @@ header{
   <div class="btns"><button class="btn cancel" onclick="closeDirDelete()">取消</button><button class="btn danger" onclick="saveDirDelete()">删除</button></div>
 </div></div>
 
-<div id="payModal" class="pay-modal hidden"><div class="pay-box">
-  
-  <div class="pay-title">🔒 <span class="lang-zh active-lang">付费解锁内容</span><span class="lang-en">Premium Content</span><span class="lang-ko">유료 콘텐츠</span></div>
-  <div class="pay-desc"><span class="lang-zh active-lang">观看本视频需支付 $0.99 USD</span><span class="lang-en">Pay $0.99 USD to watch this video</span><span class="lang-ko">본 영상 시청에는 $0.99 USD 결제가 필요합니다</span></div>
-  <div class="pay-auto-text"><span class="lang-zh active-lang">付款后自动解锁密码</span><span class="lang-en">The password unlocks automatically after payment</span><span class="lang-ko">결제 후 비밀번호가 자동으로 해제됩니다</span></div>
-  <div class="pay-method">✅ <span class="lang-zh active-lang">支持 PayPal / 银行卡支付</span><span class="lang-en">Supports PayPal / Card Payment</span><span class="lang-ko">PayPal / 카드 결제 지원</span></div>
-  <button id="payBtn" class="pay-btn" onclick="startPayment()">💳 <span class="lang-zh active-lang">前往付款</span><span class="lang-en">Go to Payment</span><span class="lang-ko">결제하러 가기</span></button>
-  <button class="pay-cancel" onclick="closePay()">取消</button>
+<div id="payModal" class="pay-modal hidden"><div class="pay-box" style="width:min(420px,92vw);min-height:auto;padding:0;background:transparent;box-shadow:none;">
+  <div style="text-align:center; padding:40px 20px; background:#f8f9fa; border-radius:12px; margin:20px 0; box-shadow:0 16px 34px rgba(0,0,0,.22);">
+    <h2 style="color:#333; font-size:22px; margin-bottom:15px;">🔒付费解锁内容</h2>
+    <a id="payBtn" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=D4VNS6AG5J6X4&currency_code=USD&amount=0.99&item_name=Yoon_Studio_Premium_Episode&no_note=1&return=https%3A%2F%2Fkimm-lii.github.io%2Fyooooon%2F%3Fpayment%3Dsuccess%26video%3Dsnowtruth_ep03%23portfolio&cancel_return=https%3A%2F%2Fkimm-lii.github.io%2Fyooooon%2F%3Fpayment%3Dcancel%23portfolio&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted" target="_blank" rel="noopener noreferrer"
+    style="padding:14px 32px; background:#0070ba; color:white; text-decoration:none; border-radius:8px; font-size:18px; font-weight:bold; display:inline-block;">
+      👉 前往 PayPal 付款
+    </a>
+    <p style="font-size:14px; color:#888; margin-top:15px;">
+      点击后会在新窗口打开 PayPal 付款页面。付款完成后返回本页输入密码观看 ❤️
+    </p>
+    <p style="font-size:13px; color:#666; margin-top:8px; line-height:1.6;">
+      付款后请返回本页面，点击“我已有密码”并输入观看密码。
+    </p>
+    <button class="pay-cancel" onclick="openWatchPwdFromPay()" style="width:82%;border:none;border-radius:14px;padding:.82rem .8rem;cursor:pointer;font-weight:900;font-size:.96rem;margin:.6rem auto .58rem;display:block;background:#eef0f3;color:#444;">我已有密码</button>
+    <button class="pay-cancel" onclick="closePay()" style="width:82%;border:none;border-radius:14px;padding:.82rem .8rem;cursor:pointer;font-weight:900;font-size:.96rem;margin:0 auto;display:block;background:#eef0f3;color:#444;">取消</button>
+  </div>
+</div></div>
+
+<div id="watchPwdModal" class="modal hidden"><div class="modal-box">
+  <div class="modal-title"><span class="lang-zh active-lang">请输入观看密码</span><span class="lang-en">Enter Watch Password</span><span class="lang-ko">시청 비밀번호 입력</span></div>
+  <input type="password" id="watchPwd" placeholder="请输入付款后获得的密码">
+  <div class="btns"><button class="btn cancel" onclick="closeWatchPwd()">取消</button><button class="btn ok" onclick="verifyWatchPwd()">确认</button></div>
 </div></div>
 
 <footer>© 2026 Yoon Short-Form Video Creation Studio</footer>
 
 <script>
 const ADMIN_PASSWORD='0803';
-const PAYPAL_LINK='https://www.paypal.com/paypalme/yourpaypal/0.99';
+const PAYPAL_LINK='https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=D4VNS6AG5J6X4&currency_code=USD&amount=0.99&item_name=Yoon_Studio_Premium_Episode&no_note=1&return=https%3A%2F%2Fkimm-lii.github.io%2Fyooooon%2F%3Fpayment%3Dsuccess%26video%3Dsnowtruth_ep03%23portfolio&cancel_return=https%3A%2F%2Fkimm-lii.github.io%2Fyooooon%2F%3Fpayment%3Dcancel%23portfolio&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted';
+const PASSWORD_PREFIX='yoon';
 const SERIES=[
   {id:'rulesnew',name:'《规则新生，普惠将至》'},
   {id:'snowtruth',name:'《雪之刃：未说的真相》'},
@@ -616,14 +692,14 @@ const PUBLIC_VIDEOS=[
   {id:'rulesnew_ep03',url:'https://youtu.be/YSbtSnuh0q4',dirId:'rulesnew',title_zh:'《规则新生，普惠将至》',title_en:'New Rules, Universal Access Is Coming',title_ko:'새로운 규칙, 모두를 위한 기술이 온다',episode:'第3集',password:'',poster:''},
   {id:'snowtruth_ep01',url:'https://youtu.be/A2IxJgkn0zg',dirId:'snowtruth',title_zh:'《雪之刃：未说的真相》',title_en:'Blade of Snow: The Untold Truth',title_ko:'눈의 칼날: 말하지 못한 진실',episode:'第1集',password:'',poster:''},
   {id:'snowtruth_ep02',url:'https://youtu.be/mhCjF4yhK_E',dirId:'snowtruth',title_zh:'《雪之刃：未说的真相》',title_en:'Blade of Snow: The Untold Truth',title_ko:'눈의 칼날: 말하지 못한 진실',episode:'第2集',password:'',poster:''},
-  {id:'snowtruth_ep03',url:'https://youtu.be/42VjfJ8wEjA',dirId:'snowtruth',title_zh:'《雪之刃：未说的真相》',title_en:'Blade of Snow: The Untold Truth',title_ko:'눈의 칼날: 말하지 못한 진실',episode:'第3集',password:'paid',poster:''},
+  {id:'snowtruth_ep03',url:'https://youtu.be/42VjfJ8wEjA',dirId:'snowtruth',title_zh:'《雪之刃：未说的真相》',title_en:'Blade of Snow: The Untold Truth',title_ko:'눈의 칼날: 말하지 못한 진실',episode:'第3集',password:'',paid:true,autoPassword:true,poster:''},
   {id:'coldcity_ep01_new',url:'https://youtu.be/0qNitaOdl4U',dirId:'coldcity',title_zh:'《寒城烬爱》',title_en:'Cold City Ashes of Love',title_ko:'한성신애',episode:'第1集',password:'',poster:''},
   {id:'coldcity_ep02_new',url:'https://youtu.be/1EgVUXrzL5E',dirId:'coldcity',title_zh:'《寒城烬爱》',title_en:'Cold City Ashes of Love',title_ko:'한성신애',episode:'第2集',password:'',poster:''}
 ];
 let customDirs=JSON.parse(localStorage.getItem('yoon_dirs')||'[]');
 let customVideos=JSON.parse(localStorage.getItem('yoon_videos')||'[]');
 const REMOVED_DEFAULT_VIDEO_IDS=new Set(['coldcity_ep01','netlove_ep01','beauty_ep01']);
-const REMOVED_DEFAULT_VIDEO_URLS=new Set(['https://youtu.be/A7yxPM9v-sQ','https://youtu.be/fPHwIkXnhN0','https://youtube.com/shorts/6HH5p9PpaOY?feature=share']);
+const REMOVED_DEFAULT_VIDEO_URLS=new Set(['https://youtu.be/A7yxPM9v-sQ','https://youtu.be/fPHwIkXnhN0','https://youtube.com/shorts/6HH5p9PpaOY?feature=share','https://youtu.be/PYmuUghpYf0']);
 const CLASSIC_VIDEO_URLS=[
   'https://youtu.be/x6glzNltJfg',
   'https://youtu.be/jL7pIrXe1sA',
@@ -651,18 +727,30 @@ function dirs() {
   customDirs.forEach(d=>map.set(String(d.id),{...d}));
   return [...map.values()];
 }
+function autoPasswordByCount(count) {
+  return PASSWORD_PREFIX + String(count).padStart(3,'0');
+}
 function videos() {
-  return [...PUBLIC_VIDEOS,...customVideos].map(v=>({
-    id:v.id||('v_'+Date.now()),
-    url:v.url||'',
-    dirId:String(v.dirId||'coldcity'),
-    title_zh:v.title_zh||v.title||'未命名视频',
-    title_en:v.title_en||v.title||v.title_zh||'Untitled',
-    title_ko:v.title_ko||v.title||v.title_zh||'제목 없음',
-    episode:v.episode||'',
-    password:v.password||'',
-    poster:v.poster||''
-  }));
+  const raw=[...PUBLIC_VIDEOS,...customVideos];
+  return raw.map((v,i)=>{
+    const videoCount=i+1;
+    const paid=!!v.paid;
+    const explicitPassword=String(v.password||'').trim();
+    const password=explicitPassword || (paid ? autoPasswordByCount(videoCount) : '');
+    return {
+      id:v.id||('v_'+Date.now()),
+      url:v.url||'',
+      dirId:String(v.dirId||'coldcity'),
+      title_zh:v.title_zh||v.title||'未命名视频',
+      title_en:v.title_en||v.title||v.title_zh||'Untitled',
+      title_ko:v.title_ko||v.title||v.title_zh||'제목 없음',
+      episode:v.episode||'',
+      password,
+      videoCount,
+      poster:v.poster||'',
+      paid
+    };
+  });
 }
 function selectedVideos(urls) {
   const all=videos();
@@ -805,7 +893,7 @@ function renderPlayer(v) {
 }
 function changeSub(v) { subtitle=v; localStorage.setItem('yoon_subtitle',v); if(currentVideo) renderPlayer(currentVideo); }
 function closePlayer() { currentVideo=null; renderCards(); }
-document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closePlayer(); closePay(); closeAdmin(); } });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closePlayer(); closePay(); closeWatchPwd(); closeAdmin(); } });
 
 function askAdmin() {
   document.getElementById('adminPwd').value='';
@@ -915,26 +1003,35 @@ function openPay() {
 function closePay() {
   waitingPay=false;
   document.getElementById('payModal').classList.add('hidden');
-  pendingVideo=null;
 }
 function startPayment() {
   if(!pendingVideo) return;
-  waitingPay=true;
-  document.getElementById('payBtn').textContent='等待付款完成...';
   window.open(PAYPAL_LINK,'_blank','noopener');
-  setTimeout(autoUnlock,5000);
 }
-function autoUnlock() {
-  if(waitingPay && pendingVideo) {
-    const v=pendingVideo;
-    waitingPay=false;
-    document.getElementById('payModal').classList.add('hidden');
-    pendingVideo=null;
-    playVideo(v);
-  }
+function openWatchPwdFromPay() {
+  document.getElementById('payModal').classList.add('hidden');
+  openWatchPwd();
 }
-window.addEventListener('focus',()=>{ if(waitingPay && pendingVideo) setTimeout(autoUnlock,400); });
-
+function openWatchPwd() {
+  document.getElementById('watchPwd').value='';
+  document.getElementById('watchPwdModal').classList.remove('hidden');
+  setLang(lang);
+  setTimeout(()=>document.getElementById('watchPwd').focus(),30);
+}
+function closeWatchPwd() {
+  document.getElementById('watchPwdModal').classList.add('hidden');
+  pendingVideo=null;
+}
+function verifyWatchPwd() {
+  if(!pendingVideo) return;
+  const input=document.getElementById('watchPwd').value.trim();
+  if(input!==String(pendingVideo.password||'')) { alert('密码错误'); return; }
+  const v=pendingVideo;
+  pendingVideo=null;
+  document.getElementById('watchPwdModal').classList.add('hidden');
+  playVideo(v);
+}
+document.getElementById('watchPwd').addEventListener('keydown',e=>{ if(e.key==='Enter') verifyWatchPwd(); });
 setLang(lang);
 renderAll();
 if(location.hash && document.getElementById(location.hash.slice(1))) showPage(location.hash.slice(1));
