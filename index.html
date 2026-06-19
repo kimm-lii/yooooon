@@ -1316,6 +1316,156 @@ main.container{min-height:calc(100vh - 155px);}
   }
 }
 
+
+
+/* === ABSOLUTE FINAL FIX: language visibility + mobile header, desktop untouched === */
+/* Only the selected language text should appear */
+.lang-zh:not(.active-lang),
+.lang-en:not(.active-lang),
+.lang-ko:not(.active-lang){
+  display:none !important;
+}
+.active-lang{
+  display:inline !important;
+}
+
+/* Restore desktop scale/proportion: do not shrink homepage image */
+@media(min-width:641px){
+  #home{
+    max-width:1200px !important;
+    margin:0 auto !important;
+  }
+  #home .image-card{
+    width:100% !important;
+  }
+  #home .image-card img{
+    width:100% !important;
+    height:auto !important;
+    object-fit:contain !important;
+  }
+}
+
+@media(max-width:640px){
+  header .topbar{
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    justify-content:flex-start !important;
+    gap:.42rem !important;
+    min-height:auto !important;
+    padding:.58rem 0 .62rem !important;
+  }
+
+  /* First row: full brand title on the left */
+  header .brand{
+    width:100% !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:.45rem !important;
+    white-space:nowrap !important;
+    overflow:visible !important;
+    text-align:left !important;
+    font-size:.92rem !important;
+    line-height:1.2 !important;
+    flex:0 0 auto !important;
+    min-width:0 !important;
+  }
+  header .brand-icon{
+    flex:0 0 auto !important;
+    width:27px !important;
+    height:27px !important;
+  }
+  header .brand .active-lang{
+    display:inline !important;
+    white-space:nowrap !important;
+    writing-mode:horizontal-tb !important;
+    text-orientation:mixed !important;
+  }
+
+  /* Second row: Home / Portfolio / Skills / About / Language, all left aligned */
+  header .nav-area{
+    width:100% !important;
+    display:flex !important;
+    flex-direction:row !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:.24rem !important;
+    flex-wrap:nowrap !important;
+    overflow-x:auto !important;
+    overflow-y:visible !important;
+    -webkit-overflow-scrolling:touch !important;
+    padding-bottom:.05rem !important;
+    scrollbar-width:none !important;
+  }
+  header .nav-area::-webkit-scrollbar{display:none !important;}
+  header nav{
+    display:flex !important;
+    flex-direction:row !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:.22rem !important;
+    flex:0 0 auto !important;
+    width:auto !important;
+    min-width:max-content !important;
+    overflow:visible !important;
+    flex-wrap:nowrap !important;
+    padding-bottom:0 !important;
+  }
+  header .nav-btn{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    flex:0 0 auto !important;
+    width:auto !important;
+    min-width:auto !important;
+    white-space:nowrap !important;
+    writing-mode:horizontal-tb !important;
+    text-orientation:mixed !important;
+    word-break:keep-all !important;
+    padding:.42rem .50rem !important;
+    font-size:.76rem !important;
+    line-height:1 !important;
+    border-radius:999px !important;
+  }
+  header .nav-btn span:not(.active-lang){
+    display:none !important;
+  }
+  header .nav-btn span.active-lang{
+    display:inline !important;
+    white-space:nowrap !important;
+    writing-mode:horizontal-tb !important;
+    text-orientation:mixed !important;
+  }
+
+  header .lang-wrap{
+    flex:0 0 auto !important;
+    width:auto !important;
+    margin-left:.06rem !important;
+    margin-right:0 !important;
+    position:relative !important;
+  }
+  header .lang-btn{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    white-space:nowrap !important;
+    writing-mode:horizontal-tb !important;
+    text-orientation:mixed !important;
+    padding:.42rem .50rem !important;
+    font-size:.75rem !important;
+    line-height:1 !important;
+    border-radius:999px !important;
+  }
+  header .lang-menu{
+    right:auto !important;
+    left:0 !important;
+    top:calc(100% + 8px) !important;
+    min-width:138px !important;
+    z-index:99999 !important;
+  }
+}
+
 </style>
 <script src="https://js.tosspayments.com/v1/payment"></script>
 </head>
