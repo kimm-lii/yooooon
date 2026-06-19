@@ -2523,7 +2523,10 @@ input[type="email"], .payment-email, .email-field, #customerEmail, [name="custom
     <h2 class="section-title"><span class="lang-zh active-lang">作品展示</span><span class="lang-en">Portfolio</span><span class="lang-ko">포트폴리오</span></h2>
     <div class="portfolio-layout">
       <aside class="panel sidebar">
-        <div class="panel-head">
+        <div class="panel-head sidebar-head-with-message">
+          <button class="sidebar-message-btn" id="sidebarMessageBtn" type="button" title="Message" aria-label="Message">
+            <span class="lang-zh active-lang">✉</span><span class="lang-en">✉</span><span class="lang-ko">✉</span>
+          </button>
           <div class="panel-title"><span class="lang-zh active-lang">作品目录</span><span class="lang-en">Series</span><span class="lang-ko">작품 목록</span></div>
           <button class="plus" onclick="askAdmin()">+</button>
         </div>
@@ -2999,28 +3002,7 @@ function actionData(id) {
 }
 function commentCount(v){ return actionData(v.id).item.comments.length; }
 function renderActionButtons(v) {
-  const st=actionData(v.id).item;
-  const c=st.comments.length;
-  const favOn=st.favorite;
-  const folOn=st.follow;
-  const commentLabel=uiText('commentTitle');
-  const favoriteLabel=uiText('favoriteLabel');
-  const shareLabel=uiText('shareLabel');
-  const followLabel=uiText('followLabel');
-  return `<div class="drama-actions mini-icon-actions" onclick="event.stopPropagation()">
-    <button class="drama-action-btn comment-action" title="${esc(commentLabel)}" aria-label="${esc(commentLabel)}" onclick="openCommentModal('${v.id}')">
-      <span class="action-icon">💬</span>${c?`<span class="icon-count">${c}</span>`:''}
-    </button>
-    <button class="drama-action-btn favorite-action ${favOn?'active':''}" title="${esc(favoriteLabel)}" aria-label="${esc(favoriteLabel)}" onclick="toggleFavorite('${v.id}')">
-      <span class="action-icon">${favOn?'★':'☆'}</span>
-    </button>
-    <button class="drama-action-btn share-action" title="${esc(shareLabel)}" aria-label="${esc(shareLabel)}" onclick="shareVideo('${v.id}')">
-      <span class="action-icon">↗</span>
-    </button>
-    <button class="drama-action-btn follow-action ${folOn?'active':''}" title="${esc(followLabel)}" aria-label="${esc(followLabel)}" onclick="toggleFollow('${v.id}')">
-      <span class="action-icon">${folOn?'♥':'♡'}</span>
-    </button>
-  </div>`;
+  return '';
 }
 function renderComments(v) {
   const comments=actionData(v.id).item.comments.slice(-3).reverse();
@@ -3133,11 +3115,7 @@ function renderPlayer(v) {
         <button class="close-x" onclick="closePlayer()">×</button>
       </div>
     </div>
-    <div class="video-box" style="${playerBoxStyle(v)}">${player}</div>
-    <div class="player-actions-wrap">
-      ${renderActionButtons(v)}
-      ${renderComments(v)}
-    </div>`;
+    <div class="video-box" style="${playerBoxStyle(v)}">${player}</div>`;
 }
 function changeSub(v) { subtitle=v; localStorage.setItem('yoon_subtitle',v); if(currentVideo) renderPlayer(currentVideo); }
 function closePlayer() { currentVideo=null; renderCards(); }
@@ -3580,6 +3558,46 @@ handlePaymentReturn();
 .hidden-message-copy{background:#2a2f37;color:#f5f5f4}
 .hidden-message-note{font-size:.75rem;color:#8f96a3;line-height:1.5;margin-top:.72rem;text-align:center}
 @media(max-width:640px){.hidden-message-fab{right:14px;bottom:14px;width:44px;height:44px;font-size:20px}.hidden-message-actions{grid-template-columns:1fr}}
+
+/* === Final clean action icons + sidebar hidden message button === */
+.drama-actions,
+.player-actions-wrap,
+.comment-list{
+  display:none !important;
+}
+.hidden-message-fab{
+  display:none !important;
+}
+.sidebar-head-with-message{
+  justify-content:flex-start !important;
+  gap:.55rem !important;
+}
+.sidebar-head-with-message .panel-title{
+  flex:1 1 auto;
+}
+.sidebar-message-btn{
+  width:32px;
+  height:32px;
+  border-radius:999px;
+  border:1px solid rgba(96,165,250,.28);
+  background:linear-gradient(135deg,rgba(96,165,250,.16),rgba(255,255,255,.045));
+  color:#9cc7ff;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  font-size:15px;
+  line-height:1;
+  box-shadow:0 8px 18px rgba(0,0,0,.16);
+}
+.sidebar-message-btn:hover{
+  background:linear-gradient(135deg,rgba(96,165,250,.24),rgba(255,255,255,.06));
+  border-color:rgba(96,165,250,.42);
+  transform:translateY(-1px);
+}
+@media(max-width:640px){
+  .sidebar-message-btn{width:30px;height:30px;font-size:14px;}
+}
 </style>
 
 <button class="hidden-message-fab" id="hiddenMessageFab" type="button" aria-label="Private message">✉</button>
@@ -3645,6 +3663,7 @@ handlePaymentReturn();
   function bind(){
     applyLang();
     document.getElementById('hiddenMessageFab')?.addEventListener('click',open);
+    document.getElementById('sidebarMessageBtn')?.addEventListener('click',open);
     document.getElementById('hiddenMessageClose')?.addEventListener('click',close);
     document.getElementById('hiddenMessageBackdrop')?.addEventListener('click',function(e){if(e.target.id==='hiddenMessageBackdrop') close();});
     document.getElementById('hiddenMsgSend')?.addEventListener('click',send);
