@@ -1819,6 +1819,118 @@ header .lang-wrap{
   }
 }
 
+
+
+/* FINAL FIX: mobile language click + desktop language right aligned */
+header, header .container, header .topbar, header .nav-area, header .lang-wrap{
+  overflow:visible !important;
+}
+header .lang-wrap, header .lang-btn, header .lang-menu, header .lang-option{
+  pointer-events:auto !important;
+}
+header .lang-wrap{
+  position:relative !important;
+  z-index:999999 !important;
+}
+header .lang-btn{
+  cursor:pointer !important;
+  touch-action:manipulation !important;
+  user-select:none !important;
+}
+header .lang-menu{
+  z-index:999999 !important;
+  min-width:158px !important;
+}
+header .lang-menu:not(.hidden){
+  display:block !important;
+}
+
+@media(min-width:641px){
+  header .topbar{
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:stretch !important;
+    justify-content:flex-start !important;
+    gap:.7rem !important;
+  }
+  header .brand{
+    width:100% !important;
+    justify-content:flex-start !important;
+    white-space:nowrap !important;
+    overflow:visible !important;
+  }
+  header .nav-area{
+    width:100% !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    gap:1rem !important;
+  }
+  header nav{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:.3rem !important;
+    flex-wrap:wrap !important;
+    min-width:0 !important;
+  }
+  header .lang-wrap{
+    margin-left:auto !important;
+    flex:0 0 auto !important;
+  }
+}
+
+@media(max-width:640px){
+  header .topbar{
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    justify-content:flex-start !important;
+  }
+  header .brand{
+    width:100% !important;
+    max-width:100% !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    white-space:nowrap !important;
+    overflow:visible !important;
+  }
+  header .nav-area{
+    width:100% !important;
+    max-width:100% !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:.38rem !important;
+    flex-wrap:nowrap !important;
+    overflow-x:auto !important;
+    overflow-y:visible !important;
+    -webkit-overflow-scrolling:touch !important;
+    padding-bottom:.18rem !important;
+  }
+  header nav{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    flex-wrap:nowrap !important;
+    gap:.25rem !important;
+    flex:0 0 auto !important;
+    overflow:visible !important;
+  }
+  header .nav-btn{
+    flex:0 0 auto !important;
+    white-space:nowrap !important;
+  }
+  header .lang-wrap{
+    flex:0 0 auto !important;
+    margin-left:0 !important;
+  }
+  header .lang-btn{
+    white-space:nowrap !important;
+  }
+}
+
 </style>
 <script src="https://js.tosspayments.com/v1/payment"></script>
 </head>
@@ -2606,5 +2718,54 @@ setLang(lang);
 renderAll();
 if(location.hash && document.getElementById(location.hash.slice(1))) showPage(location.hash.slice(1));
 </script>
+
+
+<script>
+// FINAL FIX: make language menu clickable on mobile and desktop
+(function(){
+  function getLangMenu(){ return document.getElementById('langMenu'); }
+  function getLangBtn(){ return document.querySelector('.lang-btn'); }
+  window.toggleLangMenu = function(e){
+    if(e){ e.preventDefault(); e.stopPropagation(); }
+    var menu=getLangMenu();
+    var btn=getLangBtn();
+    if(!menu || !btn) return false;
+    var willOpen = menu.classList.contains('hidden');
+    menu.classList.toggle('hidden');
+    if(willOpen){
+      var r=btn.getBoundingClientRect();
+      menu.style.position='fixed';
+      menu.style.top=(r.bottom+8)+'px';
+      menu.style.left=Math.max(10, Math.min(r.left, window.innerWidth-170))+'px';
+      menu.style.right='auto';
+      menu.style.zIndex='999999';
+      menu.style.display='block';
+    }else{
+      menu.style.display='';
+    }
+    return false;
+  };
+  document.addEventListener('DOMContentLoaded', function(){
+    var btn=getLangBtn();
+    var menu=getLangMenu();
+    if(btn){
+      btn.onclick=window.toggleLangMenu;
+      btn.addEventListener('touchstart', window.toggleLangMenu, {passive:false});
+    }
+    document.querySelectorAll('.lang-option').forEach(function(o){
+      o.addEventListener('click', function(ev){
+        ev.preventDefault();
+        ev.stopPropagation();
+        if(typeof setLang==='function') setLang(o.dataset.lang);
+        if(menu) menu.classList.add('hidden');
+      });
+    });
+    document.addEventListener('click', function(ev){
+      if(menu && !ev.target.closest('.lang-wrap')) menu.classList.add('hidden');
+    });
+  });
+})();
+</script>
+
 </body>
 </html>
