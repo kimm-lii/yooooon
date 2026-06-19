@@ -2389,6 +2389,12 @@ header .lang-btn{
   header .lang-btn .lang-label{display:inline !important;}
 }
 
+
+/* Hide any site-side email input/payment email field if an older block remains */
+input[type="email"], .payment-email, .email-field, #customerEmail, [name="customerEmail"]{
+  display:none!important;
+}
+
 </style>
 <script src="https://js.tosspayments.com/v1/payment"></script>
 </head>
@@ -2728,12 +2734,12 @@ function startKoreaPayment() {
     const successUrl = getPaymentReturnUrl('success.html');
     const failUrl = getPaymentReturnUrl('fail.html');
 
+    // Do not send customerEmail or customerName.
+    // This prevents our website from pre-filling or requesting an email before Toss opens.
     tossPayments.requestPayment('카드', {
       amount: KOREA_PAYMENT_AMOUNT,
       orderId: orderId,
       orderName: localizedPaymentName(),
-      customerName: localizedCustomerName(),
-      // customerEmail is intentionally not sent, so the site will not ask for email before redirecting.
       successUrl: successUrl,
       failUrl: failUrl
     });
