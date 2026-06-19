@@ -1931,6 +1931,107 @@ header .lang-menu:not(.hidden){
   }
 }
 
+
+
+/* FINAL REQUEST FIX: mobile header brand/nav size + language on separate right line */
+@media(max-width:640px){
+  header .topbar{
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    gap:.36rem !important;
+    padding:.72rem 0 .82rem !important;
+    overflow:visible !important;
+  }
+  header .brand{
+    width:100% !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:.48rem !important;
+    font-size:1.12rem !important;
+    font-weight:950 !important;
+    line-height:1.25 !important;
+    white-space:nowrap !important;
+    overflow:visible !important;
+    margin-bottom:.28rem !important;
+  }
+  header .brand-icon{
+    width:32px !important;
+    height:32px !important;
+    border-radius:10px !important;
+    font-size:1rem !important;
+    flex:0 0 auto !important;
+  }
+  header .nav-area{
+    width:100% !important;
+    max-width:100% !important;
+    display:flex !important;
+    flex-direction:row !important;
+    flex-wrap:wrap !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:.22rem !important;
+    overflow:visible !important;
+    padding-bottom:0 !important;
+  }
+  header nav{
+    width:100% !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    flex-wrap:nowrap !important;
+    gap:.28rem !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    -webkit-overflow-scrolling:touch !important;
+    padding-bottom:.12rem !important;
+  }
+  header .nav-btn{
+    flex:0 0 auto !important;
+    font-size:.94rem !important;
+    font-weight:850 !important;
+    padding:.46rem .55rem !important;
+    white-space:nowrap !important;
+    border-radius:10px !important;
+  }
+  header .lang-wrap{
+    width:100% !important;
+    display:flex !important;
+    justify-content:flex-end !important;
+    align-items:center !important;
+    margin-left:0 !important;
+    margin-top:.12rem !important;
+    position:relative !important;
+    overflow:visible !important;
+    z-index:999999 !important;
+  }
+  header .lang-btn{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:.25rem !important;
+    font-size:.92rem !important;
+    font-weight:850 !important;
+    padding:.42rem .64rem !important;
+    white-space:nowrap !important;
+    cursor:pointer !important;
+    touch-action:manipulation !important;
+    pointer-events:auto !important;
+  }
+  header .lang-btn .lang-label{
+    display:inline !important;
+  }
+  header .lang-menu{
+    position:fixed !important;
+    min-width:160px !important;
+    z-index:9999999 !important;
+    pointer-events:auto !important;
+  }
+  header .lang-menu:not(.hidden){
+    display:block !important;
+  }
+}
 </style>
 <script src="https://js.tosspayments.com/v1/payment"></script>
 </head>
@@ -2764,6 +2865,60 @@ if(location.hash && document.getElementById(location.hash.slice(1))) showPage(lo
       if(menu && !ev.target.closest('.lang-wrap')) menu.classList.add('hidden');
     });
   });
+})();
+</script>
+
+
+
+<script>
+// FINAL MOBILE LANGUAGE CLICK FIX: click/touch opens reliably, menu appears below button
+(function(){
+  function menu(){ return document.getElementById('langMenu'); }
+  function btn(){ return document.querySelector('header .lang-btn'); }
+  function openMenu(ev){
+    if(ev){ ev.preventDefault(); ev.stopPropagation(); }
+    var m=menu(), b=btn();
+    if(!m || !b) return false;
+    var willOpen = m.classList.contains('hidden') || m.style.display === 'none' || !m.style.display;
+    if(willOpen){
+      var r=b.getBoundingClientRect();
+      m.classList.remove('hidden');
+      m.style.display='block';
+      m.style.position='fixed';
+      m.style.top=(r.bottom+8)+'px';
+      m.style.left=Math.max(10, Math.min(r.right-160, window.innerWidth-170))+'px';
+      m.style.right='auto';
+      m.style.zIndex='9999999';
+      m.style.pointerEvents='auto';
+    }else{
+      m.classList.add('hidden');
+      m.style.display='none';
+    }
+    return false;
+  }
+  window.toggleLangMenu=openMenu;
+  function bind(){
+    var b=btn(), m=menu();
+    if(b){
+      b.onclick=openMenu;
+      b.ontouchstart=openMenu;
+    }
+    document.querySelectorAll('#langMenu .lang-option').forEach(function(o){
+      o.onclick=function(ev){
+        ev.preventDefault(); ev.stopPropagation();
+        if(typeof setLang==='function') setLang(o.dataset.lang);
+        if(m){ m.classList.add('hidden'); m.style.display='none'; }
+      };
+    });
+    document.addEventListener('click',function(ev){
+      var m=menu();
+      if(m && !ev.target.closest('.lang-wrap') && !ev.target.closest('#langMenu')){
+        m.classList.add('hidden');
+        m.style.display='none';
+      }
+    }, true);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', bind); else bind();
 })();
 </script>
 
