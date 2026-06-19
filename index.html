@@ -510,7 +510,415 @@ header{
   }
 }
 
+
+
+/* Language-based font switching */
+body.lang-zh-font{font-family:"Noto Sans SC","Microsoft YaHei","PingFang SC",Arial,sans-serif;}
+body.lang-ko-font{font-family:"Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif;}
+body.lang-en-font{font-family:Arial,"Helvetica Neue",Helvetica,sans-serif;}
+
+.pay-choice-title{color:#333;font-size:22px;margin-bottom:15px;}
+.pay-choice-sub{font-size:14px;color:#888;margin-top:15px;line-height:1.6;}
+.pay-choice-note{font-size:13px;color:#666;margin-top:8px;line-height:1.6;}
+.pay-link-btn,.korea-pay-btn{width:82%;border:none;border-radius:14px;padding:.82rem .8rem;cursor:pointer;font-weight:900;font-size:.96rem;margin:0 auto .58rem;display:block;text-decoration:none;text-align:center;}
+.pay-link-btn{background:#0070ba;color:#fff;}
+.korea-pay-btn{background:linear-gradient(135deg,#0064ff,#003cff);color:#fff;}
+.korea-pay-btn:disabled{opacity:.55;cursor:not-allowed;}
+.pay-section-label{font-size:13px;color:#555;margin:.55rem 0 .45rem;font-weight:800;}
+body.lang-zh-font .pay-choice-title,body.lang-ko-font .pay-choice-title,body.lang-en-font .pay-choice-title{font-family:inherit;}
+
+
+
+/* Drama action buttons: comment / favorite / follow */
+.drama-actions{
+  display:flex;
+  gap:.45rem;
+  margin-top:.72rem;
+  padding-top:.62rem;
+  border-top:1px solid rgba(214,179,106,.16);
+}
+.drama-action-btn{
+  flex:1;
+  border:1px solid rgba(214,179,106,.20);
+  background:linear-gradient(135deg,rgba(255,255,255,.045),rgba(214,179,106,.045));
+  color:#e9e2d6;
+  border-radius:999px;
+  padding:.43rem .34rem;
+  cursor:pointer;
+  font-size:.78rem;
+  font-weight:850;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:.22rem;
+  transition:transform .18s ease, background .18s ease, border-color .18s ease;
+}
+.drama-action-btn:hover{
+  transform:translateY(-1px);
+  background:rgba(214,179,106,.13);
+  border-color:rgba(214,179,106,.36);
+}
+.drama-action-btn.active{
+  color:#111;
+  background:linear-gradient(135deg,#d6b36a,#a77b37);
+  border-color:rgba(214,179,106,.65);
+}
+.player-actions-wrap{
+  background:rgba(21,24,29,.92);
+  border:1px solid var(--line);
+  border-top:none;
+  border-radius:0 0 18px 18px;
+  padding:.78rem .85rem .9rem;
+  box-shadow:0 12px 28px rgba(0,0,0,.12);
+}
+.player-actions-wrap .drama-actions{
+  margin-top:0;
+  padding-top:0;
+  border-top:none;
+}
+.comment-list{
+  margin-top:.65rem;
+  color:#c9c9c9;
+  font-size:.84rem;
+}
+.comment-item{
+  border-top:1px solid rgba(214,179,106,.12);
+  padding:.45rem 0 0;
+  margin-top:.45rem;
+}
+@media(max-width:640px){
+  .drama-action-btn{font-size:.74rem;padding:.4rem .25rem}
+}
+
+
+/* Fully working local interaction system */
+.drama-action-btn .num{font-size:.72rem;opacity:.86;margin-left:.08rem}
+.comment-modal-box{width:min(520px,94vw)}
+.comment-modal-title{font-weight:900;margin-bottom:.8rem;color:#fff8e8}
+.comment-modal-list{max-height:220px;overflow:auto;margin:.55rem 0 .85rem;border:1px solid rgba(214,179,106,.16);border-radius:14px;padding:.35rem;background:#0f1217}
+.comment-modal-empty{color:#9ca3af;font-size:.9rem;text-align:center;padding:1rem}
+.comment-row{display:flex;justify-content:space-between;gap:.55rem;align-items:flex-start;border-bottom:1px solid rgba(214,179,106,.10);padding:.55rem .4rem;color:#e5e7eb;font-size:.9rem}
+.comment-row:last-child{border-bottom:none}
+.comment-row small{display:block;color:#9ca3af;margin-top:.18rem;font-size:.72rem}
+.comment-delete{border:none;background:transparent;color:#d6b36a;cursor:pointer;font-weight:900;padding:.15rem .25rem}
+.comment-input{width:100%;min-height:92px;resize:vertical;border:1px solid var(--line);border-radius:14px;background:#0f1217;color:#f5f5f4;padding:.8rem;margin-bottom:.8rem;font-family:inherit}
+.action-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:20000;background:rgba(15,18,23,.96);color:#fff8e8;border:1px solid rgba(214,179,106,.32);border-radius:999px;padding:.72rem 1rem;box-shadow:0 16px 34px rgba(0,0,0,.28);font-weight:850;opacity:0;pointer-events:none;transition:opacity .2s ease, bottom .2s ease}
+.action-toast.show{opacity:1;bottom:34px}
+
+
+
+/* Final mobile/action layout tuning */
+.drama-action-btn .num,
+.drama-action-btn .state-dot{
+  min-width:1.35rem;
+  height:1.15rem;
+  padding:0 .36rem;
+  border-radius:999px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(255,255,255,.10);
+  color:#fff8e8;
+  font-size:.66rem;
+  font-weight:950;
+  line-height:1;
+}
+.drama-action-btn.active .num,
+.drama-action-btn.active .state-dot{
+  background:rgba(0,0,0,.18);
+  color:#111;
+}
+.nav-area{flex:1;justify-content:flex-end;}
+.lang-wrap{margin-left:auto;}
+#portfolio .portfolio-layout{position:relative;}
+#portfolio .sidebar{z-index:30;}
+#portfolio .portfolio-layout > .panel:not(.sidebar):not(.recommend){z-index:1;min-width:0;}
+#portfolio .recommend{z-index:1;}
+@media(max-width:980px){
+  header .topbar{display:flex;align-items:center;gap:.65rem;}
+  header .brand{flex:1 1 auto;min-width:180px;}
+  header .nav-area{width:100%;display:grid;grid-template-columns:1fr auto;align-items:center;gap:.45rem;}
+  header nav{min-width:0;overflow-x:auto;flex-wrap:nowrap;padding-bottom:.15rem;}
+  header .lang-wrap{justify-self:end;margin-left:0;}
+  #portfolio .portfolio-layout{display:grid!important;grid-template-columns:1fr!important;gap:1rem!important;}
+  #portfolio .portfolio-layout > .sidebar{order:1!important;position:relative!important;top:auto!important;margin-bottom:0!important;z-index:30!important;}
+  #portfolio .portfolio-layout > .panel:not(.sidebar):not(.recommend){order:2!important;margin-top:.15rem!important;z-index:1!important;}
+  #portfolio .portfolio-layout > .recommend{order:3!important;position:relative!important;top:auto!important;z-index:1!important;}
+  #portfolio .section-title{margin-bottom:1rem;}
+}
+@media(max-width:640px){
+  .container{padding:0 .78rem;}
+  header .topbar{min-height:60px;padding:.55rem 0;}
+  header nav{gap:.22rem;}
+  .nav-btn{padding:.44rem .58rem;font-size:.82rem;white-space:nowrap;}
+  .lang-btn{padding:.45rem .65rem;font-size:.82rem;white-space:nowrap;}
+  .lang-menu{right:0;min-width:142px;}
+  #portfolio .cards{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.75rem!important;}
+  #portfolio .thumb{aspect-ratio:9/16!important;border-radius:14px 14px 0 0;}
+  #portfolio .thumb img{object-fit:cover!important;}
+  #portfolio .card-body{padding:.68rem .66rem;}
+  #portfolio .card-title{font-size:.88rem;line-height:1.28;}
+  #portfolio .meta{font-size:.72rem;gap:.25rem;}
+  .drama-actions{gap:.32rem;margin-top:.58rem;padding-top:.55rem;}
+  .drama-action-btn{border-radius:12px;font-size:.68rem;padding:.42rem .16rem;gap:.12rem;flex-direction:column;min-height:54px;}
+  .drama-action-btn .num,.drama-action-btn .state-dot{font-size:.58rem;min-width:1.2rem;height:1rem;padding:0 .28rem;}
+  .player-top{border-radius:18px 18px 0 0;align-items:flex-start;}
+  .player-title{font-size:.95rem;line-height:1.35;}
+  .tools{flex-shrink:0;}
+  .video-box{aspect-ratio:9/16!important;max-height:78vh;margin:0 auto;background:#000;}
+  .player-actions-wrap{border-radius:0 0 18px 18px;}
+  .rec-card{grid-template-columns:72px minmax(0,1fr)!important;}
+  .rec-thumb{aspect-ratio:9/16!important;}
+  .panel-head{align-items:center;}
+}
+
+
+
+/* Beautiful interaction status design */
+.drama-actions{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.62rem !important;
+  margin-top:.85rem !important;
+  padding-top:.75rem !important;
+  border-top:1px solid rgba(214,179,106,.18) !important;
+}
+.drama-action-btn{
+  position:relative;
+  min-height:68px;
+  border-radius:18px !important;
+  padding:.62rem .52rem !important;
+  flex-direction:column;
+  gap:.28rem !important;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(214,179,106,.12),transparent 50%),
+    linear-gradient(145deg,rgba(255,255,255,.055),rgba(214,179,106,.035)) !important;
+  border:1px solid rgba(214,179,106,.22) !important;
+  box-shadow:0 10px 22px rgba(0,0,0,.16);
+}
+.drama-action-btn::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  opacity:0;
+  background:linear-gradient(135deg,rgba(214,179,106,.22),rgba(255,255,255,.05));
+  transition:opacity .2s ease;
+}
+.drama-action-btn:hover::before{opacity:1;}
+.drama-action-btn > *{position:relative;z-index:1;}
+.action-icon{
+  width:25px;
+  height:25px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:999px;
+  background:rgba(214,179,106,.12);
+  border:1px solid rgba(214,179,106,.18);
+  font-size:.95rem;
+  line-height:1;
+}
+.action-label{
+  font-size:.78rem;
+  font-weight:950;
+  color:#fff8e8;
+  line-height:1.05;
+}
+.action-status{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:52px;
+  height:20px;
+  padding:0 .48rem;
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  color:#b8b0a3;
+  font-size:.63rem;
+  font-weight:950;
+  letter-spacing:.02em;
+  border:1px solid rgba(255,255,255,.07);
+}
+.drama-action-btn .num,
+.drama-action-btn .state-dot{
+  min-width:auto !important;
+  height:auto !important;
+  padding:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  color:inherit !important;
+  font-size:inherit !important;
+}
+.drama-action-btn.active{
+  background:
+    radial-gradient(circle at 50% 0%,rgba(255,255,255,.24),transparent 46%),
+    linear-gradient(135deg,#d6b36a,#a77b37) !important;
+  color:#111 !important;
+  border-color:rgba(255,224,150,.78) !important;
+  box-shadow:0 14px 30px rgba(214,179,106,.20),0 10px 24px rgba(0,0,0,.18);
+}
+.drama-action-btn.active .action-label{color:#111;}
+.drama-action-btn.active .action-icon{
+  background:rgba(0,0,0,.12);
+  border-color:rgba(0,0,0,.12);
+}
+.drama-action-btn.active .action-status{
+  background:rgba(0,0,0,.16);
+  color:#111;
+  border-color:rgba(0,0,0,.08);
+}
+.comment-list{
+  margin-top:.85rem !important;
+  display:grid;
+  gap:.46rem;
+}
+.comment-item{
+  margin-top:0 !important;
+  padding:.58rem .7rem !important;
+  border:1px solid rgba(214,179,106,.13) !important;
+  border-radius:14px;
+  background:linear-gradient(135deg,rgba(255,255,255,.035),rgba(214,179,106,.025));
+  color:#ded7ca;
+  line-height:1.45;
+}
+.comment-modal-title{
+  display:flex;
+  align-items:center;
+  gap:.45rem;
+  font-size:1.05rem;
+}
+.comment-modal-title::before{content:"💬";}
+.comment-row{
+  border-radius:12px;
+  border-bottom:none !important;
+  margin:.28rem 0;
+  padding:.68rem .62rem !important;
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(214,179,106,.10);
+}
+.comment-delete{
+  width:26px;
+  height:26px;
+  border-radius:999px;
+  background:rgba(214,179,106,.10) !important;
+}
+.comment-input:focus{
+  outline:none;
+  border-color:rgba(214,179,106,.55);
+  box-shadow:0 0 0 3px rgba(214,179,106,.10);
+}
+@media(max-width:640px){
+  .drama-actions{gap:.44rem !important;}
+  .drama-action-btn{
+    min-height:72px !important;
+    border-radius:16px !important;
+    padding:.56rem .24rem !important;
+  }
+  .action-icon{width:24px;height:24px;font-size:.88rem;}
+  .action-label{font-size:.68rem;}
+  .action-status{min-width:42px;height:18px;font-size:.55rem;padding:0 .34rem;}
+  .comment-item{font-size:.78rem;padding:.52rem .58rem !important;}
+}
+
+
+/* Icon-style action buttons: bubble / heart / star */
+.drama-action-btn.comment-action .action-icon{font-size:1.18rem;background:rgba(96,165,250,.12);border-color:rgba(96,165,250,.22);}
+.drama-action-btn.favorite-action .action-icon{font-size:1.24rem;background:rgba(244,63,94,.12);border-color:rgba(244,63,94,.22);}
+.drama-action-btn.follow-action .action-icon{font-size:1.24rem;background:rgba(250,204,21,.12);border-color:rgba(250,204,21,.24);}
+.drama-action-btn.favorite-action.active{background:linear-gradient(135deg,#ff6b8a,#d83a5f)!important;border-color:rgba(255,130,160,.75)!important;color:#fff!important;}
+.drama-action-btn.follow-action.active{background:linear-gradient(135deg,#f6d365,#d6a334)!important;border-color:rgba(255,224,150,.82)!important;color:#111!important;}
+.drama-action-btn.favorite-action.active .action-label,
+.drama-action-btn.favorite-action.active .action-status{color:#fff!important;}
+.drama-action-btn.follow-action.active .action-label,
+.drama-action-btn.follow-action.active .action-status{color:#111!important;}
+.drama-action-btn.active .action-icon{transform:scale(1.08);}
+.action-status{min-width:auto!important;padding:0 .5rem!important;}
+@media(max-width:640px){
+  .action-icon{font-size:1.05rem!important;}
+  .action-status{font-size:.54rem!important;}
+}
+
+
+
+/* Tiny icon-only actions: comment bubble / favorite star / follow heart */
+.drama-actions.mini-icon-actions{
+  display:flex !important;
+  justify-content:flex-end !important;
+  align-items:center !important;
+  gap:.32rem !important;
+  margin-top:.46rem !important;
+  padding-top:.45rem !important;
+  border-top:1px solid rgba(214,179,106,.12) !important;
+}
+.mini-icon-actions .drama-action-btn{
+  flex:0 0 auto !important;
+  width:28px !important;
+  height:28px !important;
+  min-height:28px !important;
+  padding:0 !important;
+  border-radius:999px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:0 !important;
+  background:rgba(255,255,255,.045) !important;
+  border:1px solid rgba(214,179,106,.16) !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+}
+.mini-icon-actions .drama-action-btn::before,
+.mini-icon-actions .action-label,
+.mini-icon-actions .action-status{
+  display:none !important;
+}
+.mini-icon-actions .action-icon{
+  width:auto !important;
+  height:auto !important;
+  border:none !important;
+  background:transparent !important;
+  font-size:15px !important;
+  line-height:1 !important;
+  color:#d6b36a !important;
+  transform:none !important;
+}
+.mini-icon-actions .comment-action .action-icon{font-size:14px !important;color:#9cc7ff !important;}
+.mini-icon-actions .favorite-action .action-icon{font-size:16px !important;color:#f8cf64 !important;}
+.mini-icon-actions .follow-action .action-icon{font-size:16px !important;color:#ff7b9c !important;}
+.mini-icon-actions .favorite-action.active,
+.mini-icon-actions .follow-action.active{
+  background:rgba(214,179,106,.10) !important;
+  border-color:rgba(214,179,106,.34) !important;
+}
+.mini-icon-actions .icon-count{
+  position:absolute;
+  right:-5px;
+  top:-6px;
+  min-width:15px;
+  height:15px;
+  padding:0 4px;
+  border-radius:999px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:#d6b36a;
+  color:#111;
+  font-size:10px;
+  font-weight:950;
+  line-height:1;
+  border:1px solid rgba(0,0,0,.18);
+}
+@media(max-width:640px){
+  .drama-actions.mini-icon-actions{gap:.25rem !important;margin-top:.38rem !important;padding-top:.38rem !important;}
+  .mini-icon-actions .drama-action-btn{width:24px !important;height:24px !important;min-height:24px !important;}
+  .mini-icon-actions .action-icon{font-size:13px !important;}
+  .mini-icon-actions .favorite-action .action-icon,
+  .mini-icon-actions .follow-action .action-icon{font-size:14px !important;}
+  .mini-icon-actions .icon-count{min-width:13px;height:13px;font-size:9px;right:-5px;top:-5px;}
+}
+
 </style>
+<script src="https://js.tosspayments.com/v1/payment"></script>
 </head>
 <body>
 <header><div class="container"><div class="topbar">
@@ -652,19 +1060,30 @@ header{
 
 <div id="payModal" class="pay-modal hidden"><div class="pay-box" style="width:min(420px,92vw);min-height:auto;padding:0;background:transparent;box-shadow:none;">
   <div style="text-align:center; padding:40px 20px; background:#f8f9fa; border-radius:12px; margin:20px 0; box-shadow:0 16px 34px rgba(0,0,0,.22);">
-    <h2 style="color:#333; font-size:22px; margin-bottom:15px;">🔒付费解锁内容</h2>
-    <a id="payBtn" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=D4VNS6AG5J6X4&currency_code=USD&amount=0.99&item_name=Yoon_Studio_Premium_Episode&no_note=1&return=https%3A%2F%2Fkimm-lii.github.io%2Fyooooon%2F%3Fpayment%3Dsuccess%26video%3Dsnowtruth_ep03%23portfolio&cancel_return=https%3A%2F%2Fkimm-lii.github.io%2Fyooooon%2F%3Fpayment%3Dcancel%23portfolio&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted" target="_blank" rel="noopener noreferrer"
-    style="padding:14px 32px; background:#0070ba; color:white; text-decoration:none; border-radius:8px; font-size:18px; font-weight:bold; display:inline-block;">
-      👉 前往 PayPal 付款
+    <h2 class="pay-choice-title">🔒 <span class="lang-zh active-lang">付费解锁内容</span><span class="lang-en">Unlock Premium Episode</span><span class="lang-ko">유료 콘텐츠 잠금 해제</span></h2>
+
+    <div class="pay-section-label"><span class="lang-zh active-lang">海外客户</span><span class="lang-en">International customers</span><span class="lang-ko">해외 고객</span></div>
+    <a id="payBtn" class="pay-link-btn" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=D4VNS6AG5J6X4&currency_code=USD&amount=0.99&item_name=Yoon_Studio_Premium_Episode&no_note=1&return=https%3A%2F%2Fkimm-lii.github.io%2Fyooooon%2F%3Fpayment%3Dsuccess%26video%3Dsnowtruth_ep03%23portfolio&cancel_return=https%3A%2F%2Fkimm-lii.github.io%2Fyooooon%2F%3Fpayment%3Dcancel%23portfolio&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted" target="_blank" rel="noopener noreferrer">
+      👉 <span class="lang-zh active-lang">前往 PayPal 付款</span><span class="lang-en">Pay with PayPal</span><span class="lang-ko">PayPal로 결제하기</span>
     </a>
-    <p style="font-size:14px; color:#888; margin-top:15px;">
-      点击后会在新窗口打开 PayPal 付款页面。付款完成后返回本页输入密码观看 ❤️
+
+    <div class="pay-section-label"><span class="lang-zh active-lang">韩国客户</span><span class="lang-en">Korean customers</span><span class="lang-ko">한국 고객</span></div>
+    <button id="koreaPaymentBtn" class="korea-pay-btn" onclick="startKoreaPayment()">
+      🇰🇷 <span class="lang-zh active-lang">韩国客户直接付款</span><span class="lang-en">Korean Direct Payment</span><span class="lang-ko">한국 고객 바로 결제</span>
+    </button>
+
+    <p class="pay-choice-sub">
+      <span class="lang-zh active-lang">韩国客户可直接使用韩国卡付款。</span>
+      <span class="lang-en">Korean customers can pay directly by Korean card.</span>
+      <span class="lang-ko">한국 고객은 계좌이체 또는 카카오페이로 결제할 수 있습니다. 결제 정보는 관리자에게 문의해 주세요 ❤️</span>
     </p>
-    <p style="font-size:13px; color:#666; margin-top:8px; line-height:1.6;">
-      付款后请返回本页面，点击“我已有密码”并输入观看密码。
+    <p class="pay-choice-note">
+      <span class="lang-zh active-lang">付款后，管理员会提供观看密码。收到密码后点击“我已有密码”。</span>
+      <span class="lang-en">After payment, the administrator will provide the watch password. Then click “I already have a password.”</span>
+      <span class="lang-ko">결제 후 관리자가 시청 비밀번호를 안내합니다. 비밀번호를 받은 뒤 “이미 비밀번호가 있습니다”를 눌러주세요.</span>
     </p>
-    <button class="pay-cancel" onclick="openWatchPwdFromPay()" style="width:82%;border:none;border-radius:14px;padding:.82rem .8rem;cursor:pointer;font-weight:900;font-size:.96rem;margin:.6rem auto .58rem;display:block;background:#eef0f3;color:#444;">我已有密码</button>
-    <button class="pay-cancel" onclick="closePay()" style="width:82%;border:none;border-radius:14px;padding:.82rem .8rem;cursor:pointer;font-weight:900;font-size:.96rem;margin:0 auto;display:block;background:#eef0f3;color:#444;">取消</button>
+    <button class="pay-cancel" onclick="openWatchPwdFromPay()" style="width:82%;border:none;border-radius:14px;padding:.82rem .8rem;cursor:pointer;font-weight:900;font-size:.96rem;margin:.6rem auto .58rem;display:block;background:#eef0f3;color:#444;"><span class="lang-zh active-lang">我已有密码</span><span class="lang-en">I already have a password</span><span class="lang-ko">이미 비밀번호가 있습니다</span></button>
+    <button class="pay-cancel" onclick="closePay()" style="width:82%;border:none;border-radius:14px;padding:.82rem .8rem;cursor:pointer;font-weight:900;font-size:.96rem;margin:0 auto;display:block;background:#eef0f3;color:#444;"><span class="lang-zh active-lang">取消</span><span class="lang-en">Cancel</span><span class="lang-ko">취소</span></button>
   </div>
 </div></div>
 
@@ -674,11 +1093,22 @@ header{
   <div class="btns"><button class="btn cancel" onclick="closeWatchPwd()">取消</button><button class="btn ok" onclick="verifyWatchPwd()">确认</button></div>
 </div></div>
 
+
+<div id="commentModal" class="modal hidden"><div class="modal-box comment-modal-box">
+  <div class="comment-modal-title" id="commentModalTitle">评论</div>
+  <div id="commentModalList" class="comment-modal-list"></div>
+  <textarea id="commentInput" class="comment-input" maxlength="200" placeholder="请输入评论"></textarea>
+  <div class="btns"><button class="btn cancel" onclick="closeCommentModal()">取消</button><button class="btn ok" onclick="saveCommentFromModal()">发送</button></div>
+</div></div>
+<div id="actionToast" class="action-toast"></div>
+
 <footer>© 2026 Yoon Short-Form Video Creation Studio</footer>
 
 <script>
 const ADMIN_PASSWORD='0803';
 const PAYPAL_LINK='https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=D4VNS6AG5J6X4&currency_code=USD&amount=0.99&item_name=Yoon_Studio_Premium_Episode&no_note=1&return=https%3A%2F%2Fkimm-lii.github.io%2Fyooooon%2F%3Fpayment%3Dsuccess%26video%3Dsnowtruth_ep03%23portfolio&cancel_return=https%3A%2F%2Fkimm-lii.github.io%2Fyooooon%2F%3Fpayment%3Dcancel%23portfolio&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted';
+const TOSS_CLIENT_KEY='test_ck_LlDJaYngro1K6KqdMdnG3ezGdRpX'; // 실제 결제는 live_ck_... 로 교체
+const KOREA_PAYMENT_AMOUNT=1300;
 const PASSWORD_PREFIX='yoon';
 const SERIES=[
   {id:'rulesnew',name:'《规则新生，普惠将至》'},
@@ -804,6 +1234,59 @@ function playerBoxStyle(v) {
   return '';
 }
 
+function applyLanguageFont(l) {
+  document.body.classList.remove('lang-zh-font','lang-en-font','lang-ko-font');
+  document.documentElement.lang = l==='zh' ? 'zh-CN' : (l==='ko' ? 'ko' : 'en');
+  if(l==='zh') document.body.classList.add('lang-zh-font');
+  else if(l==='ko') document.body.classList.add('lang-ko-font');
+  else document.body.classList.add('lang-en-font');
+}
+
+function localizedPaymentName() {
+  if(lang==='ko') return 'AI 숏드라마 시청권';
+  if(lang==='en') return 'AI Short Drama Watch Pass';
+  return 'AI短剧观看券';
+}
+
+function localizedCustomerName() {
+  if(lang==='ko') return '고객';
+  if(lang==='en') return 'Customer';
+  return 'Customer';
+}
+
+function startKoreaPayment() {
+  try {
+    if (!window.TossPayments) {
+      alert('Toss Payments SDK 加载失败。请确认网页已上传到 HTTPS 网站后再测试。');
+      return;
+    }
+
+    const tossPayments = TossPayments(TOSS_CLIENT_KEY);
+    const orderId = 'YOON_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+    const successUrl = getPaymentReturnUrl('success.html');
+    const failUrl = getPaymentReturnUrl('fail.html');
+
+    tossPayments.requestPayment('카드', {
+      amount: KOREA_PAYMENT_AMOUNT,
+      orderId: orderId,
+      orderName: 'Yoon Studio Premium Episode',
+      customerName: 'Customer',
+      successUrl: successUrl,
+      failUrl: failUrl
+    });
+  } catch (error) {
+    alert('韩国付款页面打开失败：\n' + (error && error.message ? error.message : error));
+  }
+}
+
+function getPaymentReturnUrl(fileName) {
+  // 本地 file:// 打开时，Toss 不接受 file URL，所以自动使用你的 GitHub Pages 地址。
+  if (window.location.protocol === 'file:') {
+    return 'https://kimm-lii.github.io/yooooon/' + fileName;
+  }
+  return new URL(fileName, window.location.href).href;
+}
+
 function setLang(l) {
   lang=l;
   localStorage.setItem('yoon_lang',l);
@@ -813,6 +1296,7 @@ function setLang(l) {
   const currentLangEl=document.getElementById('currentLang');
   if(currentLangEl) currentLangEl.textContent=l==='zh'?'中文':l==='en'?'English':'한국어';
   document.getElementById('langMenu').classList.add('hidden');
+  applyLanguageFont(l);
   renderAll();
 }
 function toggleLangMenu() { document.getElementById('langMenu').classList.toggle('hidden'); }
@@ -846,6 +1330,146 @@ function renderDirs() {
   }).join('');
 }
 
+
+function actionText(type) {
+  const dict={
+    comment:{zh:'评论',en:'Comment',ko:'댓글'},
+    favorite:{zh:'收藏',en:'Favorite',ko:'찜'},
+    favorited:{zh:'已收藏',en:'Favorited',ko:'찜 완료'},
+    follow:{zh:'关注',en:'Follow',ko:'팔로우'},
+    followed:{zh:'已关注',en:'Following',ko:'팔로잉'},
+    commentsCount:{zh:'条评论',en:'comments',ko:'개 댓글'},
+    on:{zh:'已开启',en:'ON',ko:'ON'},
+    off:{zh:'未开启',en:'OFF',ko:'OFF'}
+  };
+  return (dict[type] && dict[type][lang]) || (dict[type] && dict[type].zh) || type;
+}
+function uiText(key) {
+  const dict={
+    commentTitle:{zh:'评论',en:'Comments',ko:'댓글'},
+    commentPlaceholder:{zh:'写下你的评论...',en:'Write your comment...',ko:'댓글을 입력해 주세요...'},
+    noComments:{zh:'还没有评论，成为第一个留言的人吧。',en:'No comments yet. Be the first to write one.',ko:'아직 댓글이 없습니다. 첫 댓글을 남겨보세요.'},
+    favoriteOn:{zh:'已收藏',en:'Added to favorites',ko:'찜했습니다'},
+    favoriteOff:{zh:'已取消收藏',en:'Removed from favorites',ko:'찜을 취소했습니다'},
+    followOn:{zh:'已关注',en:'Followed',ko:'팔로우했습니다'},
+    followOff:{zh:'已取消关注',en:'Unfollowed',ko:'팔로우를 취소했습니다'},
+    commentSaved:{zh:'评论已发送',en:'Comment posted',ko:'댓글이 등록되었습니다'},
+    commentDeleted:{zh:'评论已删除',en:'Comment deleted',ko:'댓글이 삭제되었습니다'}
+  };
+  return (dict[key] && dict[key][lang]) || dict[key].zh;
+}
+function actionStore() {
+  try { return JSON.parse(localStorage.getItem('yoon_video_actions') || '{}'); }
+  catch(e) { return {}; }
+}
+function saveActionStore(data) { localStorage.setItem('yoon_video_actions', JSON.stringify(data)); }
+function actionData(id) {
+  const data=actionStore();
+  if(!data[id]) data[id]={favorite:false,follow:false,comments:[]};
+  if(!Array.isArray(data[id].comments)) data[id].comments=[];
+  return {data,item:data[id]};
+}
+function commentCount(v){ return actionData(v.id).item.comments.length; }
+function renderActionButtons(v) {
+  const st=actionData(v.id).item;
+  const c=st.comments.length;
+  const favOn=st.favorite;
+  const folOn=st.follow;
+  return `<div class="drama-actions mini-icon-actions" onclick="event.stopPropagation()">
+    <button class="drama-action-btn comment-action" title="Comments" aria-label="Comments" onclick="openCommentModal('${v.id}')">
+      <span class="action-icon">💬</span>${c?`<span class="icon-count">${c}</span>`:''}
+    </button>
+    <button class="drama-action-btn favorite-action ${favOn?'active':''}" title="Favorite" aria-label="Favorite" onclick="toggleFavorite('${v.id}')">
+      <span class="action-icon">${favOn?'★':'☆'}</span>
+    </button>
+    <button class="drama-action-btn follow-action ${folOn?'active':''}" title="Follow" aria-label="Follow" onclick="toggleFollow('${v.id}')">
+      <span class="action-icon">${folOn?'♥':'♡'}</span>
+    </button>
+  </div>`;
+}
+function renderComments(v) {
+  const comments=actionData(v.id).item.comments.slice(-3).reverse();
+  if(!comments.length) return '';
+  return `<div class="comment-list">${comments.map(c=>`<div class="comment-item"><strong>💬</strong> ${esc(typeof c==='string'?c:c.text)}</div>`).join('')}</div>`;
+}
+function toggleFavorite(id) {
+  const {data,item}=actionData(id);
+  item.favorite=!item.favorite;
+  saveActionStore(data);
+  showToast(item.favorite ? uiText('favoriteOn') : uiText('favoriteOff'));
+  renderAll();
+  if(currentVideo && String(currentVideo.id)===String(id)) renderPlayer(currentVideo);
+}
+function toggleFollow(id) {
+  const {data,item}=actionData(id);
+  item.follow=!item.follow;
+  saveActionStore(data);
+  showToast(item.follow ? uiText('followOn') : uiText('followOff'));
+  renderAll();
+  if(currentVideo && String(currentVideo.id)===String(id)) renderPlayer(currentVideo);
+}
+let activeCommentVideoId=null;
+function openCommentModal(id) {
+  activeCommentVideoId=id;
+  const v=videos().find(x=>String(x.id)===String(id));
+  document.getElementById('commentModalTitle').textContent = uiText('commentTitle') + (v ? ' - ' + titleOf(v) : '');
+  document.getElementById('commentInput').placeholder = uiText('commentPlaceholder');
+  document.getElementById('commentInput').value='';
+  renderCommentModalList();
+  document.getElementById('commentModal').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('commentInput').focus(),30);
+}
+function closeCommentModal() {
+  document.getElementById('commentModal').classList.add('hidden');
+  activeCommentVideoId=null;
+}
+function renderCommentModalList() {
+  if(!activeCommentVideoId) return;
+  const comments=actionData(activeCommentVideoId).item.comments;
+  const box=document.getElementById('commentModalList');
+  if(!comments.length){ box.innerHTML=`<div class="comment-modal-empty">${uiText('noComments')}</div>`; return; }
+  box.innerHTML=comments.slice().reverse().map((c,idx)=>{
+    const realIndex=comments.length-1-idx;
+    const text=typeof c==='string'?c:c.text;
+    const time=typeof c==='string'?'':(c.time||'');
+    return `<div class="comment-row"><div>💬 ${esc(text)}${time?`<small>${esc(time)}</small>`:''}</div><button class="comment-delete" onclick="deleteComment(${realIndex})">×</button></div>`;
+  }).join('');
+}
+function saveCommentFromModal() {
+  if(!activeCommentVideoId) return;
+  const input=document.getElementById('commentInput');
+  const text=input.value.trim();
+  if(!text) return;
+  const {data,item}=actionData(activeCommentVideoId);
+  const now=new Date();
+  item.comments.push({text:text.slice(0,200),time:now.toLocaleString()});
+  saveActionStore(data);
+  input.value='';
+  renderCommentModalList();
+  showToast(uiText('commentSaved'));
+  renderAll();
+  if(currentVideo && String(currentVideo.id)===String(activeCommentVideoId)) renderPlayer(currentVideo);
+}
+function deleteComment(index) {
+  if(!activeCommentVideoId) return;
+  const {data,item}=actionData(activeCommentVideoId);
+  item.comments.splice(index,1);
+  saveActionStore(data);
+  renderCommentModalList();
+  showToast(uiText('commentDeleted'));
+  renderAll();
+  if(currentVideo && String(currentVideo.id)===String(activeCommentVideoId)) renderPlayer(currentVideo);
+}
+function addComment(id) { openCommentModal(id); }
+function showToast(msg) {
+  const t=document.getElementById('actionToast');
+  if(!t) return;
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(window.__actionToastTimer);
+  window.__actionToastTimer=setTimeout(()=>t.classList.remove('show'),1400);
+}
+
 function renderCards() {
   const area=document.getElementById('displayArea');
   if(currentVideo) { renderPlayer(currentVideo); return; }
@@ -853,7 +1477,7 @@ function renderCards() {
   area.innerHTML = '<div class="cards">' + classicList.map(v=>`
     <article class="work-card" onclick="openVideo('${v.id}')">
       <div class="thumb">${posterImg(v)}<div class="play">▶</div></div>
-      <div class="card-body"><div class="card-title">${esc(titleOf(v))}</div><div class="meta"><span>${esc(v.episode||'第1集')}</span><span>${v.password?'🔒 视频密钥':'公开'}</span></div></div>
+      <div class="card-body"><div class="card-title">${esc(titleOf(v))}</div><div class="meta"><span>${esc(v.episode||'第1集')}</span><span>${v.password?'🔒 视频密钥':'公开'}</span></div>${renderActionButtons(v)}</div>
     </article>`).join('') + '</div>';
 }
 
@@ -889,11 +1513,15 @@ function renderPlayer(v) {
         <button class="close-x" onclick="closePlayer()">×</button>
       </div>
     </div>
-    <div class="video-box" style="${playerBoxStyle(v)}">${player}</div>`;
+    <div class="video-box" style="${playerBoxStyle(v)}">${player}</div>
+    <div class="player-actions-wrap">
+      ${renderActionButtons(v)}
+      ${renderComments(v)}
+    </div>`;
 }
 function changeSub(v) { subtitle=v; localStorage.setItem('yoon_subtitle',v); if(currentVideo) renderPlayer(currentVideo); }
 function closePlayer() { currentVideo=null; renderCards(); }
-document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closePlayer(); closePay(); closeWatchPwd(); closeAdmin(); } });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closePlayer(); closePay(); closeWatchPwd(); closeAdmin(); closeCommentModal(); } });
 
 function askAdmin() {
   document.getElementById('adminPwd').value='';
