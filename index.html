@@ -2610,9 +2610,9 @@ const TOSS_CLIENT_KEY='test_ck_LlDJaYngro1K6KqdMdnG3ezGdRpX'; // 실제 결제�
 const KOREA_PAYMENT_AMOUNT=1300;
 const PASSWORD_PREFIX='yoon';
 const SERIES=[
-  {id:'rulesnew',name:'《规则新生，普惠将至》'},
-  {id:'snowtruth',name:'《雪之刃：未说的真相》'},
-  {id:'coldcity',name:'《寒城烬爱》'}
+  {id:'rulesnew',name_zh:'《规则新生，普惠将至》',name_en:'New Rules, Universal Access Is Coming',name_ko:'새로운 규칙, 모두를 위한 기술이 온다'},
+  {id:'snowtruth',name_zh:'《雪之刃：未说的真相》',name_en:'Blade of Snow: The Untold Truth',name_ko:'눈의 칼날: 말하지 못한 진실'},
+  {id:'coldcity',name_zh:'《寒城烬爱》',name_en:'Cold City Ashes of Love',name_ko:'한성신애'}
 ];
 const PUBLIC_VIDEOS=[
   {id:'rulesnew_trailer',url:'https://youtu.be/x6glzNltJfg',dirId:'rulesnew',title_zh:'《规则新生，普惠将至》',title_en:'New Rules, Universal Access Is Coming',title_ko:'새로운 규칙, 모두를 위한 기술이 온다',episode:'预告片',password:'',poster:''},
@@ -2688,6 +2688,31 @@ function esc(s) {
 function titleOf(v) {
   return lang==='en' ? (v.title_en||v.title_zh) : lang==='ko' ? (v.title_ko||v.title_zh) : (v.title_zh||v.title_en);
 }
+function dirNameOf(d) {
+  if(lang==='en') return d.name_en || d.name || d.name_zh || 'Untitled Series';
+  if(lang==='ko') return d.name_ko || d.name || d.name_zh || '제목 없음';
+  return d.name_zh || d.name || d.name_en || '未命名作品';
+}
+function episodeOf(v) {
+  const ep=String(v.episode||'').trim();
+  const m=ep.match(/第(\d+)集/);
+  if(m){
+    if(lang==='en') return 'Episode '+m[1];
+    if(lang==='ko') return m[1]+'화';
+    return '第'+m[1]+'集';
+  }
+  if(ep.includes('预告')){
+    if(lang==='en') return 'Trailer';
+    if(lang==='ko') return '예고편';
+    return '预告片';
+  }
+  return ep || (lang==='en'?'Episode 1':lang==='ko'?'1화':'第1集');
+}
+function statusOf(v) {
+  if(v.password) return lang==='en'?'🔒 Password':(lang==='ko'?'🔒 비밀번호':'🔒 视频密钥');
+  return lang==='en'?'Public':(lang==='ko'?'공개':'公开');
+}
+function emptyText(){ return lang==='en'?'No videos yet':(lang==='ko'?'아직 영상이 없습니다':'${emptyText()}'); }
 function ytId(url) {
   try {
     const u=new URL(url);
@@ -2835,8 +2860,8 @@ function renderDirs() {
   document.getElementById('workGroups').innerHTML = dirs().map((d,i)=>{
     const list=vs.filter(v=>String(v.dirId)===String(d.id));
     return `<div class="dir">
-      <div class="dir-head" onclick="this.parentElement.classList.toggle('open')"><span>${esc(d.name)}</span><span class="count">${list.length}</span></div>
-      <div class="dir-list">${list.map(v=>`<button class="dir-line" onclick="event.stopPropagation();openVideo('${v.id}')"><span>${esc(v.episode || '第1集')}</span>${v.password?'<span class="key">KEY</span>':''}</button>`).join('') || '<div style="font-size:.84rem;color:#94a3b8;padding:.4rem;">暂无视频</div>'}</div>
+      <div class="dir-head" onclick="this.parentElement.classList.toggle('open')"><span>${esc(dirNameOf(d))}</span><span class="count">${list.length}</span></div>
+      <div class="dir-list">${list.map(v=>`<button class="dir-line" onclick="event.stopPropagation();openVideo('${v.id}')"><span>${esc(episodeOf(v))}</span>${v.password?'<span class="key">KEY</span>':''}</button>`).join('') || '<div style="font-size:.84rem;color:#94a3b8;padding:.4rem;">${emptyText()}</div>'}</div>
     </div>`;
   }).join('');
 }
@@ -2931,7 +2956,7 @@ function shareVideo(id) {
   const shareUrl = new URL(window.location.href);
   shareUrl.hash = 'portfolio';
   shareUrl.searchParams.set('video', v.id);
-  const text = titleOf(v) + (v.episode ? ' ' + v.episode : '');
+  const text = titleOf(v) + ' ' + episodeOf(v);
   if(navigator.share) {
     navigator.share({title:text,text:text,url:shareUrl.href}).catch(()=>{});
     return;
@@ -2948,7 +2973,7 @@ function shareVideo(id) {
 }
 let activeCommentVideoId=null;
 function githubCommentTerm(v){
-  const base = (v ? (titleOf(v) + ' ' + (v.episode || '') + ' ' + v.id) : String(activeCommentVideoId || 'home'));
+  const base = (v ? (titleOf(v) + ' ' + episodeOf(v) + ' ' + v.id) : String(activeCommentVideoId || 'home'));
   return 'Yoon Studio Comments - ' + base.replace(/\s+/g,' ').trim();
 }
 function openCommentModal(id) {
@@ -3005,7 +3030,7 @@ function renderCards() {
   area.innerHTML = '<div class="cards">' + classicList.map(v=>`
     <article class="work-card" onclick="openVideo('${v.id}')">
       <div class="thumb">${posterImg(v)}<div class="play">▶</div></div>
-      <div class="card-body"><div class="card-title">${esc(titleOf(v))}</div><div class="meta"><span>${esc(v.episode||'第1集')}</span><span>${v.password?'🔒 视频密钥':'公开'}</span></div>${renderActionButtons(v)}</div>
+      <div class="card-body"><div class="card-title">${esc(titleOf(v))}</div><div class="meta"><span>${esc(episodeOf(v))}</span><span>${statusOf(v)}</span></div>${renderActionButtons(v)}</div>
     </article>`).join('') + '</div>';
 }
 
@@ -3014,7 +3039,7 @@ function renderRec() {
   document.getElementById('recommendList').innerHTML = recommendList.map(v=>`
     <div class="rec-card" onclick="openVideo('${v.id}')">
       <div class="rec-thumb">${posterImg(v)}<div class="play" style="width:24px;height:24px;font-size:10px">▶</div></div>
-      <div><div class="rec-title">${esc(titleOf(v))}</div><div class="rec-meta">${esc(v.episode||'第1集')}</div></div>
+      <div><div class="rec-title">${esc(titleOf(v))}</div><div class="rec-meta">${esc(episodeOf(v))}</div></div>
     </div>`).join('');
 }
 
@@ -3031,7 +3056,7 @@ function renderPlayer(v) {
     : `<video src="${esc(v.url)}" controls autoplay playsinline controlsList="nodownload" oncontextmenu="return false"></video>`;
   document.getElementById('displayArea').innerHTML = `
     <div class="player-top">
-      <div class="player-title">${esc(titleOf(v))} <span style="color:#64748b;font-size:.85rem;font-weight:600;">${esc(v.episode||'')}</span></div>
+      <div class="player-title">${esc(titleOf(v))} <span style="color:#64748b;font-size:.85rem;font-weight:600;">${esc(episodeOf(v))}</span></div>
       <div class="tools">
         <select class="sub-select" onchange="changeSub(this.value)">
           <option value="zh-Hans" ${subtitle==='zh-Hans'?'selected':''}>中文字幕</option>
@@ -3068,7 +3093,7 @@ function openUpload() { updateDirOptions(); document.getElementById('uploadPage'
 function closeUpload() { document.getElementById('uploadPage').style.display='none'; }
 function updateDirOptions() {
   const sel=document.getElementById('videoDir');
-  sel.innerHTML='<option value="" selected disabled>请选择目录</option>' + dirs().map(d=>`<option value="${esc(d.id)}">${esc(d.name)}</option>`).join('');
+  sel.innerHTML='<option value="" selected disabled>请选择目录</option>' + dirs().map(d=>`<option value="${esc(d.id)}">${esc(dirNameOf(d))}</option>`).join('');
 }
 function addVideo() {
   const url=document.getElementById('videoUrl').value.trim();
@@ -3112,7 +3137,7 @@ function saveDirAdd() {
 
 function openDirEdit() {
   const sel=document.getElementById('editDirSelect');
-  sel.innerHTML=dirs().map(d=>`<option value="${esc(d.id)}">${esc(d.name)}</option>`).join('');
+  sel.innerHTML=dirs().map(d=>`<option value="${esc(d.id)}">${esc(dirNameOf(d))}</option>`).join('');
   document.getElementById('editDirName').value=dirs()[0] ? dirs()[0].name : '';
   sel.onchange=()=>{
     const d=dirs().find(x=>String(x.id)===String(sel.value));
@@ -3134,7 +3159,7 @@ function saveDirEdit() {
 }
 
 function openDirDelete() {
-  document.getElementById('deleteDirSelect').innerHTML=dirs().map(d=>`<option value="${esc(d.id)}">${esc(d.name)}</option>`).join('');
+  document.getElementById('deleteDirSelect').innerHTML=dirs().map(d=>`<option value="${esc(d.id)}">${esc(dirNameOf(d))}</option>`).join('');
   document.getElementById('dirDeleteModal').classList.remove('hidden');
 }
 function closeDirDelete() { document.getElementById('dirDeleteModal').classList.add('hidden'); }
