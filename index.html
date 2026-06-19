@@ -2418,6 +2418,40 @@ input[type="email"], .payment-email, .email-field, #customerEmail, [name="custom
   .github-comments-box{padding:.55rem;min-height:260px;}
 }
 
+
+
+/* Localized GitHub comment panel */
+.localized-github-panel{
+  border:1px solid rgba(214,179,106,.22);
+  border-radius:18px;
+  padding:1.15rem;
+  background:linear-gradient(135deg,rgba(255,255,255,.035),rgba(214,179,106,.025));
+  color:#ded7ca;
+}
+.localized-github-panel h4{
+  color:#fff8e8;
+  font-size:1.05rem;
+  margin-bottom:.55rem;
+}
+.localized-github-panel p{
+  color:#b9b2a7;
+  font-size:.92rem;
+  line-height:1.75;
+  margin-bottom:.85rem;
+}
+.localized-github-actions{
+  display:flex;
+  gap:.58rem;
+  flex-wrap:wrap;
+}
+.localized-github-actions .btn{
+  flex:0 0 auto;
+  min-width:120px;
+}
+@media(max-width:640px){
+  .localized-github-actions .btn{width:100%;}
+}
+
 </style>
 <script src="https://js.tosspayments.com/v1/payment"></script>
 </head>
@@ -2592,12 +2626,15 @@ input[type="email"], .payment-email, .email-field, #customerEmail, [name="custom
 <div id="commentModal" class="modal hidden"><div class="modal-box comment-modal-box">
   <div class="comment-modal-title" id="commentModalTitle">评论</div>
   <div class="comment-help">
-    <span class="lang-zh active-lang">评论会保存到 GitHub Issues，刷新后也不会消失。首次评论需要登录 GitHub。</span>
-    <span class="lang-en">Comments are saved in GitHub Issues and will remain after refresh. GitHub login is required for first-time comments.</span>
-    <span class="lang-ko">댓글은 GitHub Issues에 저장되어 새로고침 후에도 유지됩니다. 첫 댓글 작성 시 GitHub 로그인이 필요합니다.</span>
+    <span class="lang-zh active-lang">自己发布的评论可登录后自行删除；管理员可点击“删除/管理”并输入密码删除其他评论。</span>
+    <span class="lang-en">Users can delete their own comments after logging in. Admins can click “Delete / Manage” and enter the password to delete others’ comments.</span>
+    <span class="lang-ko">본인이 작성한 댓글은 로그인 후 직접 삭제할 수 있습니다. 관리자는 “삭제/관리”를 누르고 비밀번호를 입력해 다른 댓글을 관리할 수 있습니다.</span>
   </div>
   <div id="commentModalList" class="github-comments-box"></div>
-  <div class="btns"><button class="btn cancel" onclick="closeCommentModal()"><span class="lang-zh active-lang">关闭</span><span class="lang-en">Close</span><span class="lang-ko">닫기</span></button></div>
+  <div class="btns">
+    <button class="btn danger" onclick="manageGithubComments()"><span class="lang-zh active-lang">删除/管理</span><span class="lang-en">Delete / Manage</span><span class="lang-ko">삭제/관리</span></button>
+    <button class="btn cancel" onclick="closeCommentModal()"><span class="lang-zh active-lang">关闭</span><span class="lang-en">Close</span><span class="lang-ko">닫기</span></button>
+  </div>
 </div></div>
 <div id="actionToast" class="action-toast"></div>
 
@@ -2811,6 +2848,7 @@ function getPaymentReturnUrl(fileName) {
 function setLang(l) {
   lang=l;
   localStorage.setItem('yoon_lang',l);
+  document.documentElement.lang = l==='zh' ? 'zh-CN' : (l==='ko' ? 'ko' : 'en');
   document.querySelectorAll('.lang-zh,.lang-en,.lang-ko').forEach(x=>x.classList.remove('active-lang'));
   document.querySelectorAll('.lang-'+l).forEach(x=>x.classList.add('active-lang'));
   document.querySelectorAll('.lang-option').forEach(o=>o.classList.toggle('active-option',o.dataset.lang===l));
@@ -2899,7 +2937,14 @@ function uiText(key) {
     shareCopied:{zh:'分享链接已复制',en:'Share link copied',ko:'공유 링크를 복사했습니다'},
     shareOpened:{zh:'请在打开的窗口中分享',en:'Share from the opened window',ko:'열린 창에서 공유해 주세요'},
     commentSaved:{zh:'评论已发送',en:'Comment posted',ko:'댓글이 등록되었습니다'},
-    commentDeleted:{zh:'评论已删除',en:'Comment deleted',ko:'댓글이 삭제되었습니다'}
+    commentDeleted:{zh:'评论已删除',en:'Comment deleted',ko:'댓글이 삭제되었습니다'},
+    adminPasswordPrompt:{zh:'请输入管理员密码',en:'Enter admin password',ko:'관리자 비밀번호를 입력해 주세요'},
+    adminPasswordWrong:{zh:'密码错误',en:'Wrong password',ko:'비밀번호가 올바르지 않습니다'},
+    openGithubManage:{zh:'已打开评论管理页面',en:'Comment management page opened',ko:'댓글 관리 페이지를 열었습니다'},
+    githubCommentHead:{zh:'评论区',en:'Comments',ko:'댓글'},
+    githubCommentBody:{zh:'点击下方按钮打开评论页面，登录后可以发表评论，也可以删除自己发布的评论。',en:'Click the button below to open the comment page. After logging in, you can post comments and delete your own comments.',ko:'아래 버튼을 눌러 댓글 페이지를 열어 주세요. 로그인 후 댓글을 작성하거나 본인이 작성한 댓글을 삭제할 수 있습니다.'},
+    githubCommentOpen:{zh:'打开评论页面',en:'Open Comment Page',ko:'댓글 페이지 열기'},
+    githubCommentNotice:{zh:'为保证语言一致，评论输入界面将通过当前语言的评论页面打开。',en:'To keep the language consistent, the comment page will open using the current language setting.',ko:'언어 표시를 통일하기 위해 현재 선택한 언어 기준으로 댓글 페이지를 엽니다.'}
   };
   return (dict[key] && dict[key][lang]) || dict[key].zh;
 }
@@ -3015,17 +3060,15 @@ function closeCommentModal() {
 function renderGithubComments(v){
   const box=document.getElementById('commentModalList');
   if(!box) return;
-  box.innerHTML='';
-  const script=document.createElement('script');
-  script.src='https://utteranc.es/client.js';
-  script.setAttribute('repo','kimm-lii/yooooon');
-  script.setAttribute('issue-term', githubCommentTerm(v));
-  script.setAttribute('label','comment');
-  script.setAttribute('theme','github-dark');
-  script.setAttribute('lang', utterancesLang());
-  script.setAttribute('crossorigin','anonymous');
-  script.async=true;
-  box.appendChild(script);
+  const url=currentGithubIssueSearchUrl();
+  box.innerHTML=`<div class="localized-github-panel">
+    <h4>${esc(uiText('githubCommentHead'))}</h4>
+    <p>${esc(uiText('githubCommentBody'))}</p>
+    <p style="font-size:.82rem;color:#9ca3af;">${esc(uiText('githubCommentNotice'))}</p>
+    <div class="localized-github-actions">
+      <button class="btn ok" onclick="window.open('${esc(url)}','_blank')">${esc(uiText('githubCommentOpen'))}</button>
+    </div>
+  </div>`;
 }
 function renderCommentModalList(){
   const v=videos().find(x=>String(x.id)===String(activeCommentVideoId));
@@ -3034,8 +3077,23 @@ function renderCommentModalList(){
 function saveCommentFromModal(){
   showToast(lang==='zh'?'请在 GitHub 评论框中发送':(lang==='ko'?'GitHub 댓글창에서 작성해 주세요':'Please use the GitHub comment box'));
 }
+function currentGithubIssueSearchUrl(){
+  const v=videos().find(x=>String(x.id)===String(activeCommentVideoId));
+  const term=githubCommentTerm(v);
+  return 'https://github.com/kimm-lii/yooooon/issues?q=' + encodeURIComponent(term);
+}
+function manageGithubComments(){
+  const pwd=prompt(uiText('adminPasswordPrompt'));
+  if(pwd===null) return;
+  if(String(pwd).trim()!==ADMIN_PASSWORD){
+    showToast(uiText('adminPasswordWrong'));
+    return;
+  }
+  window.open(currentGithubIssueSearchUrl(), '_blank');
+  showToast(uiText('openGithubManage'));
+}
 function deleteComment(){
-  showToast(lang==='zh'?'请在 GitHub Issues 后台管理评论':(lang==='ko'?'GitHub Issues에서 댓글을 관리해 주세요':'Manage comments in GitHub Issues'));
+  manageGithubComments();
 }
 function addComment(id) { openCommentModal(id); }
 function showToast(msg) {
