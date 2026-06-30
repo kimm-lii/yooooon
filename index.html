@@ -2694,7 +2694,7 @@ input[type="email"], .payment-email, .email-field, #customerEmail, [name="custom
 const ADMIN_PASSWORD='0803';
 const COMMENT_API_URL='';
 const CONTACT_EMAIL='studioyoon599@gmail.com';
-const ALIPAY_ACCOUNT='yooon_kimm@naver.com';
+const ALIPAY_ACCOUNT='studioyoon599@gmail.com';
 const PAYPAL_LINK='https://www.paypal.com/ncp/payment/RWARVWUG5DG72'; // PayPal后台需要把该链接商品价格改为 0.99 USD，或替换成新的0.99 USD付款链接
 const KOREA_PAYMENT_AMOUNT=0;
 const PASSWORD_PREFIX='yoon';
@@ -3127,6 +3127,7 @@ function saveDirDelete() {
 }
 
 let selectedPaymentMethod='';
+let directPaidCodeEntry=false;
 function selectedEpisodeText(){
   const v=pendingVideo || videos().find(x=>String(x.id)===String(localStorage.getItem('yoon_pending_payment_video')));
   return v ? (titleOf(v)+' '+episodeOf(v)).trim() : '';
@@ -3147,8 +3148,17 @@ function paymentInstructionText(method){
   if(lang==='ko') return '결제 완료 캡처를 이메일로 보내 주세요.';
   return '支付截图发至邮箱';
 }
+function paymentMethodEmailLine(method){
+  // If the user enters directly from “Paid, Get Code”, do not include
+  // “Payment Method: Paid, Get Code” in the auto-generated email.
+  if(!method || method==='payment' || directPaidCodeEntry) return '';
+  if(lang==='en') return 'Payment Method: '+paymentMethodLabel(method)+'\n';
+  if(lang==='ko') return '결제 방법: '+paymentMethodLabel(method)+'\n';
+  return '付款方式：'+paymentMethodLabel(method)+'\n';
+}
 function openAlipayPayment(){
   // 支付宝：显示收款二维码，不再跳转外部页面。
+  directPaidCodeEntry=false;
   selectedPaymentMethod='alipay';
   document.querySelectorAll('[data-pay-method]').forEach(el=>el.classList.toggle('selected', el.dataset.payMethod==='alipay'));
   const modal=document.getElementById('alipayQrModal');
@@ -3162,7 +3172,9 @@ function closeAlipayQr(){
 function openPaidCodeFlow(){
   // 用户点击“已付取码”后，直接打开邮件提交付款截图。
   // 不再要求先选择付款方式，避免出现“请先选择付款方式”的弹窗。
-  if(!selectedPaymentMethod) selectedPaymentMethod='payment';
+  const isDirectPaidCodeEntry=!selectedPaymentMethod;
+  if(isDirectPaidCodeEntry) selectedPaymentMethod='payment';
+  directPaidCodeEntry=isDirectPaidCodeEntry;
   const area=document.getElementById('paymentConfirmArea');
   const ins=document.getElementById('paymentInstruction');
   if(area) area.classList.remove('hidden');
@@ -3170,6 +3182,7 @@ function openPaidCodeFlow(){
   setTimeout(()=>sendReceiptEmail(),160);
 }
 function selectPaymentMethod(method){
+  directPaidCodeEntry=false;
   selectedPaymentMethod=method;
   document.querySelectorAll('[data-pay-method]').forEach(el=>el.classList.toggle('selected', el.dataset.payMethod===method));
   // Do not show screenshot/email instruction when just selecting a payment method.
@@ -3182,6 +3195,7 @@ function selectPaymentMethod(method){
 function openPay() {
   waitingPay=false;
   selectedPaymentMethod='';
+  directPaidCodeEntry=false;
   const btn=document.getElementById('payBtn');
   if(btn){ btn.href=PAYPAL_LINK; }
   document.querySelectorAll('[data-pay-method]').forEach(el=>el.classList.remove('selected'));
@@ -3262,14 +3276,14 @@ function sendReceiptEmail(){
   const method=selectedPaymentMethod;
   const episode=v ? (titleOf(v)+' '+episodeOf(v)) : selectedEpisodeText();
   const subject='Payment Screenshot - ' + (episode || 'Yoon Studio');
+  const methodLine=paymentMethodEmailLine(method);
   let body='';
   if(lang==='en'){
     body=`Hello,
 
 I have completed payment.
 
-Payment Method: ${paymentMethodLabel(method)}
-Series / Episode: ${episode}
+${methodLine}Series / Episode: ${episode}
 
 I attached the payment screenshot.
 
@@ -3279,8 +3293,7 @@ Thank you.`;
 
 결제를 완료했습니다.
 
-결제 방법: ${paymentMethodLabel(method)}
-시리즈 / 에피소드: ${episode}
+${methodLine}시리즈 / 에피소드: ${episode}
 
 결제 완료 캡처를 첨부했습니다.
 
@@ -3290,8 +3303,7 @@ Thank you.`;
 
 我已完成付款。
 
-付款方式：${paymentMethodLabel(method)}
-剧集：${episode}
+${methodLine}剧集：${episode}
 
 付款成功截图已附上。
 
@@ -3640,7 +3652,7 @@ handlePaymentReturn();
 <script>
 /* === Hidden private message board: no server setup, sends by email app === */
 (function(){
-  var CONTACT_EMAIL='yooon_kimm@naver.com';
+  var CONTACT_EMAIL='studioyoon599@gmail.com';
   var T={
     zh:{title:'留言板',desc:'如果你想咨询作品、付款或合作，可以在这里给我留言。',name:'昵称',email:'邮箱（可选）',text:'请输入留言内容',send:'发送留言',copy:'复制邮箱',note:'点击发送后，会打开你的邮箱应用发送私信。',empty:'请先输入留言内容。',copied:'邮箱已复制。'},
     en:{title:'Message Board',desc:'For questions about dramas, payment, or collaboration, you can message me here.',name:'Name',email:'Email (Optional)',text:'Write your message',send:'Send Message',copy:'Copy Email',note:'After clicking send, your email app will open to send a private message.',empty:'Please write a message first.',copied:'Email copied.'},
