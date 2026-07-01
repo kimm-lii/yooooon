@@ -2227,6 +2227,47 @@ input[type="email"], .payment-email, .email-field, #customerEmail, [name="custom
 .gallery-mini img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;}
 @media(max-width:640px){.image-gallery-viewer{min-height:320px;padding:.65rem}.image-gallery-viewer img{width:100%;max-height:calc(100vh - 210px);border-radius:12px}.gallery-mini{width:46px}.gallery-nav-btn{padding:.34rem .58rem;font-size:.85rem}}
 
+
+
+/* === Final portfolio category, gallery, and fullscreen refinements === */
+#workGroups{display:flex;flex-direction:column;gap:.9rem;}
+.work-type-block{border:0;background:transparent;}
+.work-type-head,.sidebar .dir-head,.dir-head-plain{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:.8rem;
+  border:1px solid var(--line);border-radius:16px;background:#171b22;color:#fff8e8;
+  padding:.78rem .9rem;cursor:pointer;font-size:.98rem;font-weight:900;line-height:1.2;
+}
+.work-type-head{background:transparent;border-color:transparent;color:#d6b36a;padding:.2rem .05rem .35rem;justify-content:flex-start;gap:.55rem;}
+.work-type-head::before{content:"";width:.55rem;height:.55rem;border-radius:50%;background:#d6b36a;box-shadow:0 0 0 4px rgba(214,179,106,.14);}
+.work-type-head .count{margin-left:auto;}
+.work-type-list{display:none;flex-direction:column;gap:.6rem;margin-top:.35rem;}
+.work-type-block.open .work-type-list{display:flex;}
+.sidebar .dir{border:0;background:transparent;overflow:visible;margin:0;}
+.sidebar .dir-head:hover,.dir-head-plain:hover,.work-type-head:hover{background:#222833;color:#d6b36a;}
+.sidebar .dir-list{display:none;margin:.35rem 0 .7rem .1rem;padding:.38rem 0 .05rem .65rem;border-left:1px solid rgba(214,179,106,.16);}
+.sidebar .dir.open .dir-list{display:block;}
+.type-empty{font-size:.9rem;color:#94a3b8;padding:.4rem .2rem;}
+.viewer-tool-btn{width:30px;height:30px;border:none;border-radius:50%;background:#2a2f37;color:#f4f4f5;font-size:15px;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;}
+.viewer-tool-btn:hover,.close-x:hover{background:#3a404b;color:#fff8e8;}
+.gallery-player-top{align-items:flex-start;}
+.gallery-player-title{display:flex;flex-direction:column;gap:.2rem;line-height:1.35;}
+.gallery-main-title{font-size:.98rem;font-weight:900;color:#fff8e8;}
+.gallery-count{font-size:.86rem;font-weight:900;color:#d6b36a;}
+.image-gallery-viewer{min-height:500px;padding:.9rem;background:#050506;}
+.image-gallery-viewer img{max-width:100%;max-height:calc(100vh - 220px);object-fit:contain;border-radius:12px;}
+.gallery-actions{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;padding:.7rem .85rem .85rem;background:#0f1217;border-top:1px solid var(--line);}
+.gallery-nav-btn{border-radius:14px;padding:.52rem .7rem;font-size:.88rem;font-weight:850;}
+.gallery-strip{display:none!important;}
+@media(max-width:640px){
+  .work-type-head,.sidebar .dir-head,.dir-head-plain{font-size:.94rem;padding:.72rem .78rem;border-radius:14px;}
+  .gallery-main-title{font-size:.9rem;}
+  .gallery-count{font-size:.82rem;}
+  .viewer-tool-btn,.close-x{width:29px;height:29px;font-size:14px;}
+  .image-gallery-viewer{min-height:360px;padding:.55rem;}
+  .image-gallery-viewer img{max-height:calc(100vh - 205px);}
+  .gallery-actions{gap:.45rem;padding:.6rem .62rem .68rem;}
+  .gallery-nav-btn{font-size:.82rem;padding:.48rem .55rem;}
+}
 </style>
 <script src="https://js.tosspayments.com/v1/payment"></script>
 
@@ -2588,7 +2629,11 @@ input[type="email"], .payment-email, .email-field, #customerEmail, [name="custom
 </main>
 
 <div id="uploadPage" class="upload-page"><div class="upload-box">
-  <h3>📤 <span class="lang-zh active-lang">视频上传与管理</span><span class="lang-en">Video Upload & Admin</span><span class="lang-ko">영상 업로드 및 관리</span></h3>
+  <h3>📤 <span class="lang-zh active-lang">作品上传与管理</span><span class="lang-en">Work Upload & Admin</span><span class="lang-ko">작품 업로드 및 관리</span></h3>
+  <select id="workType" onchange="syncUploadType()">
+    <option value="video">视频作品</option>
+    <option value="gallery">图片集作品</option>
+  </select>
   <input id="videoUrl" placeholder="YouTube链接 / 外网MP4链接">
   <select id="videoDir"></select>
   <div class="upload-grid">
@@ -2734,9 +2779,10 @@ const PUBLIC_VIDEOS=[
   {id:'coldcity_ep02_new',url:'https://youtu.be/1EgVUXrzL5E',dirId:'coldcity',title_zh:'《寒城烬爱》',title_en:'Cold City Ashes of Love',title_ko:'한성신애',episode:'第2集',password:'',poster:''}
 ];
 
-const IMAGE_GALLERIES={"untranslatablelove":{"title_zh":"《无法翻译的爱情》","title_en":"Untranslatable Love","title_ko":"번역이 안 되는 사랑","cover":"assets/images/untranslatable_love_cover.png","pages":[{"index":1,"total":24,"src":"assets/images/untranslatable_love_01.png"},{"index":2,"total":24,"src":"assets/images/untranslatable_love_02.png"},{"index":3,"total":24,"src":"assets/images/untranslatable_love_03.png"},{"index":4,"total":24,"src":"assets/images/untranslatable_love_04.png"},{"index":5,"total":24,"src":"assets/images/untranslatable_love_05.png"},{"index":6,"total":24,"src":"assets/images/untranslatable_love_06.png"},{"index":7,"total":24,"src":"assets/images/untranslatable_love_07.png"},{"index":8,"total":24,"src":"assets/images/untranslatable_love_08.png"},{"index":9,"total":24,"src":"assets/images/untranslatable_love_09.png"},{"index":10,"total":24,"src":"assets/images/untranslatable_love_10.png"},{"index":11,"total":24,"src":"assets/images/untranslatable_love_11.png"},{"index":12,"total":24,"src":"assets/images/untranslatable_love_12.png"},{"index":13,"total":24,"src":"assets/images/untranslatable_love_13.png"},{"index":14,"total":24,"src":"assets/images/untranslatable_love_14.png"},{"index":15,"total":24,"src":"assets/images/untranslatable_love_15.png"},{"index":16,"total":24,"src":"assets/images/untranslatable_love_16.png"},{"index":17,"total":24,"src":"assets/images/untranslatable_love_17.png"},{"index":18,"total":24,"src":"assets/images/untranslatable_love_18.png"},{"index":19,"total":24,"src":"assets/images/untranslatable_love_19.png"},{"index":20,"total":24,"src":"assets/images/untranslatable_love_20.png"},{"index":21,"total":24,"src":"assets/images/untranslatable_love_21.png"},{"index":22,"total":24,"src":"assets/images/untranslatable_love_22.png"},{"index":23,"total":24,"src":"assets/images/untranslatable_love_23.png"},{"index":24,"total":24,"src":"assets/images/untranslatable_love_24.png"}]}};
+const IMAGE_GALLERIES={"untranslatablelove":{"title_zh":"《无法翻译的爱情》","title_en":"Untranslatable Love","title_ko":"번역이 안 되는 사랑","cover":"assets/images/untranslatable_love_cover.jpg","pages":[{"index":1,"total":24,"src":"assets/images/untranslatable_love_01.jpg"},{"index":2,"total":24,"src":"assets/images/untranslatable_love_02.jpg"},{"index":3,"total":24,"src":"assets/images/untranslatable_love_03.jpg"},{"index":4,"total":24,"src":"assets/images/untranslatable_love_04.jpg"},{"index":5,"total":24,"src":"assets/images/untranslatable_love_05.jpg"},{"index":6,"total":24,"src":"assets/images/untranslatable_love_06.jpg"},{"index":7,"total":24,"src":"assets/images/untranslatable_love_07.jpg"},{"index":8,"total":24,"src":"assets/images/untranslatable_love_08.jpg"},{"index":9,"total":24,"src":"assets/images/untranslatable_love_09.jpg"},{"index":10,"total":24,"src":"assets/images/untranslatable_love_10.jpg"},{"index":11,"total":24,"src":"assets/images/untranslatable_love_11.jpg"},{"index":12,"total":24,"src":"assets/images/untranslatable_love_12.jpg"},{"index":13,"total":24,"src":"assets/images/untranslatable_love_13.jpg"},{"index":14,"total":24,"src":"assets/images/untranslatable_love_14.jpg"},{"index":15,"total":24,"src":"assets/images/untranslatable_love_15.jpg"},{"index":16,"total":24,"src":"assets/images/untranslatable_love_16.jpg"},{"index":17,"total":24,"src":"assets/images/untranslatable_love_17.jpg"},{"index":18,"total":24,"src":"assets/images/untranslatable_love_18.jpg"},{"index":19,"total":24,"src":"assets/images/untranslatable_love_19.jpg"},{"index":20,"total":24,"src":"assets/images/untranslatable_love_20.jpg"},{"index":21,"total":24,"src":"assets/images/untranslatable_love_21.jpg"},{"index":22,"total":24,"src":"assets/images/untranslatable_love_22.jpg"},{"index":23,"total":24,"src":"assets/images/untranslatable_love_23.jpg"},{"index":24,"total":24,"src":"assets/images/untranslatable_love_24.jpg"}]}};
 let customDirs=JSON.parse(localStorage.getItem('yoon_dirs')||'[]');
 let customVideos=JSON.parse(localStorage.getItem('yoon_videos')||'[]');
+let customGalleries=JSON.parse(localStorage.getItem('yoon_galleries')||'[]');
 const REMOVED_DEFAULT_VIDEO_IDS=new Set(['coldcity_ep01','netlove_ep01','beauty_ep01']);
 const REMOVED_DEFAULT_VIDEO_URLS=new Set(['https://youtu.be/A7yxPM9v-sQ','https://youtu.be/fPHwIkXnhN0','https://youtube.com/shorts/6HH5p9PpaOY?feature=share','https://youtu.be/PYmuUghpYf0']);
 const CLASSIC_VIDEO_URLS=[
@@ -2868,7 +2914,18 @@ function playerBoxStyle(v) {
 
 
 function galleryOf(dirId) {
-  return IMAGE_GALLERIES[String(dirId)] || null;
+  const key=String(dirId);
+  if(IMAGE_GALLERIES[key]) return IMAGE_GALLERIES[key];
+  const custom=customGalleries.find(g=>String(g.dirId||g.id)===key);
+  if(!custom) return null;
+  const pages=Array.isArray(custom.pages) ? custom.pages : [];
+  return {
+    title_zh:custom.title_zh||custom.title||'图片集作品',
+    title_en:custom.title_en||custom.title||custom.title_zh||'Image Gallery',
+    title_ko:custom.title_ko||custom.title||custom.title_zh||'이미지 작품',
+    cover:custom.cover || (pages[0]&&pages[0].src) || '',
+    pages
+  };
 }
 function galleryPagesOf(dirId) {
   const g=galleryOf(dirId);
@@ -2882,8 +2939,13 @@ function galleryTitleOf(g) {
 }
 function galleryText(key) {
   const dict={
-    image:{zh:'图片作品',en:'Image Story',ko:'이미지 작품'},
+    image:{zh:'图片集作品',en:'Image Gallery',ko:'이미지 작품'},
+    video:{zh:'视频作品',en:'Video Works',ko:'영상 작품'},
     pages:{zh:'24张',en:'24 Images',ko:'24장'},
+    complete:{zh:'全集',en:'Full Set',ko:'전체'},
+    prev:{zh:'上一张',en:'Previous',ko:'이전'},
+    next:{zh:'下一张',en:'Next',ko:'다음'},
+    fullscreen:{zh:'全屏观看',en:'Fullscreen',ko:'전체 화면'},
     close:{zh:'关闭',en:'Close',ko:'닫기'}
   };
   return (dict[key] && dict[key][lang]) || (dict[key] && dict[key].zh) || key;
@@ -2926,18 +2988,24 @@ function renderGallery() {
   currentGallery.index=Math.max(0,Math.min(currentGallery.index,pages.length-1));
   const page=pages[currentGallery.index];
   const label=galleryPageLabel(page,currentGallery.index,pages.length);
+  const title=galleryTitleOf(g);
   document.getElementById('displayArea').innerHTML=`
     <div class="image-gallery-wrap">
-      <div class="player-top">
-        <div class="player-title">${esc(galleryTitleOf(g))} <span style="color:#947a4d;font-size:.9rem;font-weight:800;">${esc(label)}</span></div>
+      <div class="player-top gallery-player-top">
+        <div class="player-title gallery-player-title">
+          <div class="gallery-main-title">${esc(galleryText('complete'))}｜${esc(title)}</div>
+          <div class="gallery-count">${esc(label)}</div>
+        </div>
         <div class="tools">
-          <button class="gallery-nav-btn" onclick="prevGalleryImage()">‹</button>
-          <button class="gallery-nav-btn" onclick="nextGalleryImage()">›</button>
+          <button class="viewer-tool-btn" onclick="openGalleryFullscreen()" title="${esc(galleryText('fullscreen'))}" aria-label="${esc(galleryText('fullscreen'))}">⛶</button>
           <button class="close-x" onclick="closeGallery()">×</button>
         </div>
       </div>
-      <div class="image-gallery-viewer"><img src="${esc(page.src)}" alt="${esc(galleryTitleOf(g)+' '+label)}"></div>
-      <div class="gallery-strip">${pages.map((p,i)=>`<button class="gallery-mini ${i===currentGallery.index?'active':''}" onclick="openGallery('${esc(currentGallery.dirId)}',${i})" title="${esc(galleryPageLabel(p,i,pages.length))}"><img src="${esc(p.src)}" alt="${esc(galleryPageLabel(p,i,pages.length))}" loading="lazy"></button>`).join('')}</div>
+      <div class="image-gallery-viewer" id="galleryViewer"><img src="${esc(page.src)}" alt="${esc(title+' '+label)}"></div>
+      <div class="gallery-actions">
+        <button class="gallery-nav-btn" onclick="prevGalleryImage()">${esc(galleryText('prev'))}</button>
+        <button class="gallery-nav-btn" onclick="nextGalleryImage()">${esc(galleryText('next'))}</button>
+      </div>
     </div>`;
 }
 function closeGallery() { currentGallery=null; renderCards(); }
@@ -2952,6 +3020,18 @@ function nextGalleryImage() {
   const pages=galleryPagesOf(currentGallery.dirId);
   currentGallery.index=(currentGallery.index+1)%pages.length;
   renderGallery();
+}
+
+function requestFullscreenFor(el) {
+  if(!el) return;
+  const fn=el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+  if(fn) fn.call(el);
+}
+function openGalleryFullscreen() {
+  requestFullscreenFor(document.getElementById('galleryViewer') || document.querySelector('.image-gallery-wrap'));
+}
+function openVideoFullscreen() {
+  requestFullscreenFor(document.querySelector('.video-box iframe') || document.querySelector('.video-box video') || document.querySelector('.video-box'));
 }
 
 function applyLanguageFont(l) {
@@ -3035,18 +3115,34 @@ function renderAll() {
 
 function renderDirs() {
   const vs=videos();
-  document.getElementById('workGroups').innerHTML = dirs().map((d,i)=>{
+  const allDirs=dirs();
+  const galleryDirs=allDirs.filter(d=>galleryPagesOf(d.id).length);
+  const videoDirs=allDirs.filter(d=>vs.some(v=>String(v.dirId)===String(d.id)));
+  const galleryTotal=galleryDirs.reduce((sum,d)=>sum+galleryPagesOf(d.id).length,0);
+  const videoTotal=videoDirs.reduce((sum,d)=>sum+vs.filter(v=>String(v.dirId)===String(d.id)).length,0);
+
+  function typeBlock(type,title,count,body,open){
+    const content=body || '<div class="type-empty">'+emptyText()+'</div>';
+    return `<div class="work-type-block ${open?'open':''}">
+      <button type="button" class="work-type-head" onclick="this.parentElement.classList.toggle('open')"><span>${esc(title)}</span><span class="count">${count}</span></button>
+      <div class="work-type-list">${content}</div>
+    </div>`;
+  }
+
+  const galleryBody=galleryDirs.map(d=>`<button class="dir-head dir-head-plain" onclick="openGallery('${esc(d.id)}',0)"><span>${esc(dirNameOf(d))}</span><span class="count">${galleryPagesOf(d.id).length}</span></button>`).join('');
+
+  const videoBody=videoDirs.map((d,i)=>{
     const list=vs.filter(v=>String(v.dirId)===String(d.id));
-    const galleryPages=galleryPagesOf(d.id);
-    const count=list.length + galleryPages.length;
     const videoLines=list.map(v=>`<button class="dir-line" onclick="event.stopPropagation();openVideo('${v.id}')"><span>${esc(episodeOf(v))}</span>${v.password?'<span class="key">KEY</span>':''}</button>`).join('');
-    const galleryLines=galleryPages.map((p,idx)=>`<button class="dir-line" onclick="event.stopPropagation();openGallery('${esc(d.id)}',${idx})"><span>${esc(galleryPageLabel(p,idx,galleryPages.length))}</span></button>`).join('');
-    const emptyLine='<div style="font-size:.84rem;color:#94a3b8;padding:.4rem;">'+emptyText()+'</div>';
     return `<div class="dir ${i===0?'open':''}">
-      <div class="dir-head" onclick="this.parentElement.classList.toggle('open')"><span>${esc(dirNameOf(d))}</span><span class="count">${count}</span></div>
-      <div class="dir-list">${videoLines + galleryLines || emptyLine}</div>
+      <div class="dir-head" onclick="this.parentElement.classList.toggle('open')"><span>${esc(dirNameOf(d))}</span><span class="count">${list.length}</span></div>
+      <div class="dir-list">${videoLines}</div>
     </div>`;
   }).join('');
+
+  document.getElementById('workGroups').innerHTML =
+    typeBlock('gallery',galleryText('image'),galleryTotal,galleryBody,false) +
+    typeBlock('video',galleryText('video'),videoTotal,videoBody,false);
 }
 
 
@@ -3132,11 +3228,7 @@ function renderPlayer(v) {
     <div class="player-top">
       <div class="player-title">${esc(titleOf(v))} <span style="color:#64748b;font-size:.85rem;font-weight:600;">${esc(episodeOf(v))}</span></div>
       <div class="tools">
-        <select class="sub-select" onchange="changeSub(this.value)">
-          <option value="zh-Hans" ${subtitle==='zh-Hans'?'selected':''}>中文字幕</option>
-          <option value="en" ${subtitle==='en'?'selected':''}>English</option>
-          <option value="ko" ${subtitle==='ko'?'selected':''}>한국어</option>
-        </select>
+        <button class="viewer-tool-btn" onclick="openVideoFullscreen()" title="${esc(galleryText('fullscreen'))}" aria-label="${esc(galleryText('fullscreen'))}">⛶</button>
         <button class="close-x" onclick="closePlayer()">×</button>
       </div>
     </div>
@@ -3159,36 +3251,65 @@ function verifyAdmin() {
 }
 document.getElementById('adminPwd').addEventListener('keydown',e=>{ if(e.key==='Enter') verifyAdmin(); });
 
-function openUpload() { updateDirOptions(); document.getElementById('uploadPage').style.display='block'; }
+function syncUploadType() {
+  const type=(document.getElementById('workType')&&document.getElementById('workType').value)||'video';
+  const url=document.getElementById('videoUrl');
+  const ep=document.getElementById('videoEpisode');
+  const pwd=document.getElementById('videoPwd');
+  if(url) url.placeholder = type==='gallery' ? '图片链接，可用逗号分隔多张图片' : 'YouTube链接 / 外网MP4链接';
+  if(ep) ep.placeholder = type==='gallery' ? '图片数量说明（选填）' : '集数（选填，如：第1集 / EP01）';
+  if(pwd) pwd.style.display = type==='gallery' ? 'none' : '';
+}
+function openUpload() { updateDirOptions(); syncUploadType(); document.getElementById('uploadPage').style.display='block'; }
 function closeUpload() { document.getElementById('uploadPage').style.display='none'; }
 function updateDirOptions() {
   const sel=document.getElementById('videoDir');
   sel.innerHTML='<option value="" selected disabled>请选择目录</option>' + dirs().map(d=>`<option value="${esc(d.id)}">${esc(dirNameOf(d))}</option>`).join('');
 }
 function addVideo() {
+  const type=(document.getElementById('workType')&&document.getElementById('workType').value)||'video';
   const url=document.getElementById('videoUrl').value.trim();
-  if(!url) { alert('请粘贴视频链接'); return; }
+  if(!url) { alert(type==='gallery'?'请粘贴图片链接':'请粘贴视频链接'); return; }
   const dirId=document.getElementById('videoDir').value;
   if(!dirId) { alert('请选择目录'); return; }
   const dir=dirs().find(x=>String(x.id)===String(dirId));
-  const t=document.getElementById('videoTitle').value.trim() || (dir ? dir.name : '未命名视频');
-  customVideos.push({
-    id:'custom_'+Date.now(),
-    url,
-    dirId,
-    title_zh:t,
-    title_en:t,
-    title_ko:t,
-    episode:document.getElementById('videoEpisode').value.trim(),
-    password:document.getElementById('videoPwd').value.trim(),
-    poster:''
-  });
-  localStorage.setItem('yoon_videos', JSON.stringify(customVideos));
+  const t=document.getElementById('videoTitle').value.trim() || (dir ? dirNameOf(dir) : '未命名作品');
+
+  if(type==='gallery') {
+    const imageUrls=url.split(/[\n,，;；]+/).map(x=>x.trim()).filter(Boolean);
+    if(!imageUrls.length) { alert('请粘贴图片链接'); return; }
+    const pages=imageUrls.map((src,i)=>({index:i+1,total:imageUrls.length,src}));
+    customGalleries=customGalleries.filter(g=>String(g.dirId||g.id)!==String(dirId));
+    customGalleries.push({
+      id:'gallery_'+Date.now(),
+      dirId,
+      title_zh:t,
+      title_en:t,
+      title_ko:t,
+      cover:imageUrls[0],
+      pages
+    });
+    localStorage.setItem('yoon_galleries', JSON.stringify(customGalleries));
+  } else {
+    customVideos.push({
+      id:'custom_'+Date.now(),
+      url,
+      dirId,
+      title_zh:t,
+      title_en:t,
+      title_ko:t,
+      episode:document.getElementById('videoEpisode').value.trim(),
+      password:document.getElementById('videoPwd').value.trim(),
+      poster:''
+    });
+    localStorage.setItem('yoon_videos', JSON.stringify(customVideos));
+  }
   document.getElementById('videoUrl').value='';
   document.getElementById('videoTitle').value='';
   document.getElementById('videoEpisode').value='';
   document.getElementById('videoPwd').value='';
   updateDirOptions();
+  syncUploadType();
   closeUpload();
   renderAll();
   showPage('portfolio');
@@ -3237,8 +3358,10 @@ function saveDirDelete() {
   const id=document.getElementById('deleteDirSelect').value;
   customDirs=customDirs.filter(d=>String(d.id)!==String(id));
   customVideos=customVideos.filter(v=>String(v.dirId)!==String(id));
+  customGalleries=customGalleries.filter(g=>String(g.dirId||g.id)!==String(id));
   localStorage.setItem('yoon_dirs', JSON.stringify(customDirs));
   localStorage.setItem('yoon_videos', JSON.stringify(customVideos));
+  localStorage.setItem('yoon_galleries', JSON.stringify(customGalleries));
   closeDirDelete();
   renderAll();
 }
