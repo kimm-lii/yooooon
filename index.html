@@ -2307,6 +2307,124 @@ html.yoon-fullscreen-lock,body.yoon-fullscreen-lock{height:100%;overflow:hidden!
   .gallery-actions{gap:.45rem;padding:.6rem .62rem .68rem;}
   .gallery-nav-btn{font-size:.82rem;padding:.48rem .55rem;}
 }
+
+
+/* === v5: stable viewer and iPhone-safe overlay fullscreen === */
+body.yoon-viewer-active{ }
+.image-gallery-wrap{width:100%;max-width:100%;overflow:hidden;}
+.image-gallery-viewer{
+  width:100%!important;
+  min-height:0!important;
+  height:auto!important;
+  padding:.85rem!important;
+  background:#050506!important;
+  overflow:hidden!important;
+}
+.image-gallery-viewer img{
+  display:block!important;
+  width:auto!important;
+  max-width:100%!important;
+  height:auto!important;
+  max-height:calc(100vh - 245px)!important;
+  margin:0 auto!important;
+  object-fit:contain!important;
+  border-radius:12px!important;
+}
+@media(max-width:980px){
+  body.yoon-viewer-active #portfolio .recommend{display:none!important;}
+}
+@media(max-width:640px){
+  .image-gallery-wrap{border-radius:16px!important;}
+  .image-gallery-viewer{padding:0!important;min-height:0!important;}
+  .image-gallery-viewer img{width:100%!important;max-height:none!important;border-radius:0!important;}
+  .gallery-actions{position:relative;z-index:2;}
+}
+#yoonFullOverlay{
+  position:fixed!important;
+  inset:0!important;
+  z-index:2147483000!important;
+  width:100vw!important;
+  height:100vh!important;
+  height:100dvh!important;
+  background:#000!important;
+  color:#fff8e8!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+}
+#yoonFullOverlay .yoon-full-top{
+  flex:0 0 auto!important;
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:.7rem!important;
+  padding:max(.62rem,env(safe-area-inset-top)) max(.72rem,env(safe-area-inset-right)) .62rem max(.72rem,env(safe-area-inset-left))!important;
+  background:rgba(7,8,10,.96)!important;
+  border-bottom:1px solid rgba(255,255,255,.09)!important;
+}
+#yoonFullOverlay .yoon-full-title{min-width:0!important;font-weight:900!important;line-height:1.28!important;}
+#yoonFullOverlay .yoon-full-main-title{font-size:.92rem!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;}
+#yoonFullOverlay .yoon-full-count{font-size:.85rem!important;color:#d6b36a!important;margin-top:.12rem!important;}
+#yoonFullOverlay .yoon-full-tools{display:flex!important;align-items:center!important;gap:.45rem!important;flex:0 0 auto!important;}
+#yoonFullOverlay .yoon-full-btn{
+  width:34px!important;height:34px!important;border:0!important;border-radius:50%!important;
+  background:#d6b36a!important;color:#111827!important;font-size:17px!important;font-weight:900!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;cursor:pointer!important;
+  -webkit-tap-highlight-color:transparent!important;touch-action:manipulation!important;
+}
+#yoonFullOverlay .yoon-full-close{background:#2b3038!important;color:#fff8e8!important;font-size:20px!important;}
+#yoonFullOverlay .yoon-full-stage{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:#000!important;
+  overflow:hidden!important;
+}
+#yoonFullOverlay .yoon-full-stage img{
+  display:block!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  width:auto!important;
+  height:auto!important;
+  object-fit:contain!important;
+  border:0!important;border-radius:0!important;box-shadow:none!important;
+}
+#yoonFullOverlay .yoon-full-stage iframe,
+#yoonFullOverlay .yoon-full-stage video{
+  width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;
+  border:0!important;background:#000!important;display:block!important;object-fit:contain!important;
+}
+#yoonFullOverlay .yoon-full-actions{
+  flex:0 0 auto!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:.55rem!important;
+  padding:.62rem max(.72rem,env(safe-area-inset-right)) max(.72rem,env(safe-area-inset-bottom)) max(.72rem,env(safe-area-inset-left))!important;
+  background:rgba(7,8,10,.96)!important;
+  border-top:1px solid rgba(255,255,255,.09)!important;
+}
+#yoonFullOverlay .yoon-full-nav{
+  border:1px solid rgba(214,179,106,.32)!important;
+  background:rgba(214,179,106,.12)!important;
+  color:#f8e7c2!important;
+  border-radius:14px!important;
+  padding:.62rem .8rem!important;
+  font-size:.9rem!important;
+  font-weight:900!important;
+  cursor:pointer!important;
+  touch-action:manipulation!important;
+}
+html.yoon-fullscreen-lock,body.yoon-fullscreen-lock{overflow:hidden!important;height:100%!important;}
+@media(max-width:640px){
+  #yoonFullOverlay .yoon-full-main-title{font-size:.82rem!important;max-width:calc(100vw - 112px)!important;}
+  #yoonFullOverlay .yoon-full-count{font-size:.8rem!important;}
+  #yoonFullOverlay .yoon-full-btn{width:32px!important;height:32px!important;font-size:15px!important;}
+  #yoonFullOverlay .yoon-full-close{font-size:19px!important;}
+  #yoonFullOverlay .yoon-full-nav{font-size:.82rem!important;padding:.55rem .55rem!important;}
+}
+
 </style>
 <script src="https://js.tosspayments.com/v1/payment"></script>
 
@@ -2796,7 +2914,7 @@ html.yoon-fullscreen-lock,body.yoon-fullscreen-lock{height:100%;overflow:hidden!
 const ADMIN_PASSWORD='0803';
 const COMMENT_API_URL='';
 const CONTACT_EMAIL='studioyoon599@gmail.com';
-const ALIPAY_ACCOUNT='studioyoon599@gmail.com';
+const ALIPAY_ACCOUNT='yooon_kimm@naver.com';
 const PAYPAL_LINK='https://www.paypal.com/ncp/payment/RWARVWUG5DG72'; // PayPal后台需要把该链接商品价格改为 0.99 USD，或替换成新的0.99 USD付款链接
 const KOREA_PAYMENT_AMOUNT=0;
 const PASSWORD_PREFIX='yoon';
@@ -3046,9 +3164,9 @@ function renderGallery() {
         <button class="gallery-nav-btn" onclick="nextGalleryImage()">${esc(galleryText('next'))}</button>
       </div>
     </div>`;
-  if(yoonFullscreenMode==='gallery') requestAnimationFrame(()=>applyPseudoFullscreen(document.getElementById('galleryWrap'),'gallery',true));
+  if(yoonFullscreenMode==='gallery') requestAnimationFrame(()=>renderFullscreenOverlay('gallery'));
 }
-function closeGallery() { exitPseudoFullscreen(); currentGallery=null; renderCards(); }
+function closeGallery() { exitPseudoFullscreen(); currentGallery=null; setViewerActive(false); renderCards(); }
 function prevGalleryImage() {
   if(!currentGallery) return;
   const pages=galleryPagesOf(currentGallery.dirId);
@@ -3063,30 +3181,71 @@ function nextGalleryImage() {
 }
 
 let yoonFullscreenMode='';
-function applyPseudoFullscreen(el,mode,keepMode) {
-  if(!el) return;
-  document.querySelectorAll('.yoon-pseudo-fullscreen').forEach(node=>{ if(node!==el) node.classList.remove('yoon-pseudo-fullscreen'); });
-  el.classList.add('yoon-pseudo-fullscreen');
-  document.documentElement.classList.add('yoon-fullscreen-lock');
-  document.body.classList.add('yoon-fullscreen-lock');
-  yoonFullscreenMode=mode||'';
+function setViewerActive(active) {
+  document.body.classList.toggle('yoon-viewer-active', !!active);
 }
-function exitPseudoFullscreen() {
-  document.querySelectorAll('.yoon-pseudo-fullscreen').forEach(node=>node.classList.remove('yoon-pseudo-fullscreen'));
+function removeFullOverlay() {
+  const old=document.getElementById('yoonFullOverlay');
+  if(old) old.remove();
   document.documentElement.classList.remove('yoon-fullscreen-lock');
   document.body.classList.remove('yoon-fullscreen-lock');
+}
+function exitPseudoFullscreen() {
+  removeFullOverlay();
   yoonFullscreenMode='';
 }
-function togglePseudoFullscreen(el,mode) {
-  if(!el) return;
-  if(el.classList.contains('yoon-pseudo-fullscreen')) { exitPseudoFullscreen(); return; }
-  applyPseudoFullscreen(el,mode,false);
+function fullOverlayTop(title,label,closeFnName) {
+  return `<div class="yoon-full-top">
+    <div class="yoon-full-title"><div class="yoon-full-main-title">${esc(title)}</div>${label?`<div class="yoon-full-count">${esc(label)}</div>`:''}</div>
+    <div class="yoon-full-tools">
+      <button class="yoon-full-btn" type="button" onclick="exitPseudoFullscreen()" title="${esc(galleryText('fullscreen'))}" aria-label="${esc(galleryText('fullscreen'))}">⛶</button>
+      <button class="yoon-full-btn yoon-full-close" type="button" onclick="${closeFnName}()" title="${esc(galleryText('close'))}" aria-label="${esc(galleryText('close'))}">×</button>
+    </div>
+  </div>`;
+}
+function renderFullscreenOverlay(mode) {
+  removeFullOverlay();
+  yoonFullscreenMode=mode||'';
+  if(mode==='gallery') {
+    if(!currentGallery) { yoonFullscreenMode=''; return; }
+    const g=galleryOf(currentGallery.dirId);
+    const pages=galleryPagesOf(currentGallery.dirId);
+    if(!g || !pages.length) { yoonFullscreenMode=''; return; }
+    currentGallery.index=Math.max(0,Math.min(currentGallery.index,pages.length-1));
+    const page=pages[currentGallery.index];
+    const label=galleryPageLabel(page,currentGallery.index,pages.length);
+    const title=galleryText('complete')+'｜'+galleryTitleOf(g);
+    const overlay=document.createElement('div');
+    overlay.id='yoonFullOverlay';
+    overlay.innerHTML=fullOverlayTop(title,label,'closeGallery')+
+      `<div class="yoon-full-stage"><img src="${esc(page.src)}" alt="${esc(title+' '+label)}"></div>
+       <div class="yoon-full-actions">
+         <button class="yoon-full-nav" type="button" onclick="prevGalleryImage()">${esc(galleryText('prev'))}</button>
+         <button class="yoon-full-nav" type="button" onclick="nextGalleryImage()">${esc(galleryText('next'))}</button>
+       </div>`;
+    document.body.appendChild(overlay);
+  } else if(mode==='video') {
+    if(!currentVideo) { yoonFullscreenMode=''; return; }
+    const v=currentVideo;
+    const player = isYT(v.url)
+      ? `<iframe src="${embed(v.url)}" title="${esc(titleOf(v))}" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`
+      : `<video src="${esc(v.url)}" controls autoplay playsinline webkit-playsinline controlsList="nodownload" oncontextmenu="return false"></video>`;
+    const label=episodeOf(v)||'';
+    const overlay=document.createElement('div');
+    overlay.id='yoonFullOverlay';
+    overlay.innerHTML=fullOverlayTop(titleOf(v),label,'closePlayer')+`<div class="yoon-full-stage">${player}</div>`;
+    document.body.appendChild(overlay);
+  }
+  document.documentElement.classList.add('yoon-fullscreen-lock');
+  document.body.classList.add('yoon-fullscreen-lock');
 }
 function openGalleryFullscreen() {
-  togglePseudoFullscreen(document.getElementById('galleryWrap') || document.querySelector('.image-gallery-wrap'),'gallery');
+  if(yoonFullscreenMode==='gallery') { exitPseudoFullscreen(); return; }
+  renderFullscreenOverlay('gallery');
 }
 function openVideoFullscreen() {
-  togglePseudoFullscreen(document.getElementById('videoViewerWrap') || document.querySelector('.video-viewer-wrap'),'video');
+  if(yoonFullscreenMode==='video') { exitPseudoFullscreen(); return; }
+  renderFullscreenOverlay('video');
 }
 
 function applyLanguageFont(l) {
@@ -3274,7 +3433,7 @@ function openVideo(id) {
   if(v.password) { pendingVideo=v; openPay(); return; }
   playVideo(v);
 }
-function playVideo(v) { currentVideo=v; showPage('portfolio'); renderPlayer(v); }
+function playVideo(v) { setViewerActive(true); currentVideo=v; showPage('portfolio'); renderPlayer(v); }
 function renderPlayer(v) {
   const player = isYT(v.url)
     ? `<iframe src="${embed(v.url)}" title="${esc(titleOf(v))}" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`
@@ -3290,10 +3449,10 @@ function renderPlayer(v) {
       </div>
       <div class="video-box" style="${playerBoxStyle(v)}">${player}</div>
     </div>`;
-  if(yoonFullscreenMode==='video') requestAnimationFrame(()=>applyPseudoFullscreen(document.getElementById('videoViewerWrap'),'video',true));
+  if(yoonFullscreenMode==='video') requestAnimationFrame(()=>renderFullscreenOverlay('video'));
 }
 function changeSub(v) { subtitle=v; localStorage.setItem('yoon_subtitle',v); if(currentVideo) renderPlayer(currentVideo); }
-function closePlayer() { exitPseudoFullscreen(); currentVideo=null; currentGallery=null; renderCards(); }
+function closePlayer() { exitPseudoFullscreen(); currentVideo=null; currentGallery=null; setViewerActive(false); renderCards(); }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ if(yoonFullscreenMode){ exitPseudoFullscreen(); return; } closePlayer(); closePay(); closeWatchPwd(); closeAdmin(); closeCommentModal(); } });
 
 function askAdmin() {
