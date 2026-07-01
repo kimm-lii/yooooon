@@ -2258,6 +2258,45 @@ input[type="email"], .payment-email, .email-field, #customerEmail, [name="custom
 .gallery-actions{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;padding:.7rem .85rem .85rem;background:#0f1217;border-top:1px solid var(--line);}
 .gallery-nav-btn{border-radius:14px;padding:.52rem .7rem;font-size:.88rem;font-weight:850;}
 .gallery-strip{display:none!important;}
+
+
+/* iPhone-safe internal fullscreen mode */
+html.yoon-fullscreen-lock,body.yoon-fullscreen-lock{height:100%;overflow:hidden!important;touch-action:none;}
+.image-gallery-wrap.yoon-pseudo-fullscreen,.video-viewer-wrap.yoon-pseudo-fullscreen{
+  position:fixed!important;inset:0!important;z-index:99999!important;width:100vw!important;height:100vh!important;height:100dvh!important;
+  max-width:none!important;margin:0!important;border:0!important;border-radius:0!important;background:#000!important;box-shadow:none!important;
+  display:flex!important;flex-direction:column!important;overflow:hidden!important;
+}
+.image-gallery-wrap.yoon-pseudo-fullscreen .player-top,.video-viewer-wrap.yoon-pseudo-fullscreen .player-top{
+  flex:0 0 auto!important;border-radius:0!important;border-left:0!important;border-right:0!important;border-top:0!important;
+  background:rgba(10,12,16,.94)!important;backdrop-filter:blur(10px);
+  padding-top:max(.58rem,env(safe-area-inset-top))!important;
+  padding-right:max(.68rem,env(safe-area-inset-right))!important;
+  padding-left:max(.68rem,env(safe-area-inset-left))!important;
+}
+.image-gallery-wrap.yoon-pseudo-fullscreen .gallery-main-title,.video-viewer-wrap.yoon-pseudo-fullscreen .player-title{font-size:.82rem!important;line-height:1.25!important;}
+.image-gallery-wrap.yoon-pseudo-fullscreen .gallery-count{font-size:.78rem!important;line-height:1.2!important;}
+.image-gallery-wrap.yoon-pseudo-fullscreen .image-gallery-viewer,.video-viewer-wrap.yoon-pseudo-fullscreen .video-box{
+  flex:1 1 auto!important;min-height:0!important;height:auto!important;max-height:none!important;padding:0!important;background:#000!important;border-radius:0!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;
+}
+.image-gallery-wrap.yoon-pseudo-fullscreen .image-gallery-viewer img{
+  width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;border-radius:0!important;box-shadow:none!important;
+}
+.video-viewer-wrap.yoon-pseudo-fullscreen .video-box iframe,.video-viewer-wrap.yoon-pseudo-fullscreen .video-box video{
+  width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;border:0!important;border-radius:0!important;background:#000!important;
+}
+.image-gallery-wrap.yoon-pseudo-fullscreen .gallery-actions{
+  flex:0 0 auto!important;background:rgba(10,12,16,.96)!important;border-top:1px solid rgba(255,255,255,.08)!important;
+  padding:.52rem max(.68rem,env(safe-area-inset-right)) max(.72rem,env(safe-area-inset-bottom)) max(.68rem,env(safe-area-inset-left))!important;
+}
+.yoon-pseudo-fullscreen .viewer-tool-btn{background:#d6b36a!important;color:#111827!important;}
+@media(max-width:640px){
+  .image-gallery-wrap.yoon-pseudo-fullscreen .gallery-nav-btn{font-size:.78rem!important;padding:.44rem .48rem!important;}
+  .image-gallery-wrap.yoon-pseudo-fullscreen .viewer-tool-btn,.video-viewer-wrap.yoon-pseudo-fullscreen .viewer-tool-btn,
+  .image-gallery-wrap.yoon-pseudo-fullscreen .close-x,.video-viewer-wrap.yoon-pseudo-fullscreen .close-x{width:28px!important;height:28px!important;font-size:13px!important;}
+}
+
 @media(max-width:640px){
   .work-type-head,.sidebar .dir-head,.dir-head-plain{font-size:.94rem;padding:.72rem .78rem;border-radius:14px;}
   .gallery-main-title{font-size:.9rem;}
@@ -2990,7 +3029,7 @@ function renderGallery() {
   const label=galleryPageLabel(page,currentGallery.index,pages.length);
   const title=galleryTitleOf(g);
   document.getElementById('displayArea').innerHTML=`
-    <div class="image-gallery-wrap">
+    <div class="image-gallery-wrap" id="galleryWrap">
       <div class="player-top gallery-player-top">
         <div class="player-title gallery-player-title">
           <div class="gallery-main-title">${esc(galleryText('complete'))}｜${esc(title)}</div>
@@ -3007,8 +3046,9 @@ function renderGallery() {
         <button class="gallery-nav-btn" onclick="nextGalleryImage()">${esc(galleryText('next'))}</button>
       </div>
     </div>`;
+  if(yoonFullscreenMode==='gallery') requestAnimationFrame(()=>applyPseudoFullscreen(document.getElementById('galleryWrap'),'gallery',true));
 }
-function closeGallery() { currentGallery=null; renderCards(); }
+function closeGallery() { exitPseudoFullscreen(); currentGallery=null; renderCards(); }
 function prevGalleryImage() {
   if(!currentGallery) return;
   const pages=galleryPagesOf(currentGallery.dirId);
@@ -3022,16 +3062,31 @@ function nextGalleryImage() {
   renderGallery();
 }
 
-function requestFullscreenFor(el) {
+let yoonFullscreenMode='';
+function applyPseudoFullscreen(el,mode,keepMode) {
   if(!el) return;
-  const fn=el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
-  if(fn) fn.call(el);
+  document.querySelectorAll('.yoon-pseudo-fullscreen').forEach(node=>{ if(node!==el) node.classList.remove('yoon-pseudo-fullscreen'); });
+  el.classList.add('yoon-pseudo-fullscreen');
+  document.documentElement.classList.add('yoon-fullscreen-lock');
+  document.body.classList.add('yoon-fullscreen-lock');
+  yoonFullscreenMode=mode||'';
+}
+function exitPseudoFullscreen() {
+  document.querySelectorAll('.yoon-pseudo-fullscreen').forEach(node=>node.classList.remove('yoon-pseudo-fullscreen'));
+  document.documentElement.classList.remove('yoon-fullscreen-lock');
+  document.body.classList.remove('yoon-fullscreen-lock');
+  yoonFullscreenMode='';
+}
+function togglePseudoFullscreen(el,mode) {
+  if(!el) return;
+  if(el.classList.contains('yoon-pseudo-fullscreen')) { exitPseudoFullscreen(); return; }
+  applyPseudoFullscreen(el,mode,false);
 }
 function openGalleryFullscreen() {
-  requestFullscreenFor(document.getElementById('galleryViewer') || document.querySelector('.image-gallery-wrap'));
+  togglePseudoFullscreen(document.getElementById('galleryWrap') || document.querySelector('.image-gallery-wrap'),'gallery');
 }
 function openVideoFullscreen() {
-  requestFullscreenFor(document.querySelector('.video-box iframe') || document.querySelector('.video-box video') || document.querySelector('.video-box'));
+  togglePseudoFullscreen(document.getElementById('videoViewerWrap') || document.querySelector('.video-viewer-wrap'),'video');
 }
 
 function applyLanguageFont(l) {
@@ -3225,18 +3280,21 @@ function renderPlayer(v) {
     ? `<iframe src="${embed(v.url)}" title="${esc(titleOf(v))}" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`
     : `<video src="${esc(v.url)}" controls autoplay playsinline controlsList="nodownload" oncontextmenu="return false"></video>`;
   document.getElementById('displayArea').innerHTML = `
-    <div class="player-top">
-      <div class="player-title">${esc(titleOf(v))} <span style="color:#64748b;font-size:.85rem;font-weight:600;">${esc(episodeOf(v))}</span></div>
-      <div class="tools">
-        <button class="viewer-tool-btn" onclick="openVideoFullscreen()" title="${esc(galleryText('fullscreen'))}" aria-label="${esc(galleryText('fullscreen'))}">⛶</button>
-        <button class="close-x" onclick="closePlayer()">×</button>
+    <div class="video-viewer-wrap" id="videoViewerWrap">
+      <div class="player-top">
+        <div class="player-title">${esc(titleOf(v))} <span style="color:#64748b;font-size:.85rem;font-weight:600;">${esc(episodeOf(v))}</span></div>
+        <div class="tools">
+          <button class="viewer-tool-btn" onclick="openVideoFullscreen()" title="${esc(galleryText('fullscreen'))}" aria-label="${esc(galleryText('fullscreen'))}">⛶</button>
+          <button class="close-x" onclick="closePlayer()">×</button>
+        </div>
       </div>
-    </div>
-    <div class="video-box" style="${playerBoxStyle(v)}">${player}</div>`;
+      <div class="video-box" style="${playerBoxStyle(v)}">${player}</div>
+    </div>`;
+  if(yoonFullscreenMode==='video') requestAnimationFrame(()=>applyPseudoFullscreen(document.getElementById('videoViewerWrap'),'video',true));
 }
 function changeSub(v) { subtitle=v; localStorage.setItem('yoon_subtitle',v); if(currentVideo) renderPlayer(currentVideo); }
-function closePlayer() { currentVideo=null; currentGallery=null; renderCards(); }
-document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closePlayer(); closePay(); closeWatchPwd(); closeAdmin(); closeCommentModal(); } });
+function closePlayer() { exitPseudoFullscreen(); currentVideo=null; currentGallery=null; renderCards(); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ if(yoonFullscreenMode){ exitPseudoFullscreen(); return; } closePlayer(); closePay(); closeWatchPwd(); closeAdmin(); closeCommentModal(); } });
 
 function askAdmin() {
   document.getElementById('adminPwd').value='';
