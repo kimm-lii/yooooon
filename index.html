@@ -3277,9 +3277,11 @@ function sendReceiptEmail(){
   const episode=v ? (titleOf(v)+' '+episodeOf(v)) : selectedEpisodeText();
   const subject='Payment Screenshot - ' + (episode || 'Yoon Studio');
   const methodLine=paymentMethodEmailLine(method);
+  const blankBodyForDirectPaidCode=(directPaidCodeEntry || method==='payment');
   let body='';
-  if(lang==='en'){
-    body=`Hello,
+  if(!blankBodyForDirectPaidCode){
+    if(lang==='en'){
+      body=`Hello,
 
 I have completed payment.
 
@@ -3288,8 +3290,8 @@ ${methodLine}Series / Episode: ${episode}
 I attached the payment screenshot.
 
 Thank you.`;
-  }else if(lang==='ko'){
-    body=`안녕하세요.
+    }else if(lang==='ko'){
+      body=`안녕하세요.
 
 결제를 완료했습니다.
 
@@ -3298,8 +3300,8 @@ ${methodLine}시리즈 / 에피소드: ${episode}
 결제 완료 캡처를 첨부했습니다.
 
 감사합니다.`;
-  }else{
-    body=`您好，
+    }else{
+      body=`您好，
 
 我已完成付款。
 
@@ -3308,6 +3310,7 @@ ${methodLine}剧集：${episode}
 付款成功截图已附上。
 
 谢谢。`;
+    }
   }
   location.href='mailto:'+encodeURIComponent(CONTACT_EMAIL)+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
 }
