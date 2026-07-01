@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -2432,6 +2433,36 @@ html.yoon-fullscreen-lock,body.yoon-fullscreen-lock{overflow:hidden!important;he
   #yoonFullOverlay .yoon-full-close{font-size:19px!important;}
   #yoonFullOverlay .yoon-full-nav{font-size:.82rem!important;padding:.55rem .55rem!important;}
 }
+/* v10: fullscreen controls appear only after tapping the screen */
+#yoonFullOverlay .yoon-full-top,
+#yoonFullOverlay .yoon-full-actions{
+  position:relative!important;
+  z-index:4!important;
+  transition:opacity .18s ease,transform .18s ease!important;
+}
+#yoonFullOverlay.yoon-controls-hidden .yoon-full-top{
+  opacity:0!important;
+  pointer-events:none!important;
+  transform:translateY(-12px)!important;
+}
+#yoonFullOverlay.yoon-controls-hidden .yoon-full-actions{
+  opacity:0!important;
+  pointer-events:none!important;
+  transform:translateY(12px)!important;
+}
+#yoonFullOverlay .yoon-full-stage{position:relative!important;z-index:1!important;}
+#yoonFullOverlay .yoon-tap-layer{
+  position:absolute!important;
+  inset:0!important;
+  z-index:2!important;
+  background:transparent!important;
+  pointer-events:none!important;
+}
+#yoonFullOverlay.yoon-fullscreen-video.yoon-controls-hidden .yoon-tap-layer{
+  pointer-events:auto!important;
+  cursor:pointer!important;
+}
+#yoonFullOverlay:not(.yoon-controls-hidden) .yoon-tap-layer{pointer-events:none!important;}
 
 </style>
 <script src="https://js.tosspayments.com/v1/payment"></script>
@@ -3226,10 +3257,43 @@ function setupGallerySwipe(target) {
 }
 
 let yoonFullscreenMode='';
+let yoonFullscreenControlTimer=null;
+function setFullscreenControlsVisible(show,autoHide=true) {
+  const overlay=document.getElementById('yoonFullOverlay');
+  if(!overlay) return;
+  overlay.classList.toggle('yoon-controls-hidden', !show);
+  if(yoonFullscreenControlTimer) clearTimeout(yoonFullscreenControlTimer);
+  if(show && autoHide) {
+    yoonFullscreenControlTimer=setTimeout(()=>{
+      const current=document.getElementById('yoonFullOverlay');
+      if(current) current.classList.add('yoon-controls-hidden');
+    },2600);
+  }
+}
+function initFullscreenTapControls(overlay) {
+  if(!overlay) return;
+  overlay.classList.add('yoon-controls-hidden');
+  const showControls=(e)=>{
+    if(e && e.target && (e.target.closest('.yoon-full-tools') || e.target.closest('.yoon-full-actions'))) return;
+    setFullscreenControlsVisible(true);
+  };
+  overlay.addEventListener('click',showControls);
+  overlay.addEventListener('touchend',showControls,{passive:true});
+  ['.yoon-full-tools','.yoon-full-actions'].forEach(sel=>{
+    const el=overlay.querySelector(sel);
+    if(!el) return;
+    el.addEventListener('click',e=>e.stopPropagation());
+    el.addEventListener('touchend',e=>e.stopPropagation(),{passive:true});
+  });
+}
 function setViewerActive(active) {
   document.body.classList.toggle('yoon-viewer-active', !!active);
 }
 function removeFullOverlay() {
+  if(yoonFullscreenControlTimer) {
+    clearTimeout(yoonFullscreenControlTimer);
+    yoonFullscreenControlTimer=null;
+  }
   const old=document.getElementById('yoonFullOverlay');
   if(old) old.remove();
   document.documentElement.classList.remove('yoon-fullscreen-lock');
@@ -3259,28 +3323,31 @@ function renderFullscreenOverlay(mode) {
     currentGallery.index=Math.max(0,Math.min(currentGallery.index,pages.length-1));
     const page=pages[currentGallery.index];
     const label=galleryPageLabel(page,currentGallery.index,pages.length);
-    const title=galleryText('complete')+'｜'+galleryTitleOf(g);
+    const title=galleryText('image');
     const overlay=document.createElement('div');
     overlay.id='yoonFullOverlay';
-    overlay.innerHTML=fullOverlayTop(title,label,'closeGallery')+
-      `<div class="yoon-full-stage"><img src="${esc(page.src)}" alt="${esc(title+' '+label)}"></div>
+    overlay.className='yoon-fullscreen-gallery';
+    overlay.innerHTML=fullOverlayTop(title,'','closeGallery')+
+      `<div class="yoon-full-stage"><img src="${esc(page.src)}" alt="${esc(galleryTitleOf(g)+' '+label)}"></div>
        <div class="yoon-full-actions">
          <button class="yoon-full-nav" type="button" onclick="prevGalleryImage()">${esc(galleryText('prev'))}</button>
          <button class="yoon-full-nav" type="button" onclick="nextGalleryImage()">${esc(galleryText('next'))}</button>
        </div>`;
     document.body.appendChild(overlay);
     setupGallerySwipe(overlay.querySelector('.yoon-full-stage'));
+    initFullscreenTapControls(overlay);
   } else if(mode==='video') {
     if(!currentVideo) { yoonFullscreenMode=''; return; }
     const v=currentVideo;
     const player = isYT(v.url)
       ? `<iframe src="${embed(v.url)}" title="${esc(titleOf(v))}" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`
       : `<video src="${esc(v.url)}" controls autoplay playsinline webkit-playsinline controlsList="nodownload" oncontextmenu="return false"></video>`;
-    const label=episodeOf(v)||'';
     const overlay=document.createElement('div');
     overlay.id='yoonFullOverlay';
-    overlay.innerHTML=fullOverlayTop(titleOf(v),label,'closePlayer')+`<div class="yoon-full-stage">${player}</div>`;
+    overlay.className='yoon-fullscreen-video';
+    overlay.innerHTML=fullOverlayTop(galleryText('video'),'','closePlayer')+`<div class="yoon-tap-layer" aria-hidden="true"></div><div class="yoon-full-stage">${player}</div>`;
     document.body.appendChild(overlay);
+    initFullscreenTapControls(overlay);
   }
   document.documentElement.classList.add('yoon-fullscreen-lock');
   document.body.classList.add('yoon-fullscreen-lock');
@@ -3455,7 +3522,7 @@ function renderCards() {
   if(currentVideo) { renderPlayer(currentVideo); return; }
   if(currentGallery) { renderGallery(); return; }
   const classicList=selectedVideos(CLASSIC_VIDEO_URLS);
-  area.innerHTML = '<div class="cards">' + galleryCardHtml('untranslatablelove') + classicList.map(v=>`
+  area.innerHTML = '<div class="cards">' + classicList.map(v=>`
     <article class="work-card" onclick="openVideo('${v.id}')">
       <div class="thumb">${posterImg(v)}<div class="play">▶</div></div>
       <div class="card-body"><div class="card-title">${esc(titleOf(v))}</div><div class="meta"><span>${esc(episodeOf(v))}</span><span>${statusOf(v)}</span></div></div>
