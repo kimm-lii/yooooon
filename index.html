@@ -2,7 +2,11 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Yoon Short-Form Video Creation Studio</title>
 <style>
@@ -2925,7 +2929,8 @@ body.yoon-fullscreen-lock{
 
 <!-- YOON_V16_OVERLOADER_LINKS_UPDATED -->
 <!-- YOON_V17_CONTAIN_FULLSCREEN_SUBTITLE_SAFE -->
-<script>window.YOON_BUILD_VERSION="v16-overloader-links";</script>
+<!-- YOON_V20_GALLERY_PAGE_MENU_UNIFIED -->
+<script>window.YOON_BUILD_VERSION="v19-mobile-orientation-safe-fullscreen";</script>
 
 
 <style id="yoon-v17-subtitle-safe-fullscreen-override">
@@ -3050,8 +3055,406 @@ body.yoon-fullscreen-lock{
 #yoonVersionFlag{position:fixed!important;left:-9999px!important;top:-9999px!important;width:1px!important;height:1px!important;overflow:hidden!important;}
 </style>
 
+
+<!-- YOON_V20_GALLERY_PAGE_MENU_UNIFIED -->
+<style id="yoon-v19-mobile-orientation-safe-fullscreen">
+/* v18: 不再裁切图集/视频字幕；电脑端鼠标、滚轮、键盘都可操作 */
+#yoonFullOverlay{
+  position:fixed!important;
+  inset:0!important;
+  width:100vw!important;
+  height:100vh!important;
+  height:100dvh!important;
+  background:#000!important;
+  overflow:hidden!important;
+  display:block!important;
+  z-index:2147483647!important;
+}
+#yoonFullOverlay .yoon-full-stage{
+  position:absolute!important;
+  inset:0!important;
+  width:100vw!important;
+  height:100vh!important;
+  height:100dvh!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:#000!important;
+  overflow:hidden!important;
+  z-index:1!important;
+  cursor:default!important;
+  user-select:none!important;
+  -webkit-user-select:none!important;
+}
+#yoonFullOverlay.yoon-fullscreen-gallery,
+#yoonFullOverlay.yoon-fullscreen-gallery .yoon-full-stage{cursor:grab!important;}
+#yoonFullOverlay.yoon-fullscreen-gallery.yoon-dragging,
+#yoonFullOverlay.yoon-fullscreen-gallery .yoon-dragging{cursor:grabbing!important;}
+#yoonFullOverlay.yoon-fullscreen-gallery .yoon-full-stage img{
+  position:relative!important;
+  inset:auto!important;
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:100vw!important;
+  max-height:100vh!important;
+  max-height:100dvh!important;
+  min-width:0!important;
+  min-height:0!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  transform:none!important;
+  border:0!important;
+  border-radius:0!important;
+  margin:0!important;
+  padding:0!important;
+  box-shadow:none!important;
+  background:#000!important;
+}
+#yoonFullOverlay.yoon-fullscreen-video .yoon-full-stage video,
+#yoonFullOverlay.yoon-fullscreen-video .yoon-full-stage iframe{
+  position:relative!important;
+  inset:auto!important;
+  width:100vw!important;
+  height:auto!important;
+  aspect-ratio:16/9!important;
+  max-width:100vw!important;
+  max-height:100vh!important;
+  max-height:100dvh!important;
+  min-width:0!important;
+  min-height:0!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  transform:none!important;
+  transform-origin:center center!important;
+  border:0!important;
+  border-radius:0!important;
+  margin:0!important;
+  padding:0!important;
+  background:#000!important;
+  display:block!important;
+}
+@media (min-aspect-ratio:16/9){
+  #yoonFullOverlay.yoon-fullscreen-video .yoon-full-stage video,
+  #yoonFullOverlay.yoon-fullscreen-video .yoon-full-stage iframe{
+    width:auto!important;
+    height:100vh!important;
+    height:100dvh!important;
+    max-width:100vw!important;
+  }
+}
+#yoonFullOverlay .yoon-full-top{
+  position:absolute!important;
+  left:0!important;
+  right:0!important;
+  top:0!important;
+  z-index:8!important;
+  border:0!important;
+  padding:max(.48rem,env(safe-area-inset-top)) max(.58rem,env(safe-area-inset-right)) .8rem max(.58rem,env(safe-area-inset-left))!important;
+  background:linear-gradient(to bottom,rgba(0,0,0,.58),rgba(0,0,0,.18),rgba(0,0,0,0))!important;
+  pointer-events:auto!important;
+}
+#yoonFullOverlay .yoon-full-actions{
+  position:absolute!important;
+  inset:0!important;
+  z-index:7!important;
+  display:block!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  pointer-events:none!important;
+}
+#yoonFullOverlay .yoon-full-nav{
+  position:absolute!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  width:42px!important;
+  height:64px!important;
+  padding:0!important;
+  border:1px solid rgba(214,179,106,.28)!important;
+  border-radius:999px!important;
+  background:rgba(0,0,0,.28)!important;
+  color:#fff8e8!important;
+  backdrop-filter:blur(4px)!important;
+  -webkit-backdrop-filter:blur(4px)!important;
+  pointer-events:auto!important;
+  font-size:0!important;
+  cursor:pointer!important;
+  touch-action:manipulation!important;
+}
+#yoonFullOverlay .yoon-full-nav:first-child{left:max(.45rem,env(safe-area-inset-left))!important;}
+#yoonFullOverlay .yoon-full-nav:last-child{right:max(.45rem,env(safe-area-inset-right))!important;}
+#yoonFullOverlay .yoon-full-nav:first-child::after{content:'‹';font-size:2rem;font-weight:900;line-height:1;}
+#yoonFullOverlay .yoon-full-nav:last-child::after{content:'›';font-size:2rem;font-weight:900;line-height:1;}
+#yoonFullOverlay.yoon-controls-hidden .yoon-full-top,
+#yoonFullOverlay.yoon-controls-hidden .yoon-full-actions{
+  opacity:0!important;
+  pointer-events:none!important;
+  transform:none!important;
+}
+/* 视频播放器要允许鼠标点击 YouTube / video 自己的控制条，所以不放透明遮罩 */
+#yoonFullOverlay .yoon-tap-layer{display:none!important;pointer-events:none!important;}
+#yoonFullOverlay.yoon-fullscreen-video.yoon-controls-hidden .yoon-full-top{
+  opacity:1!important;
+  pointer-events:auto!important;
+  transform:none!important;
+}
+#yoonFullOverlay.yoon-fullscreen-video .yoon-full-top{
+  background:linear-gradient(to bottom,rgba(0,0,0,.48),rgba(0,0,0,.12),rgba(0,0,0,0))!important;
+}
+@media(max-width:640px){
+  #yoonFullOverlay .yoon-full-btn{width:30px!important;height:30px!important;font-size:14px!important;}
+  #yoonFullOverlay .yoon-full-close{font-size:18px!important;}
+  #yoonFullOverlay .yoon-full-main-title{font-size:.78rem!important;max-width:calc(100vw - 105px)!important;}
+  #yoonFullOverlay .yoon-full-nav{width:34px!important;height:54px!important;background:rgba(0,0,0,.18)!important;}
+  #yoonFullOverlay .yoon-full-nav:first-child::after,
+  #yoonFullOverlay .yoon-full-nav:last-child::after{font-size:1.65rem!important;}
+}
+#yoonVersionFlag{position:fixed!important;left:-9999px!important;top:-9999px!important;width:1px!important;height:1px!important;overflow:hidden!important;}
+</style>
+<script>
+window.YOON_BUILD_VERSION="v19-mobile-orientation-safe-fullscreen";
+if(!window.__YOON_V18_KEYBOARD_BOUND__){
+  window.__YOON_V18_KEYBOARD_BOUND__=true;
+  document.addEventListener('keydown',function(e){
+    const overlay=document.getElementById('yoonFullOverlay');
+    if(!overlay) return;
+    if(e.key==='Escape'){
+      e.preventDefault();
+      if(window.yoonFullscreenMode==='video' || overlay.classList.contains('yoon-fullscreen-video')) closePlayer();
+      else closeGallery();
+    } else if(overlay.classList.contains('yoon-fullscreen-gallery')){
+      if(e.key==='ArrowLeft') { e.preventDefault(); prevGalleryImage(); }
+      if(e.key==='ArrowRight') { e.preventDefault(); nextGalleryImage(); }
+    }
+  });
+}
+</script>
+
+
+
+<!-- YOON_V20_GALLERY_PAGE_MENU_UNIFIED -->
+<style id="yoon-v19-mobile-orientation-safe-fullscreen">
+/* v19: 手机横屏/竖屏安全全屏。完整显示图集/视频，不裁字幕；不露网站背景。 */
+html.yoon-fullscreen-lock,
+body.yoon-fullscreen-lock{
+  width:100%!important;
+  height:var(--yoon-vh,100dvh)!important;
+  min-height:var(--yoon-vh,100dvh)!important;
+  overflow:hidden!important;
+  background:#000!important;
+  overscroll-behavior:none!important;
+  touch-action:none!important;
+}
+#yoonFullOverlay{
+  position:fixed!important;
+  left:0!important;
+  top:0!important;
+  right:0!important;
+  bottom:auto!important;
+  width:100vw!important;
+  width:var(--yoon-vw,100vw)!important;
+  height:100vh!important;
+  height:100dvh!important;
+  height:var(--yoon-vh,100dvh)!important;
+  background:#000!important;
+  overflow:hidden!important;
+  display:block!important;
+  z-index:2147483647!important;
+  margin:0!important;
+  padding:0!important;
+}
+#yoonFullOverlay .yoon-full-stage{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:#000!important;
+  overflow:hidden!important;
+  z-index:1!important;
+  padding:0!important;
+  margin:0!important;
+  touch-action:pan-y!important;
+}
+#yoonFullOverlay.yoon-fullscreen-gallery .yoon-full-stage img{
+  position:relative!important;
+  display:block!important;
+  width:auto!important;
+  height:auto!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  transform:none!important;
+  border:0!important;
+  border-radius:0!important;
+  margin:0 auto!important;
+  padding:0!important;
+  background:#000!important;
+  box-shadow:none!important;
+  -webkit-user-drag:none!important;
+  user-select:none!important;
+  -webkit-user-select:none!important;
+}
+#yoonFullOverlay.yoon-fullscreen-video .yoon-full-stage video,
+#yoonFullOverlay.yoon-fullscreen-video .yoon-full-stage iframe{
+  position:relative!important;
+  display:block!important;
+  width:100vw!important;
+  height:auto!important;
+  aspect-ratio:16/9!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  transform:none!important;
+  border:0!important;
+  border-radius:0!important;
+  margin:0 auto!important;
+  padding:0!important;
+  background:#000!important;
+}
+@media (min-aspect-ratio:16/9){
+  #yoonFullOverlay.yoon-fullscreen-video .yoon-full-stage video,
+  #yoonFullOverlay.yoon-fullscreen-video .yoon-full-stage iframe{
+    width:auto!important;
+    height:100%!important;
+    max-width:100%!important;
+    max-height:100%!important;
+  }
+}
+#yoonFullOverlay .yoon-full-top{
+  position:absolute!important;
+  top:0!important;
+  left:0!important;
+  right:0!important;
+  z-index:10!important;
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  padding:max(.42rem,env(safe-area-inset-top)) max(.5rem,env(safe-area-inset-right)) .9rem max(.5rem,env(safe-area-inset-left))!important;
+  background:linear-gradient(to bottom,rgba(0,0,0,.48),rgba(0,0,0,.14),rgba(0,0,0,0))!important;
+  border:0!important;
+  pointer-events:auto!important;
+  transition:opacity .18s ease!important;
+}
+#yoonFullOverlay .yoon-full-actions{
+  position:absolute!important;
+  inset:0!important;
+  z-index:9!important;
+  display:block!important;
+  background:transparent!important;
+  border:0!important;
+  pointer-events:none!important;
+  padding:0!important;
+  margin:0!important;
+}
+#yoonFullOverlay .yoon-full-nav{
+  position:absolute!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  width:38px!important;
+  height:58px!important;
+  border-radius:999px!important;
+  border:1px solid rgba(214,179,106,.24)!important;
+  background:rgba(0,0,0,.24)!important;
+  color:#fff8e8!important;
+  pointer-events:auto!important;
+  padding:0!important;
+  font-size:0!important;
+  cursor:pointer!important;
+  touch-action:manipulation!important;
+  backdrop-filter:blur(4px)!important;
+  -webkit-backdrop-filter:blur(4px)!important;
+}
+#yoonFullOverlay .yoon-full-nav:first-child{left:max(.38rem,env(safe-area-inset-left))!important;}
+#yoonFullOverlay .yoon-full-nav:last-child{right:max(.38rem,env(safe-area-inset-right))!important;}
+#yoonFullOverlay .yoon-full-nav:first-child::after{content:'‹';font-size:1.85rem;font-weight:900;line-height:1;}
+#yoonFullOverlay .yoon-full-nav:last-child::after{content:'›';font-size:1.85rem;font-weight:900;line-height:1;}
+#yoonFullOverlay.yoon-controls-hidden .yoon-full-top,
+#yoonFullOverlay.yoon-controls-hidden .yoon-full-actions{
+  opacity:0!important;
+  pointer-events:none!important;
+  transform:none!important;
+}
+/* 视频不放透明层，避免挡住 YouTube / video 自带控制条 */
+#yoonFullOverlay.yoon-fullscreen-video .yoon-tap-layer,
+#yoonFullOverlay .yoon-tap-layer{display:none!important;pointer-events:none!important;}
+#yoonFullOverlay.yoon-fullscreen-video .yoon-full-top{opacity:1!important;pointer-events:auto!important;}
+@media (orientation:landscape) and (max-height:520px){
+  #yoonFullOverlay .yoon-full-top{padding:.28rem max(.45rem,env(safe-area-inset-right)) .45rem max(.45rem,env(safe-area-inset-left))!important;}
+  #yoonFullOverlay .yoon-full-btn{width:28px!important;height:28px!important;font-size:13px!important;}
+  #yoonFullOverlay .yoon-full-main-title{font-size:.72rem!important;}
+  #yoonFullOverlay .yoon-full-nav{width:32px!important;height:48px!important;}
+}
+@media(max-width:640px){
+  #yoonFullOverlay .yoon-full-btn{width:30px!important;height:30px!important;font-size:14px!important;}
+  #yoonFullOverlay .yoon-full-close{font-size:18px!important;}
+  #yoonFullOverlay .yoon-full-main-title{font-size:.76rem!important;max-width:calc(100vw - 104px)!important;}
+}
+#yoonVersionFlag{position:fixed!important;left:-9999px!important;top:-9999px!important;width:1px!important;height:1px!important;overflow:hidden!important;}
+</style>
+<script id="yoon-v19-mobile-orientation-safe-script">
+(function(){
+  window.YOON_BUILD_VERSION='v19-mobile-orientation-safe-fullscreen';
+  function setYoonViewport(){
+    var root=document.documentElement;
+    var w=window.innerWidth || document.documentElement.clientWidth || screen.width;
+    var h=window.innerHeight || document.documentElement.clientHeight || screen.height;
+    root.style.setProperty('--yoon-vw', w + 'px');
+    root.style.setProperty('--yoon-vh', h + 'px');
+  }
+  setYoonViewport();
+  window.addEventListener('resize', setYoonViewport, {passive:true});
+  window.addEventListener('orientationchange', function(){ setTimeout(setYoonViewport, 80); setTimeout(setYoonViewport, 360); }, {passive:true});
+
+  if(!window.__YOON_V19_GALLERY_MOUSE_BOUND__){
+    window.__YOON_V19_GALLERY_MOUSE_BOUND__=true;
+    var sx=0, sy=0, lx=0, ly=0, down=false;
+    function overlay(){ return document.getElementById('yoonFullOverlay'); }
+    function isGallery(){ var o=overlay(); return o && o.classList.contains('yoon-fullscreen-gallery'); }
+    document.addEventListener('pointerdown', function(e){
+      if(!isGallery()) return;
+      if(e.target && (e.target.closest('.yoon-full-tools') || e.target.closest('.yoon-full-nav'))) return;
+      down=true; sx=e.clientX; sy=e.clientY; lx=sx; ly=sy;
+      var o=overlay(); if(o) o.classList.add('yoon-dragging');
+    }, true);
+    document.addEventListener('pointermove', function(e){
+      if(!down || !isGallery()) return;
+      lx=e.clientX; ly=e.clientY;
+    }, true);
+    document.addEventListener('pointerup', function(e){
+      if(!down) return;
+      down=false;
+      var o=overlay(); if(o) o.classList.remove('yoon-dragging');
+      if(!isGallery()) return;
+      var dx=(e.clientX||lx)-sx, dy=(e.clientY||ly)-sy;
+      if(Math.abs(dx)>55 && Math.abs(dx)>Math.abs(dy)*1.15){
+        if(dx<0) nextGalleryImage(); else prevGalleryImage();
+      }
+    }, true);
+    document.addEventListener('wheel', function(e){
+      if(!isGallery()) return;
+      var d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;
+      if(Math.abs(d)<28) return;
+      e.preventDefault();
+      if(d>0) nextGalleryImage(); else prevGalleryImage();
+    }, {passive:false, capture:true});
+  }
+})();
+</script>
+
 </head>
-<body><div id="yoonVersionFlag">YOON_V17_CONTAIN_FULLSCREEN_SUBTITLE_SAFE</div>
+<body><div id="yoonVersionFlag">YOON_V20_GALLERY_PAGE_MENU_UNIFIED</div>
 <header><div class="container"><div class="topbar">
   <div class="brand"><span class="brand-icon">🎬</span><span class="lang-zh active-lang">小Yoon 的创作空间</span><span class="lang-en">Little Yoon's Studio</span><span class="lang-ko">리틀 윤의 창작 공간</span></div>
   <div class="nav-area">
@@ -3566,33 +3969,66 @@ function nextGalleryImage() {
   renderGallery();
 }
 function setupGallerySwipe(target) {
-  if(!target || target.dataset.yoonSwipeReady==='1') return;
-  target.dataset.yoonSwipeReady='1';
-  let startX=0,startY=0,moveX=0,moveY=0,tracking=false;
-  target.addEventListener('touchstart',e=>{
-    if(!currentGallery || !e.touches || e.touches.length!==1) return;
+  if(!target || target.dataset.yoonSwipeReady==='v18') return;
+  target.dataset.yoonSwipeReady='v18';
+  target.style.touchAction='pan-y';
+  if(!target.hasAttribute('tabindex')) target.setAttribute('tabindex','0');
+  let startX=0,startY=0,moveX=0,moveY=0,tracking=false,mouseTracking=false;
+  const start=(x,y,isMouse=false)=>{
+    if(!currentGallery) return;
     tracking=true;
-    startX=e.touches[0].clientX;
-    startY=e.touches[0].clientY;
-    moveX=0;
-    moveY=0;
-  },{passive:true});
-  target.addEventListener('touchmove',e=>{
-    if(!tracking || !e.touches || e.touches.length!==1) return;
-    moveX=e.touches[0].clientX-startX;
-    moveY=e.touches[0].clientY-startY;
-    if(Math.abs(moveX)>18 && Math.abs(moveX)>Math.abs(moveY)*1.15) e.preventDefault();
-  },{passive:false});
-  target.addEventListener('touchend',()=>{
+    mouseTracking=!!isMouse;
+    startX=x; startY=y; moveX=0; moveY=0;
+    if(isMouse) target.classList.add('yoon-dragging');
+  };
+  const move=(x,y,ev)=>{
+    if(!tracking) return;
+    moveX=x-startX;
+    moveY=y-startY;
+    if(Math.abs(moveX)>18 && Math.abs(moveX)>Math.abs(moveY)*1.15 && ev && ev.cancelable) ev.preventDefault();
+  };
+  const endSwipe=()=>{
     if(!tracking) return;
     tracking=false;
+    target.classList.remove('yoon-dragging');
     const horizontal=Math.abs(moveX)>55 && Math.abs(moveX)>Math.abs(moveY)*1.25;
     if(!horizontal) return;
     if(moveX<0) nextGalleryImage();
     else prevGalleryImage();
+  };
+  target.addEventListener('touchstart',e=>{
+    if(!currentGallery || !e.touches || e.touches.length!==1) return;
+    start(e.touches[0].clientX,e.touches[0].clientY,false);
   },{passive:true});
-  target.addEventListener('touchcancel',()=>{ tracking=false; },{passive:true});
+  target.addEventListener('touchmove',e=>{
+    if(!tracking || !e.touches || e.touches.length!==1) return;
+    move(e.touches[0].clientX,e.touches[0].clientY,e);
+  },{passive:false});
+  target.addEventListener('touchend',endSwipe,{passive:true});
+  target.addEventListener('touchcancel',()=>{tracking=false;target.classList.remove('yoon-dragging');},{passive:true});
+  target.addEventListener('mousedown',e=>{
+    if(e.button!==0 || !currentGallery) return;
+    start(e.clientX,e.clientY,true);
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove',e=>{
+    if(!tracking || !mouseTracking) return;
+    move(e.clientX,e.clientY,e);
+  },{passive:false});
+  window.addEventListener('mouseup',()=>{
+    if(mouseTracking) endSwipe();
+    mouseTracking=false;
+  });
+  target.addEventListener('wheel',e=>{
+    if(!currentGallery || yoonFullscreenMode!=='gallery') return;
+    const delta=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;
+    if(Math.abs(delta)<28) return;
+    e.preventDefault();
+    if(delta>0) nextGalleryImage();
+    else prevGalleryImage();
+  },{passive:false});
 }
+
 
 let yoonFullscreenMode='';
 let yoonFullscreenControlTimer=null;
@@ -3666,12 +4102,13 @@ function renderFullscreenOverlay(mode) {
     overlay.id='yoonFullOverlay';
     overlay.className='yoon-fullscreen-gallery';
     overlay.innerHTML=fullOverlayTop(title,'','closeGallery')+
-      `<div class="yoon-tap-layer" aria-hidden="true"></div><div class="yoon-full-stage"><img src="${esc(page.src)}" alt="${esc(galleryTitleOf(g)+' '+label)}"></div>
-       <div class="yoon-full-actions">
-         <button class="yoon-full-nav" type="button" onclick="prevGalleryImage()">${esc(galleryText('prev'))}</button>
-         <button class="yoon-full-nav" type="button" onclick="nextGalleryImage()">${esc(galleryText('next'))}</button>
+      `<div class="yoon-full-stage"><img src="${esc(page.src)}" alt="${esc(galleryTitleOf(g)+' '+label)}"></div>
+       <div class="yoon-full-actions" aria-label="gallery navigation">
+         <button class="yoon-full-nav" type="button" onclick="prevGalleryImage()" aria-label="${esc(galleryText('prev'))}">${esc(galleryText('prev'))}</button>
+         <button class="yoon-full-nav" type="button" onclick="nextGalleryImage()" aria-label="${esc(galleryText('next'))}">${esc(galleryText('next'))}</button>
        </div>`;
     document.body.appendChild(overlay);
+    setupGallerySwipe(overlay);
     setupGallerySwipe(overlay.querySelector('.yoon-full-stage'));
     initFullscreenTapControls(overlay);
   } else if(mode==='video') {
@@ -3683,13 +4120,15 @@ function renderFullscreenOverlay(mode) {
     const overlay=document.createElement('div');
     overlay.id='yoonFullOverlay';
     overlay.className='yoon-fullscreen-video';
-    overlay.innerHTML=fullOverlayTop(galleryText('video'),'','closePlayer')+`<div class="yoon-tap-layer" aria-hidden="true"></div><div class="yoon-full-stage">${player}</div>`;
+    overlay.innerHTML=fullOverlayTop(galleryText('video'),'','closePlayer')+`<div class="yoon-full-stage">${player}</div>`;
     document.body.appendChild(overlay);
     initFullscreenTapControls(overlay);
+    setFullscreenControlsVisible(true,false);
   }
   document.documentElement.classList.add('yoon-fullscreen-lock');
   document.body.classList.add('yoon-fullscreen-lock');
 }
+
 function openGalleryFullscreen() {
   if(yoonFullscreenMode==='gallery') { exitPseudoFullscreen(); return; }
   renderFullscreenOverlay('gallery');
@@ -4623,6 +5062,287 @@ handlePaymentReturn();
     }
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bind); else bind();
+})();
+</script>
+
+
+
+<style>
+/* === YOON_V20_GALLERY_PAGE_MENU_UNIFIED: subtitle-safe fullscreen + unified small controls === */
+#yoonFullOverlay.yoon-fullscreen-gallery .yoon-full-stage{
+  position:absolute!important;
+  inset:0!important;
+  z-index:1!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:#000!important;
+  overflow:hidden!important;
+  padding:0!important;
+}
+#yoonFullOverlay.yoon-fullscreen-gallery .yoon-full-stage img{
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+#yoonFullOverlay.yoon-fullscreen-video .yoon-full-stage{
+  position:absolute!important;
+  inset:0!important;
+  z-index:1!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:#000!important;
+  overflow:hidden!important;
+  padding:0!important;
+}
+#yoonFullOverlay.yoon-fullscreen-video .yoon-full-stage iframe,
+#yoonFullOverlay.yoon-fullscreen-video .yoon-full-stage video{
+  width:min(100vw,calc(var(--yoon-vh,100vh) * 1.7777778))!important;
+  height:min(var(--yoon-vh,100vh),calc(100vw * .5625))!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:100vw!important;
+  max-height:var(--yoon-vh,100vh)!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  border:0!important;
+  border-radius:0!important;
+  background:#000!important;
+  display:block!important;
+  pointer-events:auto!important;
+}
+#yoonFullOverlay.yoon-fullscreen-gallery .yoon-full-actions{
+  position:absolute!important;
+  left:max(.5rem,env(safe-area-inset-left))!important;
+  right:max(.5rem,env(safe-area-inset-right))!important;
+  bottom:max(.55rem,env(safe-area-inset-bottom))!important;
+  z-index:7!important;
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:space-between!important;
+  gap:.42rem!important;
+  padding:0!important;
+  margin:0!important;
+  background:transparent!important;
+  border:0!important;
+  transform:none!important;
+  pointer-events:none!important;
+}
+#yoonFullOverlay.yoon-fullscreen-gallery .yoon-page-menu-wrap,
+#yoonFullOverlay.yoon-fullscreen-gallery .yoon-full-nav{
+  pointer-events:auto!important;
+}
+#yoonFullOverlay.yoon-fullscreen-gallery .yoon-full-nav,
+#yoonFullOverlay.yoon-fullscreen-gallery .yoon-page-menu-btn{
+  position:static!important;
+  width:auto!important;
+  height:30px!important;
+  min-width:58px!important;
+  border:1px solid rgba(214,179,106,.34)!important;
+  border-radius:999px!important;
+  padding:0 .62rem!important;
+  background:rgba(8,9,12,.54)!important;
+  color:#f7e8c4!important;
+  font-size:.72rem!important;
+  line-height:1!important;
+  font-weight:850!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  white-space:nowrap!important;
+  box-shadow:0 6px 18px rgba(0,0,0,.24)!important;
+  backdrop-filter:blur(8px)!important;
+  -webkit-backdrop-filter:blur(8px)!important;
+  cursor:pointer!important;
+  touch-action:manipulation!important;
+}
+#yoonFullOverlay.yoon-fullscreen-gallery .yoon-full-nav::after{
+  content:none!important;
+  display:none!important;
+}
+#yoonFullOverlay.yoon-fullscreen-gallery .yoon-full-nav:hover,
+#yoonFullOverlay.yoon-fullscreen-gallery .yoon-page-menu-btn:hover{
+  background:rgba(214,179,106,.22)!important;
+  border-color:rgba(214,179,106,.58)!important;
+}
+#yoonFullOverlay.yoon-fullscreen-gallery .yoon-page-menu-wrap{
+  position:relative!important;
+  flex:0 0 auto!important;
+}
+#yoonFullOverlay.yoon-fullscreen-gallery .yoon-page-panel{
+  display:none!important;
+  position:absolute!important;
+  left:0!important;
+  bottom:calc(100% + .55rem)!important;
+  width:min(240px,calc(100vw - 1.1rem))!important;
+  max-height:min(42vh,310px)!important;
+  overflow:auto!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:.38rem!important;
+  padding:.62rem!important;
+  border:1px solid rgba(214,179,106,.28)!important;
+  border-radius:16px!important;
+  background:rgba(12,14,18,.92)!important;
+  box-shadow:0 18px 48px rgba(0,0,0,.42)!important;
+  backdrop-filter:blur(12px)!important;
+  -webkit-backdrop-filter:blur(12px)!important;
+}
+#yoonFullOverlay.yoon-fullscreen-gallery .yoon-page-menu-wrap.open .yoon-page-panel{
+  display:grid!important;
+}
+#yoonFullOverlay.yoon-fullscreen-gallery .yoon-page-item{
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:10px!important;
+  min-height:30px!important;
+  padding:.25rem .3rem!important;
+  background:rgba(255,255,255,.05)!important;
+  color:#f5f5f4!important;
+  font-size:.72rem!important;
+  font-weight:850!important;
+  cursor:pointer!important;
+  touch-action:manipulation!important;
+}
+#yoonFullOverlay.yoon-fullscreen-gallery .yoon-page-item.active{
+  background:linear-gradient(135deg,#d6b36a,#a77b37)!important;
+  color:#111827!important;
+  border-color:rgba(214,179,106,.85)!important;
+}
+#yoonFullOverlay.yoon-fullscreen-gallery.yoon-controls-hidden .yoon-full-actions{
+  opacity:0!important;
+  pointer-events:none!important;
+  transform:none!important;
+}
+#yoonFullOverlay.yoon-fullscreen-gallery:not(.yoon-controls-hidden) .yoon-full-actions{
+  opacity:1!important;
+  pointer-events:none!important;
+}
+#yoonFullOverlay.yoon-fullscreen-gallery .yoon-full-top{
+  z-index:8!important;
+}
+@media(max-width:640px){
+  #yoonFullOverlay.yoon-fullscreen-gallery .yoon-full-nav,
+  #yoonFullOverlay.yoon-fullscreen-gallery .yoon-page-menu-btn{
+    height:28px!important;
+    min-width:52px!important;
+    padding:0 .48rem!important;
+    font-size:.66rem!important;
+  }
+  #yoonFullOverlay.yoon-fullscreen-gallery .yoon-page-panel{
+    width:min(218px,calc(100vw - .9rem))!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:.34rem!important;
+    padding:.52rem!important;
+  }
+  #yoonFullOverlay.yoon-fullscreen-gallery .yoon-page-item{
+    min-height:28px!important;
+    font-size:.68rem!important;
+  }
+}
+@media(orientation:landscape) and (max-height:540px){
+  #yoonFullOverlay.yoon-fullscreen-gallery .yoon-full-actions{
+    bottom:max(.35rem,env(safe-area-inset-bottom))!important;
+  }
+  #yoonFullOverlay.yoon-fullscreen-gallery .yoon-full-nav,
+  #yoonFullOverlay.yoon-fullscreen-gallery .yoon-page-menu-btn{
+    height:26px!important;
+    min-width:48px!important;
+    font-size:.62rem!important;
+  }
+  #yoonFullOverlay.yoon-fullscreen-gallery .yoon-page-panel{
+    max-height:58vh!important;
+  }
+}
+</style>
+<script>
+/* === YOON_V20_GALLERY_PAGE_MENU_UNIFIED === */
+(function(){
+  function menuLabel(){
+    try{
+      if(typeof lang!=='undefined' && lang==='en') return 'Pages';
+      if(typeof lang!=='undefined' && lang==='ko') return '목록';
+    }catch(e){}
+    return '目录';
+  }
+  window.toggleGalleryPageMenu=function(ev){
+    if(ev){ev.preventDefault();ev.stopPropagation();}
+    var wrap=document.querySelector('#yoonFullOverlay .yoon-page-menu-wrap');
+    if(!wrap) return;
+    wrap.classList.toggle('open');
+    if(typeof setFullscreenControlsVisible==='function') setFullscreenControlsVisible(true,false);
+  };
+  window.closeGalleryPageMenu=function(){
+    var wrap=document.querySelector('#yoonFullOverlay .yoon-page-menu-wrap');
+    if(wrap) wrap.classList.remove('open');
+  };
+  window.jumpGalleryImage=function(i,ev){
+    if(ev){ev.preventDefault();ev.stopPropagation();}
+    if(!window.currentGallery && typeof currentGallery==='undefined') return;
+    var cg=(typeof currentGallery!=='undefined')?currentGallery:window.currentGallery;
+    if(!cg) return;
+    var pages=galleryPagesOf(cg.dirId);
+    if(!pages || !pages.length) return;
+    cg.index=Math.max(0,Math.min(Number(i)||0,pages.length-1));
+    closeGalleryPageMenu();
+    renderGallery();
+    if(typeof setFullscreenControlsVisible==='function') setTimeout(function(){setFullscreenControlsVisible(true,false);},30);
+  };
+  function pageDirectoryHtml(pages,currentIndex){
+    var items=pages.map(function(p,i){
+      var num=(p && p.index)?p.index:(i+1);
+      return '<button class="yoon-page-item '+(i===currentIndex?'active':'')+'" type="button" onclick="jumpGalleryImage('+i+',event)">'+esc(String(num))+'</button>';
+    }).join('');
+    return '<div class="yoon-page-menu-wrap"><button class="yoon-page-menu-btn" type="button" onclick="toggleGalleryPageMenu(event)">'+esc(menuLabel())+' '+esc(String(currentIndex+1))+'/'+esc(String(pages.length))+'</button><div class="yoon-page-panel" onclick="event.stopPropagation()">'+items+'</div></div>';
+  }
+  renderFullscreenOverlay=function(mode){
+    removeFullOverlay();
+    yoonFullscreenMode=mode||'';
+    if(mode==='gallery') {
+      if(!currentGallery) { yoonFullscreenMode=''; return; }
+      var g=galleryOf(currentGallery.dirId);
+      var pages=galleryPagesOf(currentGallery.dirId);
+      if(!g || !pages.length) { yoonFullscreenMode=''; return; }
+      currentGallery.index=Math.max(0,Math.min(currentGallery.index,pages.length-1));
+      var page=pages[currentGallery.index];
+      var label=galleryPageLabel(page,currentGallery.index,pages.length);
+      var title=galleryText('image');
+      var overlay=document.createElement('div');
+      overlay.id='yoonFullOverlay';
+      overlay.className='yoon-fullscreen-gallery';
+      overlay.innerHTML=fullOverlayTop(title,'','closeGallery')+
+        '<div class="yoon-full-stage"><img src="'+esc(page.src)+'" alt="'+esc(galleryTitleOf(g)+' '+label)+'"></div>'+
+        '<div class="yoon-full-actions" aria-label="gallery navigation">'+
+          pageDirectoryHtml(pages,currentGallery.index)+
+          '<button class="yoon-full-nav" type="button" onclick="prevGalleryImage()" aria-label="'+esc(galleryText('prev'))+'">'+esc(galleryText('prev'))+'</button>'+
+          '<button class="yoon-full-nav" type="button" onclick="nextGalleryImage()" aria-label="'+esc(galleryText('next'))+'">'+esc(galleryText('next'))+'</button>'+
+        '</div>';
+      document.body.appendChild(overlay);
+      setupGallerySwipe(overlay);
+      setupGallerySwipe(overlay.querySelector('.yoon-full-stage'));
+      initFullscreenTapControls(overlay);
+    } else if(mode==='video') {
+      if(!currentVideo) { yoonFullscreenMode=''; return; }
+      var v=currentVideo;
+      var player = isYT(v.url)
+        ? '<iframe src="'+embed(v.url)+'" title="'+esc(titleOf(v))+'" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>'
+        : '<video src="'+esc(v.url)+'" controls autoplay playsinline webkit-playsinline controlsList="nodownload" oncontextmenu="return false"></video>';
+      var overlay=document.createElement('div');
+      overlay.id='yoonFullOverlay';
+      overlay.className='yoon-fullscreen-video';
+      overlay.innerHTML=fullOverlayTop(galleryText('video'),'','closePlayer')+'<div class="yoon-full-stage">'+player+'</div>';
+      document.body.appendChild(overlay);
+      initFullscreenTapControls(overlay);
+      setFullscreenControlsVisible(true,false);
+    }
+    document.documentElement.classList.add('yoon-fullscreen-lock');
+    document.body.classList.add('yoon-fullscreen-lock');
+  };
 })();
 </script>
 
