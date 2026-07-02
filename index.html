@@ -2356,19 +2356,20 @@ body.yoon-viewer-active{ }
   height:100dvh!important;
   background:#000!important;
   color:#fff8e8!important;
-  display:flex!important;
-  flex-direction:column!important;
+  display:block!important;
   overflow:hidden!important;
 }
 #yoonFullOverlay .yoon-full-top{
-  flex:0 0 auto!important;
+  position:absolute!important;
+  top:0!important; left:0!important; right:0!important;
+  z-index:5!important;
   display:flex!important;
   align-items:flex-start!important;
   justify-content:space-between!important;
   gap:.7rem!important;
   padding:max(.62rem,env(safe-area-inset-top)) max(.72rem,env(safe-area-inset-right)) .62rem max(.72rem,env(safe-area-inset-left))!important;
-  background:rgba(7,8,10,.96)!important;
-  border-bottom:1px solid rgba(255,255,255,.09)!important;
+  background:linear-gradient(to bottom,rgba(0,0,0,.78),rgba(0,0,0,.28),rgba(0,0,0,0))!important;
+  border-bottom:none!important;
 }
 #yoonFullOverlay .yoon-full-title{min-width:0!important;font-weight:900!important;line-height:1.28!important;}
 #yoonFullOverlay .yoon-full-main-title{font-size:.92rem!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;}
@@ -2382,8 +2383,9 @@ body.yoon-viewer-active{ }
 }
 #yoonFullOverlay .yoon-full-close{background:#2b3038!important;color:#fff8e8!important;font-size:20px!important;}
 #yoonFullOverlay .yoon-full-stage{
-  flex:1 1 auto!important;
-  min-height:0!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:1!important;
   display:flex!important;
   align-items:center!important;
   justify-content:center!important;
@@ -2392,26 +2394,28 @@ body.yoon-viewer-active{ }
 }
 #yoonFullOverlay .yoon-full-stage img{
   display:block!important;
-  max-width:100%!important;
-  max-height:100%!important;
-  width:auto!important;
-  height:auto!important;
-  object-fit:contain!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  object-fit:cover!important;
   border:0!important;border-radius:0!important;box-shadow:none!important;
 }
 #yoonFullOverlay .yoon-full-stage iframe,
 #yoonFullOverlay .yoon-full-stage video{
-  width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;
-  border:0!important;background:#000!important;display:block!important;object-fit:contain!important;
+  width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;
+  border:0!important;background:#000!important;display:block!important;object-fit:cover!important;
 }
 #yoonFullOverlay .yoon-full-actions{
-  flex:0 0 auto!important;
+  position:absolute!important;
+  left:0!important; right:0!important; bottom:0!important;
+  z-index:5!important;
   display:grid!important;
   grid-template-columns:1fr 1fr!important;
   gap:.55rem!important;
   padding:.62rem max(.72rem,env(safe-area-inset-right)) max(.72rem,env(safe-area-inset-bottom)) max(.72rem,env(safe-area-inset-left))!important;
-  background:rgba(7,8,10,.96)!important;
-  border-top:1px solid rgba(255,255,255,.09)!important;
+  background:linear-gradient(to top,rgba(0,0,0,.82),rgba(0,0,0,.34),rgba(0,0,0,0))!important;
+  border-top:none!important;
 }
 #yoonFullOverlay .yoon-full-nav{
   border:1px solid rgba(214,179,106,.32)!important;
@@ -2423,6 +2427,7 @@ body.yoon-viewer-active{ }
   font-weight:900!important;
   cursor:pointer!important;
   touch-action:manipulation!important;
+  backdrop-filter:blur(6px)!important;
 }
 html.yoon-fullscreen-lock,body.yoon-fullscreen-lock{overflow:hidden!important;height:100%!important;}
 @media(max-width:640px){
@@ -2449,7 +2454,7 @@ html.yoon-fullscreen-lock,body.yoon-fullscreen-lock{overflow:hidden!important;he
   pointer-events:none!important;
   transform:translateY(12px)!important;
 }
-#yoonFullOverlay .yoon-full-stage{position:relative!important;z-index:1!important;}
+#yoonFullOverlay .yoon-full-stage{position:absolute!important;inset:0!important;z-index:1!important;}
 #yoonFullOverlay .yoon-tap-layer{
   position:absolute!important;
   inset:0!important;
@@ -2457,7 +2462,7 @@ html.yoon-fullscreen-lock,body.yoon-fullscreen-lock{overflow:hidden!important;he
   background:transparent!important;
   pointer-events:none!important;
 }
-#yoonFullOverlay.yoon-fullscreen-video.yoon-controls-hidden .yoon-tap-layer{
+#yoonFullOverlay.yoon-controls-hidden .yoon-tap-layer{
   pointer-events:auto!important;
   cursor:pointer!important;
 }
@@ -3475,7 +3480,7 @@ function renderDirs() {
   const videoBody=videoDirs.map((d,i)=>{
     const list=vs.filter(v=>String(v.dirId)===String(d.id));
     const videoLines=list.map(v=>`<button class="dir-line" onclick="event.stopPropagation();openVideo('${v.id}')"><span>${esc(episodeOf(v))}</span>${v.password?'<span class="key">KEY</span>':''}</button>`).join('');
-    return `<div class="dir ${i===0?'open':''}">
+    return `<div class="dir">
       <div class="dir-head" onclick="this.parentElement.classList.toggle('open')"><span>${esc(dirNameOf(d))}</span><span class="count">${list.length}</span></div>
       <div class="dir-list">${videoLines}</div>
     </div>`;
