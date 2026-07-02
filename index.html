@@ -2798,8 +2798,132 @@ html.yoon-fullscreen-lock,body.yoon-fullscreen-lock{overflow:hidden!important;he
 #yoonVersionFlag{position:fixed!important;left:-9999px!important;top:-9999px!important;width:1px!important;height:1px!important;overflow:hidden!important;}
 </style>
 
+
+<style id="yoon-v15-cropped-fullscreen-override">
+/* YOON_V15_CROPPED_FULLSCREEN
+   Fullscreen cover mode: fill the entire visible browser viewport.
+   Note: iPhone Safari browser chrome itself cannot be hidden by webpage CSS. */
+html.yoon-fullscreen-lock,
+body.yoon-fullscreen-lock{
+  width:100%!important;
+  height:100%!important;
+  overflow:hidden!important;
+  position:fixed!important;
+  inset:0!important;
+  margin:0!important;
+}
+#yoonFullOverlay{
+  position:fixed!important;
+  inset:0!important;
+  width:100vw!important;
+  height:100vh!important;
+  height:100dvh!important;
+  height:-webkit-fill-available!important;
+  overflow:hidden!important;
+  background:#000!important;
+  display:block!important;
+  z-index:2147483647!important;
+}
+#yoonFullOverlay .yoon-full-stage{
+  position:absolute!important;
+  inset:0!important;
+  width:100vw!important;
+  height:100vh!important;
+  height:100dvh!important;
+  height:-webkit-fill-available!important;
+  overflow:hidden!important;
+  background:#000!important;
+  z-index:1!important;
+  display:block!important;
+}
+#yoonFullOverlay .yoon-full-stage img,
+#yoonFullOverlay .yoon-full-stage video{
+  position:absolute!important;
+  top:0!important;
+  left:0!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  min-width:100%!important;
+  min-height:100%!important;
+  object-fit:cover!important;
+  object-position:center center!important;
+  border:0!important;
+  border-radius:0!important;
+  margin:0!important;
+  padding:0!important;
+  background:#000!important;
+  box-shadow:none!important;
+}
+/* YouTube iframe does not obey object-fit, so crop it manually like background-size: cover. */
+#yoonFullOverlay.yoon-fullscreen-video .yoon-full-stage iframe{
+  position:absolute!important;
+  top:50%!important;
+  left:50%!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:100vw!important;
+  height:56.25vw!important;
+  min-width:177.7778vh!important;
+  min-height:100vh!important;
+  min-height:100dvh!important;
+  max-width:none!important;
+  max-height:none!important;
+  transform:translate(-50%,-50%)!important;
+  transform-origin:center center!important;
+  border:0!important;
+  border-radius:0!important;
+  margin:0!important;
+  padding:0!important;
+  background:#000!important;
+  display:block!important;
+}
+#yoonFullOverlay .yoon-full-top{
+  position:absolute!important;
+  left:0!important;
+  right:0!important;
+  top:0!important;
+  z-index:6!important;
+  border:0!important;
+  background:linear-gradient(to bottom,rgba(0,0,0,.78),rgba(0,0,0,.24),rgba(0,0,0,0))!important;
+}
+#yoonFullOverlay .yoon-full-actions{
+  position:absolute!important;
+  left:0!important;
+  right:0!important;
+  bottom:0!important;
+  z-index:6!important;
+  border:0!important;
+  background:linear-gradient(to top,rgba(0,0,0,.82),rgba(0,0,0,.26),rgba(0,0,0,0))!important;
+}
+#yoonFullOverlay .yoon-tap-layer{
+  position:absolute!important;
+  inset:0!important;
+  z-index:4!important;
+}
+#yoonFullOverlay.yoon-controls-hidden .yoon-tap-layer{
+  pointer-events:auto!important;
+}
+#yoonFullOverlay:not(.yoon-controls-hidden) .yoon-tap-layer{
+  pointer-events:none!important;
+}
+@media(orientation:landscape){
+  #yoonFullOverlay.yoon-fullscreen-video .yoon-full-stage iframe{
+    width:100vw!important;
+    height:56.25vw!important;
+    min-width:177.7778vh!important;
+    min-height:100vh!important;
+    min-height:100dvh!important;
+  }
+}
+#yoonVersionFlag{position:fixed!important;left:-9999px!important;top:-9999px!important;width:1px!important;height:1px!important;overflow:hidden!important;}
+</style>
+
 </head>
-<body><div id="yoonVersionFlag">YOON_V14_TRUE_COVER_FULLSCREEN</div>
+<body><div id="yoonVersionFlag">YOON_V15_CROPPED_FULLSCREEN</div>
 <header><div class="container"><div class="topbar">
   <div class="brand"><span class="brand-icon">🎬</span><span class="lang-zh active-lang">小Yoon 的创作空间</span><span class="lang-en">Little Yoon's Studio</span><span class="lang-ko">리틀 윤의 창작 공간</span></div>
   <div class="nav-area">
@@ -3414,7 +3538,7 @@ function renderFullscreenOverlay(mode) {
     overlay.id='yoonFullOverlay';
     overlay.className='yoon-fullscreen-gallery';
     overlay.innerHTML=fullOverlayTop(title,'','closeGallery')+
-      `<div class="yoon-full-stage"><img src="${esc(page.src)}" alt="${esc(galleryTitleOf(g)+' '+label)}"></div>
+      `<div class="yoon-tap-layer" aria-hidden="true"></div><div class="yoon-full-stage"><img src="${esc(page.src)}" alt="${esc(galleryTitleOf(g)+' '+label)}"></div>
        <div class="yoon-full-actions">
          <button class="yoon-full-nav" type="button" onclick="prevGalleryImage()">${esc(galleryText('prev'))}</button>
          <button class="yoon-full-nav" type="button" onclick="nextGalleryImage()">${esc(galleryText('next'))}</button>
@@ -3426,7 +3550,7 @@ function renderFullscreenOverlay(mode) {
     if(!currentVideo) { yoonFullscreenMode=''; return; }
     const v=currentVideo;
     const player = isYT(v.url)
-      ? `<iframe src="${embed(v.url)}" title="${esc(titleOf(v))}" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`
+      ? `<iframe src="${embed(v.url)}" title="${esc(titleOf(v))}" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`
       : `<video src="${esc(v.url)}" controls autoplay playsinline webkit-playsinline controlsList="nodownload" oncontextmenu="return false"></video>`;
     const overlay=document.createElement('div');
     overlay.id='yoonFullOverlay';
@@ -3635,7 +3759,7 @@ function openVideo(id) {
 function playVideo(v) { setViewerActive(true); currentVideo=v; showPage('portfolio'); renderPlayer(v); }
 function renderPlayer(v) {
   const player = isYT(v.url)
-    ? `<iframe src="${embed(v.url)}" title="${esc(titleOf(v))}" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`
+    ? `<iframe src="${embed(v.url)}" title="${esc(titleOf(v))}" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`
     : `<video src="${esc(v.url)}" controls autoplay playsinline controlsList="nodownload" oncontextmenu="return false"></video>`;
   document.getElementById('displayArea').innerHTML = `
     <div class="video-viewer-wrap" id="videoViewerWrap">
